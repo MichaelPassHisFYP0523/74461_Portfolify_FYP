@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>User Account Registration</title>   
+
+    <style>
+        #center
+        {
+            width: 70%;
+            margin: 2% 15%;
+            height: auto;
+            border-color: cadetblue;
+            border-style: solid;
+            border-radius: 20px;
+        }
+        #title
+        {
+            text-align: center;
+            height: 40px;
+            color: cadetblue;
+            width: 100%;
+        }
+        #content
+        {
+            height: auto;
+            width: 100%;
+        }
+        table
+        {
+            width: 100%;
+            padding: 5% 10%;
+            border-spacing: 0px 20px;
+        }
+        td
+        {
+            color: cadetblue;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        input
+        {
+            width: 90%;
+            padding: 5px;
+        }
+        .variable
+        {
+            width: 22%;
+        }
+        .sep_box
+        {
+            width: 40%;
+        }
+        .sep_box input
+        {
+            width: 80%;
+        }
+        .not_text
+        {
+            width: 2%;
+            
+        }
+        td div
+        {
+            display: inline;
+        }
+        select
+        {
+            width: 92%;
+            padding: 5px;
+        }
+        button
+        {
+            width: 20%;
+            padding: 10px;
+            margin-right: 20px;
+            border-radius: 5px;
+            border-style: none;
+            background-color: cadetblue;
+            color: white;
+            font-weight: bold;
+        }
+        button:hover
+        {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="center">
+        <div id="title">
+            <h1>User Account Registration</h1>
+        </div>
+        <div id="content">
+            <table>
+                <tr>
+                    <td class="variable">Name :</td>
+                    <td class="sep_box"><input type="text" placeholder="First Name - First Character Uppercase"></td>
+                    <td class="sep_box"><input type="text" placeholder="Last Name - First Character Uppercase"></td>
+                </tr>
+                <tr>
+                    <td class="variable">Gender :</td>
+                    <td colspan="2">
+                        <div><input type="radio" class="not_text" value="Male">Male</div>
+                        <div><input type="radio" class="not_text" value="Female">Female</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="variable">Email :</td>
+                    <td colspan="2"><input type="text" placeholder="Example@mail.com"></td>
+                </tr>
+                <tr>
+                    <td class="variable">Mobile (+60) :</td>
+                    <td colspan="2"><input type="text" placeholder="(+60) 12-345 6789"></td>
+                </tr>
+                <tr>
+                    <td class="variable">State :</td>
+                    <td colspan="2">
+                        <select name="state">
+                            <option disabled selected value>--- Select An Option ---</option>
+                            <option value="">Johor</option>
+                            <option value="">Kedah</option>
+                            <option value="">Kelantan</option>
+                            <option value="">Melaka</option>
+                            <option value="">Negeri Sembilan</option>
+                            <option value="">Pahang</option>
+                            <option value="">Penang</option>
+                            <option value="">Perak</option>
+                            <option value="">Perlis</option>
+                            <option value="">Selangor</option>
+                            <option value="">Terengganu</option>
+                            <option value="">Sabah</option>
+                            <option value="">Sarawak</option>
+                        </select>
+                    </td>
+                
+                    <tr>
+                    <td class="variable">Your Position :</td>
+                    <td colspan="2">
+                        <select name="Position">
+                            <option disabled selected value>--- Select An Option ---</option>
+                            <option value="">User</option>
+                            <option value="">Recruiter</option>
+                        </select>
+                    </td>
+                  </tr>
+                </tr>
+                <tr>
+                    <td class="variable">Password :</td>
+                    <td colspan="2"><input type="text" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)"></td>
+                </tr>
+                <tr>
+                    <td class="variable">Confirm Password :</td>
+                    <td colspan="2"><input type="text" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)"></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><div><input type="checkbox" class="not_text">I accept the above Terms and Conditions</div></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><button>Register Now</button>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
