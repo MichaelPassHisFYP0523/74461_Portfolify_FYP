@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>User Account Registration</title>   
+
+    <style>
+        /* Your CSS styles */
+        #center {
+            width: 70%;
+            margin: 2% 15%;
+            height: auto;
+            border: 1px solid cadetblue;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: cadetblue;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="radio"],
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 20%;
+            padding: 10px;
+            border-radius: 5px;
+            border-style: none;
+            background-color: cadetblue;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="center">
+        <div id="title">
+            <h1>User Account Registration</h1>
+        </div>
+        <div id="content">
+            <!-- <form id="registrationForm" onsubmit="return validateForm()"> -->
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" placeholder="First Name">
+                    <div id="firstNameError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" placeholder="Last Name">
+                    <div id="lastNameError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div>
+                        <input type="radio" id="male" name="gender" value="Male">
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" name="gender" value="Female">
+                        <label for="female">Female</label>
+                    </div>
+                    <div id="genderError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" placeholder="Example@mail.com">
+                    <div id="emailError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Mobile (+60):</label>
+                    <input type="text" id="mobile" placeholder="(+60) 12-345 6789">
+                    <div id="mobileError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="position">Your Position:</label>
+                    <select id="position">
+                        <option disabled selected value>--- Select An Option ---</option>
+                        <option value="User">User</option>
+                        <option value="Recruiter">Recruiter</option>
+                    </select>
+                    <div id="positionError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)">
+                    <div id="passwordError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)">
+                    <div id="confirmPasswordError" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <input type="checkbox" id="termsAccepted">
+                        <label for="termsAccepted">I accept the above Terms and Conditions</label>
+                    </div>
+                    <div id="termsAcceptedError" class="error-message"></div>
+                </div>
+                <button type="submit" onclick="validateForm()">Register Now</button>
+            <!-- </form> -->
+            <div id="errorMessages" class="alert alert-primary"></div>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+
+            //clear previous error
+            clearErrors();
+
+            // Get form inputs
+            var firstName = document.getElementById('firstName').value;
+            var lastName = document.getElementById('lastName').value;
+            var gender = document.querySelector('input[name="gender"]:checked');
+            var email = document.getElementById('email').value;
+            var mobile = document.getElementById('mobile').value;
+            //var state = document.getElementById('state').value;
+            var position = document.getElementById('position').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var termsAccepted = document.getElementById('termsAccepted').checked;
+
+            // Clear previous error messages
+            //document.getElementsByClassName('error-message').innerHTML = '';
+
+            var isValid = true;
+
+            if (firstName === '') {
+                displayError('firstNameError', 'First name is required.');
+                isValid = false;
+            }
+
+            if (lastName === '') {
+                displayError('lastNameError', 'Last name is required.');
+                isValid = false;
+            }
+            
+            if (gender === '') {
+                displayError('genderError', 'Gender is required.');
+                isValid = false;
+            }
+
+            if (email === '') {
+                displayError('emailError', 'Email is required.');
+                isValid = false;
+            }
+
+            if (mobile === '') {
+                displayError('mobileError', 'Mobile is required.');
+                isValid = false;
+            }
+
+            if (position === '') {8
+                displayError('positionError', 'Position is required.');
+                isValid = false;
+            }
+
+            // if (state === '') {
+            //     displayError('stateError', 'Please choose a state.');
+            //     isValid = false;
+            // }
+
+            
+
+            // Perform validation
+            // var errors = [];
+            // if (firstName.trim() === '') {
+            //     errors.push('First name is required.');
+            // }
+            // if (lastName.trim() === '') {
+            //     errors.push('Last name is required.');
+            // }
+            // if (!gender) {
+            //     errors.push('Gender is required.');
+            // }
+            // if (email.trim() === '') {
+            //     errors.push('Email is required.');
+            // }
+            // Add more specific validation checks here
+            
+            // if (errors.length > 0) {
+            //     displayErrors(errors);
+            //     return false;
+            // }
+
+            // if (password !== confirmPassword) {
+            //     displayErrors(['Passwords do not match.']);
+            //     return false;
+            // }
+
+            // if (!termsAccepted) {
+            //     displayErrors(['Please accept the terms and conditions.']);
+            //     return false;
+            // }
+
+            // Form submitted successfully
+            // If form is valid, submit data to PHP script
+            if (isValid) {
+                var formData = new FormData();
+                formData.append('firstName', firstName);
+                formData.append('lastName', lastName);
+                formData.append('gender', gender);
+                formData.append('email', email);
+                formData.append('mobile', mobile);
+                formData.append('position', position);
+                formData.append('password', password);
+                formData.append('confirmPassword', confirmPassword);
+                formData.append('termsAccepted', termsAccepted);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'new_user.php', true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Handle successful response from PHP script
+                        console.log(xhr.responseText);
+                    } else {
+                        // Handle error
+                        console.error('Request failed. Status: ' + xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    // Handle network error
+                    console.error('Request failed. Network error.');
+                };
+                xhr.send(formData);
+            }
+                    return false;
+                }
+
+        // function displayErrors(errors) {
+        //     var errorMessagesContainer = document.getElementById('errorMessages');
+        //     var errorsHTML = '<ul>';
+        //     errors.forEach(function(error) {
+        //         errorsHTML += '<li>' + error + '</li>';
+        //     });
+        //     errorsHTML += '</ul>';
+        //     errorMessagesContainer.innerHTML = errorsHTML;
+        //     errorMessagesContainer.style.display = 'block'; // Show the alert
+        // }
+
+        function displayError(elementId, errorMessage) {
+            var errorElement = document.getElementById(elementId);
+            errorElement.textContent = errorMessage;
+        }
+
+        function clearErrors() {
+            var errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(function(element) {
+                element.textContent = '';
+            });
+        }
+    </script>
+</body>
+</html>
