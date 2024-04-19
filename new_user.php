@@ -14,6 +14,12 @@ include "con.php";
 
         $sql = "INSERT INTO `register`(`first_name`, `last_name`, `gender`, `email`, `mobile`, `position`, `password`) VALUES ('$firstName','$lastName','$gender','$email','$mobile','$position','$password')";
         
-        $result = $conn->query($sql);
+        if ($conn->query($sql) === TRUE) {
+            
+            echo "User registration successful!";
+        } else {
+            
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
     }
 ?>

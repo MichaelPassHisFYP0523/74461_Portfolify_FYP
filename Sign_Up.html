@@ -77,12 +77,13 @@
                     <div id="lastNameError" class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label>Gender:</label>
-                    <div>
-                        <input type="radio" id="male" name="gender" value="Male">
-                        <label for="male">Male</label>
-                        <input type="radio" id="female" name="gender" value="Female">
-                        <label for="female">Female</label>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender">
+                            <option disabled selected value>--- Select An Option ---</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">female</option>
+                        </select>
                     </div>
                     <div id="genderError" class="error-message"></div>
                 </div>
@@ -125,7 +126,7 @@
                 </div>
                 <button type="submit" onclick="validateForm()">Register Now</button>
             <!-- </form> -->
-            <div id="errorMessages" class="alert alert-primary"></div>
+            <div id="message" class="alert alert-success"></div>
         </div>
     </div>
 
@@ -138,17 +139,13 @@
             // Get form inputs
             var firstName = document.getElementById('firstName').value;
             var lastName = document.getElementById('lastName').value;
-            var gender = document.querySelector('input[name="gender"]:checked');
+            var gender = document.getElementById('gender').value;
             var email = document.getElementById('email').value;
             var mobile = document.getElementById('mobile').value;
-            //var state = document.getElementById('state').value;
             var position = document.getElementById('position').value;
             var password = document.getElementById('password').value;
             var confirmPassword = document.getElementById('confirmPassword').value;
             var termsAccepted = document.getElementById('termsAccepted').checked;
-
-            // Clear previous error messages
-            //document.getElementsByClassName('error-message').innerHTML = '';
 
             var isValid = true;
 
@@ -177,50 +174,21 @@
                 isValid = false;
             }
 
-            if (position === '') {8
+            if (position === '') {
                 displayError('positionError', 'Position is required.');
                 isValid = false;
             }
 
-            // if (state === '') {
-            //     displayError('stateError', 'Please choose a state.');
-            //     isValid = false;
-            // }
+            if (password !== confirmPassword) {
+                displayError('confirmPasswordError', 'Password does not match.');
+                isValid = false;
+            }
 
-            
+            if (!termsAccepted) {
+                displayError('termsAcceptedError', 'Terms and condition is required');
+                isValid = false;
+            }
 
-            // Perform validation
-            // var errors = [];
-            // if (firstName.trim() === '') {
-            //     errors.push('First name is required.');
-            // }
-            // if (lastName.trim() === '') {
-            //     errors.push('Last name is required.');
-            // }
-            // if (!gender) {
-            //     errors.push('Gender is required.');
-            // }
-            // if (email.trim() === '') {
-            //     errors.push('Email is required.');
-            // }
-            // Add more specific validation checks here
-            
-            // if (errors.length > 0) {
-            //     displayErrors(errors);
-            //     return false;
-            // }
-
-            // if (password !== confirmPassword) {
-            //     displayErrors(['Passwords do not match.']);
-            //     return false;
-            // }
-
-            // if (!termsAccepted) {
-            //     displayErrors(['Please accept the terms and conditions.']);
-            //     return false;
-            // }
-
-            // Form submitted successfully
             // If form is valid, submit data to PHP script
             if (isValid) {
                 var formData = new FormData();
@@ -232,7 +200,7 @@
                 formData.append('position', position);
                 formData.append('password', password);
                 formData.append('confirmPassword', confirmPassword);
-                formData.append('termsAccepted', termsAccepted);
+                formData.append('termsAccepted', termsAccepted); 
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'new_user.php', true);
@@ -240,9 +208,13 @@
                     if (xhr.status === 200) {
                         // Handle successful response from PHP script
                         console.log(xhr.responseText);
+                        displayMessage(['Successfully sign up!']);
+
                     } else {
                         // Handle error
                         console.error('Request failed. Status: ' + xhr.status);
+                        displayMessage(['Error. Please try again.']);
+
                     }
                 };
                 xhr.onerror = function() {
@@ -254,16 +226,6 @@
                     return false;
                 }
 
-        // function displayErrors(errors) {
-        //     var errorMessagesContainer = document.getElementById('errorMessages');
-        //     var errorsHTML = '<ul>';
-        //     errors.forEach(function(error) {
-        //         errorsHTML += '<li>' + error + '</li>';
-        //     });
-        //     errorsHTML += '</ul>';
-        //     errorMessagesContainer.innerHTML = errorsHTML;
-        //     errorMessagesContainer.style.display = 'block'; // Show the alert
-        // }
 
         function displayError(elementId, errorMessage) {
             var errorElement = document.getElementById(elementId);
@@ -276,6 +238,19 @@
                 element.textContent = '';
             });
         }
+
+        
+        function displayMessage(errors) {
+            var messagesContainer = document.getElementById('message');
+            var errorsHTML = '<ul>';
+            errors.forEach(function(error) {
+                errorsHTML += '<li>' + error + '</li>';
+            });
+            errorsHTML += '</ul>';
+            messagesContainer.innerHTML = errorsHTML;
+            messagesContainer.style.display = 'block'; // Show the alert
+        }
+
     </script>
 </body>
 </html>
