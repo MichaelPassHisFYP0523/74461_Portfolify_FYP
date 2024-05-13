@@ -71,11 +71,11 @@
                         </li>
 
                         <li class="nav-item ms-lg-auto">
-                            <a class="nav-link" href="#">Register</a>
+                            <a class="nav-link" href="Sign_Up.html">Register</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link custom-btn btn" href="#">Login</a>
+                            <a class="nav-link custom-btn btn" href="Login.html">Login</a>
                         </li>
                     </ul>
                 </div>
@@ -84,6 +84,7 @@
 
         <main>
 
+            <!-- Navigation bar -->
             <section class="hero-section d-flex justify-content-center align-items-center">
                 <div class="section-overlay"></div>
 
@@ -147,8 +148,8 @@
                     </div>
                 </div>
             </section>
+            <!-- End nav bar -->
 
-        <p>
         <div class="container">
                     <div class="row">
 
@@ -441,15 +442,63 @@
                 </div>
             </section>
 
+            <!-- Latest project -->
             <section class="job-section recent-jobs-section section-padding">
                 <div class="container">
                     <div class="row align-items-center">
-
-                        <div class="col-lg-6 col-12 mb-4">
+                    <div class="col-lg-6 col-12 mb-4">
                             <h2>Latest Project to Collaborate</h2>
                         </div>
 
                         <div class="clearfix"></div>
+                    <?php
+                        include "con.php";
+
+                        $query = "SELECT `project_ID`, `project_title`, `project_desc`, `project_price`, `project_image` FROM `project` ORDER BY `project_date` DESC LIMIT 6";
+                        $result = mysqli_query($conn, $query);
+
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+                                <div class="col-lg-4 col-md-6 col-12">
+                                    <div class="job-thumb job-thumb-box">
+                                        
+                                        <div class="job-image-box-wrap">
+                                            <img src="<?php echo $row['project_image']; ?>" class="job-image img-fluid" alt="job image">
+                                        </div>
+
+                                        <div class="job-body">
+                                            <h4 class="job-title">
+                                                <a href="project-details.php?id=<?php echo $row['project_ID']; ?>" class="job-title-link"><?php echo $row['project_title']; ?></a>
+                                            </h4>
+
+                                            <div class="job-details">
+                                                <p><?php echo $row['project_desc']; ?></p>
+                                                <p>Price: $<?php echo $row['project_price']; ?></p>
+                                            </div>
+                                            <p></p>
+                                            <div class="action-flex align-items-center border-top pt-3n-buttons">
+                                                <p></p>
+                                                <a href="project-detail.php?id=<?php echo $row['project_ID']; ?>" class="custom-btn btn ms-auto">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        <?php
+                            }
+                        } else {
+                            // If no projects found
+                            echo "No projects found";
+                        }
+                        ?>
+
+                        <!-- Latest job(template) -->
+                        <!-- <div class="col-lg-6 col-12 mb-4">
+                            <h2>Latest Project to Collaborate</h2>
+                        </div>
+
+                        <div class="clearfix"></div>
+
 
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="job-thumb job-thumb-box">
@@ -807,31 +856,18 @@
 
                         <div class="col-lg-4 col-12 recent-jobs-bottom d-flex ms-auto my-4">
                             <a href="job-listings.html" class="custom-btn btn ms-lg-auto">Browse Job Listings</a>
-                        </div>
+                        </div> -->
+                        <!-- Latest job(template) -->
 
                     </div>
                 </div>
             </section>
+            <!-- End latest project -->
 
         </main>
 
+        <!-- Footer -->
         <footer class="site-footer">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-lg-4 col-md-6 col-12 mb-3">
-                        <div class="d-flex align-items-center mb-4">
-                            <img src="images/logo.png" class="img-fluid logo-image">
-
-                            <div class="d-flex flex-column">
-                                <strong class="logo-text">Portfolify</strong>
-                                <small class="logo-slogan">Online Job Portal</small>
-                            </div>
-                        
-
-                </div>
-            </div>
-
             <div class="site-footer-bottom">
                 <div class="container">
                     <div class="row">
@@ -840,38 +876,13 @@
                             
                         </div>
 
-                        <div class="col-lg-5 col-12 mt-2 mt-lg-0">
-                            <ul class="social-icon">
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-twitter"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-facebook"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-linkedin"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-instagram"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-youtube"></a>
-                                </li>
-                            </ul>
-                        </div>
-
-                    
-
                         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
 
                     </div>
                 </div>
             </div>
         </footer>
+        <!-- End footer -->
 
         <!-- JAVASCRIPT FILES -->
         <script src="js/jquery.min.js"></script>
