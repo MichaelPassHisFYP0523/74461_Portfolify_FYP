@@ -3,66 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Account Registration</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>User Account Registration</title>   
+    <link href="css/tooplate-gotto-job.css" rel="stylesheet">
 
-    <style>
-        /* Your CSS styles */
-        #center {
-            width: 70%;
-            margin: 2% 15%;
-            height: auto;
-            border: 1px solid cadetblue;
-            border-radius: 20px;
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: cadetblue;
-            font-weight: bold;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="radio"],
-        .form-group select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .error-message { 
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        button {
-            width: 20%;
-            padding: 10px;
-            border-radius: 5px;
-            border-style: none;
-            background-color: cadetblue;
-            color: white;
-            font-weight: bold;
-        }
-
-        button:hover {
-            cursor: pointer;
-        }
-    </style>
 </head>
 
-<body>
+<body class="login-page">
     <div id="center">
         <div id="title">
-            <h1>User Account Registration</h1>
+            <h2>Portfolify</h2>
+            <h3>User Registration</h3>
         </div>
         <div id="content">
             <!-- <form id="registrationForm" onsubmit="return validateForm()"> -->
@@ -109,12 +62,12 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)">
+                    <input type="password" id="password" placeholder="Password">
                     <div id="passwordError" class="error-message"></div>
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" id="confirmPassword" placeholder="6 digits - ONE uppercase, ONE lowercase, One special character and number (no spacing)">
+                    <input type="password" id="confirmPassword" placeholder="Confirm password">
                     <div id="confirmPasswordError" class="error-message"></div>
                 </div>
                 <div class="form-group">
@@ -206,14 +159,18 @@
                 xhr.open('POST', 'new_user.php', true);
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        // Handle successful response from PHP script
-                        console.log(xhr.responseText);
-                        displayMessage(['Successfully sign up!']);
-
+                        if (xhr.responseText.includes("successful")) {
+                            console.log(xhr.responseText);
+                            displayMessage(['Successfully sign up!']);
+                        } else {
+                            // If the response does not contain the success message, handle as error
+                            console.error(xhr.responseText);
+                            displayMessage([xhr.responseText]);
+                        }
                     } else {
                         // Handle error
                         console.error('Request failed. Status: ' + xhr.status);
-                        displayMessage(['Error. Please try again.']);
+                        displayMessage(['Connection error. Please try again.']);
 
                     }
                 };

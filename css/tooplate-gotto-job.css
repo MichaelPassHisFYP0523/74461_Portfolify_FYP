@@ -1577,7 +1577,7 @@ nav[aria-label="breadcrumb"] {
 }
 
 .login-container { 
-  width: 300px; 
+  width: 30%; 
   margin: 50px auto; 
   padding: 20px; 
   background: #fff; 
@@ -1631,4 +1631,64 @@ a:hover {
 } */
 p{
   font-size: smaller;
+}
+
+/*---------------------------------------
+  SIGNUP               
+-----------------------------------------*/
+
+#center { 
+  width: 30%;
+  margin: 2% auto;
+  height: auto;
+  border: 1px solid cadetblue;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: white;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: cadetblue;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] { 
+  width: 95%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.error-message { 
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+button {
+  width: 20%;
+  padding: 10px;
+  border-radius: 5px;
+  border-style: none;
+  background-color: cadetblue;
+  color: white;
+  font-weight: bold;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.form-group select {
+  width: 99%; 
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
