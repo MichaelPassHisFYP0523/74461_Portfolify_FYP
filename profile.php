@@ -1,3 +1,34 @@
+<?php
+
+    session_start();
+
+    if (!isset($_SESSION['email'])) {
+        
+        header("Location: Sign_In.php");
+        exit();
+    }
+
+    include 'con.php';
+
+    $email = $_SESSION['email'];
+    $sql = "SELECT * FROM user_profile WHERE `Email` = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows == 1) {
+        
+        $row = $result->fetch_assoc();
+
+        $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
+        
+    } else {
+        
+        echo "User not found!";
+    }
+
+    $conn->close();
+
+?>
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -43,13 +74,13 @@
                     <div class="row">
                         
                         <div class="col-lg-12 col-12 text-center">
-                            <h1 class="text-white">Get in touch</h1>
+                            <h1 class="text-white">My profile</h1>
 
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb justify-content-center">
                                     <li class="breadcrumb-item"><a href="index.php">Home</a></li>
 
-                                    <li class="breadcrumb-item active" aria-current="page">Contact</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
                                 </ol>
                             </nav>
                         </div>
@@ -63,16 +94,11 @@
                 <div class="container">
                     <div class="row justify-content-center">
 
-                        <!-- <div class="col-lg-6 col-12 mb-lg-5 mb-3">
-                            <img src="profile-picture.jpg" alt="Profile Picture" class="img-fluid rounded-circle mb-3">
-                            <h4>Name</h4>
-                            <p>Other details: Role, Location, etc.</p>
-                        </div> -->
-
                         <div class="col-lg-6 col-12 mb-lg-5 mb-3 text-center">
-                            <img src="images/profilepic_default.jpg" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
-                            <h4>Name</h4> 
-                            <p>Other details: Role, Location, etc.</p>
+                            <img src="<?php echo $row['ProfilePicture'] ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
+                            <h4><?php echo $fullName ?></h4> 
+                            <h5><?php echo $row['Bio'] ?></h5>
+                            <h5><?php echo $row['Gender'] ?></h5>
                         </div>
 
 
@@ -82,9 +108,8 @@
                                     <i class="custom-icon bi-building"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Office</span>
-
-                                        Akershusstranda 20, 0150 Oslo, Norway
+                                        <span class="contact-info-small-title">Location</span>
+                                        <?php echo $row['Location'] ?>
                                     </p>
                                 </div>
 
@@ -92,15 +117,15 @@
                                     <i class="custom-icon bi-globe"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Website</span>
+                                        <span class="contact-info-small-title">Social Media</span>
 
                                         <a href="#" class="site-footer-link">
-                                            www.jobportal.co
+                                            <?php echo $row['SocialMediaLinks'] ?>
                                         </a>
                                     </p>
                                 </div>
 
-                                <div class="contact-info d-flex align-items-center">
+                                <!-- <div class="contact-info d-flex align-items-center">
                                     <i class="custom-icon bi-telephone"></i>
 
                                     <p class="mb-0">
@@ -110,7 +135,7 @@
                                             305-240-9671
                                         </a>
                                     </p>
-                                </div>
+                                </div> -->
 
                                 <div class="contact-info d-flex align-items-center">
                                     <i class="custom-icon bi-envelope"></i>
@@ -119,49 +144,55 @@
                                         <span class="contact-info-small-title">Email</span>
 
                                         <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                            info@jobportal.co
+                                            <?php echo $row['Email'] ?>
                                         </a>
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-8 col-12 mx-auto">
-                            <form class="custom-form contact-form" action="#" method="post" role="form">
-                                <h2 class="text-center mb-4">Upload your project</h2>
-
+                        <section class="cta-section">
+                            <div class="container">
                                 <div class="row">
-                                    <div class="col-lg-12 col-12">
-                                        <label for="first-name">Title</label>
+                                    <div class="col-lg-8 col-12 mx-auto">
+                                        <form class="custom-form contact-form" action="#" method="post" role="form">
+                                            <h2 class="text-center mb-4">Upload your project</h2>
 
-                                        <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Jack Doe" required>
-                                    </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-12">
+                                                    <label for="first-name">Title</label>
 
-                                    <div class="col-lg-12 col-12">
-                                        <label for="email">Upload your file</label>
+                                                    <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Jack Doe" required>
+                                                </div>
 
-                                         <input type="file" name="email" id="email"  class="form-control"  required>
-                                    </div>
+                                                <div class="col-lg-12 col-12">
+                                                    <label for="email">Upload your file</label>
 
-                                    <div class="col-lg-12 col-12">
-                                        <label for="message">Describe your project</label>
+                                                    <input type="file" name="email" id="email"  class="form-control"  required>
+                                                </div>
 
-                                        <textarea name="message" rows="6" class="form-control" id="message" placeholder="What can we help you?"></textarea>
-                                    </div>
+                                                <div class="col-lg-12 col-12">
+                                                    <label for="message">Describe your project</label>
 
-                                    <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                        <button type="submit" class="form-control">Send Message</button>
+                                                    <textarea name="message" rows="6" class="form-control" id="message" placeholder="What can we help you?"></textarea>
+                                                </div>
+
+                                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                                    <button type="submit" class="form-control">Send Message</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        <section>
 
                     </div>
                 </div>
             </section>
 
             <section class="cta-section">
-                <div class="section-overlay"></div>
+                <!-- <div class="section-overlay"></div> -->
 
                 <div class="container">
                     <div class="row">
