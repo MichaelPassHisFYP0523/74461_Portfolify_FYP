@@ -34,7 +34,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.html">Profile</a>
+                            <a class="nav-link" href="profile.php">Profile</a>
                         </li>
 
                         <li class="nav-item ms-lg-auto">
@@ -42,7 +42,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link custom-btn btn" href="Login.html">Login</a>
+                            <a class="nav-link custom-btn btn" href="Sign_In.php">Login</a>
                         </li>
                     </ul>
                 </div>

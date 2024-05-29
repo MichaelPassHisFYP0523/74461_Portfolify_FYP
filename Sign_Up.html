@@ -19,7 +19,7 @@
         </div>
         <div id="content">
             <!-- <form id="registrationForm" onsubmit="return validateForm()"> -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="firstName">First Name:</label>
                     <input type="text" id="firstName" placeholder="First Name">
                     <div id="firstNameError" class="error-message"></div>
@@ -28,29 +28,12 @@
                     <label for="lastName">Last Name:</label>
                     <input type="text" id="lastName" placeholder="Last Name">
                     <div id="lastNameError" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <select id="gender">
-                            <option disabled selected value>--- Select An Option ---</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">female</option>
-                        </select>
-                    </div>
-                    <div id="genderError" class="error-message"></div>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="text" id="email" placeholder="Example@mail.com">
                     <div id="emailError" class="error-message"></div>
                 </div>
-                <div class="form-group">
-                    <label for="mobile">Mobile (+60):</label>
-                    <input type="text" id="mobile" placeholder="(+60) 12-345 6789">
-                    <div id="mobileError" class="error-message"></div>
-                </div>
-
                 <div class="form-group">
                     <label for="position">Your Position:</label>
                     <select id="position">
@@ -90,11 +73,7 @@
             clearErrors();
 
             // Get form inputs
-            var firstName = document.getElementById('firstName').value;
-            var lastName = document.getElementById('lastName').value;
-            var gender = document.getElementById('gender').value;
             var email = document.getElementById('email').value;
-            var mobile = document.getElementById('mobile').value;
             var position = document.getElementById('position').value;
             var password = document.getElementById('password').value;
             var confirmPassword = document.getElementById('confirmPassword').value;
@@ -102,28 +81,8 @@
 
             var isValid = true;
 
-            if (firstName === '') {
-                displayError('firstNameError', 'First name is required.');
-                isValid = false;
-            }
-
-            if (lastName === '') {
-                displayError('lastNameError', 'Last name is required.');
-                isValid = false;
-            }
-            
-            if (gender === '') {
-                displayError('genderError', 'Gender is required.');
-                isValid = false;
-            }
-
             if (email === '') {
                 displayError('emailError', 'Email is required.');
-                isValid = false;
-            }
-
-            if (mobile === '') {
-                displayError('mobileError', 'Mobile is required.');
                 isValid = false;
             }
 
@@ -145,15 +104,9 @@
             // If form is valid, submit data to PHP script
             if (isValid) {
                 var formData = new FormData();
-                formData.append('firstName', firstName);
-                formData.append('lastName', lastName);
-                formData.append('gender', gender);
                 formData.append('email', email);
-                formData.append('mobile', mobile);
                 formData.append('position', position);
                 formData.append('password', password);
-                formData.append('confirmPassword', confirmPassword);
-                formData.append('termsAccepted', termsAccepted); 
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'new_user.php', true);
@@ -162,6 +115,11 @@
                         if (xhr.responseText.includes("successful")) {
                             console.log(xhr.responseText);
                             displayMessage(['Successfully sign up!']);
+
+                            setTimeout(function() {
+                                window.location.href = 'Sign_In.php';
+                            }, 2000);
+
                         } else {
                             // If the response does not contain the success message, handle as error
                             console.error(xhr.responseText);

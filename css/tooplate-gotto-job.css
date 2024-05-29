@@ -1690,3 +1690,41 @@ button:hover {
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+
+/*---------------------------------------
+  Edit profile               
+-----------------------------------------*/
+
+    /* General Styling */
+    .nav-tabs {
+        /* border-bottom: 2px solid #ddd; */
+        border-bottom: 2px solid #ddd;
+        font-size: 18px; /* Adjust the font size of the tabs */
+    }
+    .nav-tabs .nav-link {
+        border: 1px solid transparent;
+        border-radius: 0;
+        color: var(--primary-color);
+        font-size: 20px;
+        padding: 15px 30px;
+    }
+    
+    .nav-tabs .nav-link.active {
+        background-color: #007bff;
+        border-color: var(--primary-color) #ddd;
+        color: var(--dark-color);
+    }
+    .nav-tabs .nav-link:hover {
+        background-color: #f8f9fa;
+    }
+    .tab-pane {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+

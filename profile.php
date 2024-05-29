@@ -1,9 +1,7 @@
 <?php
-
     session_start();
 
     if (!isset($_SESSION['email'])) {
-        
         header("Location: Sign_In.php");
         exit();
     }
@@ -11,23 +9,33 @@
     include 'con.php';
 
     $email = $_SESSION['email'];
-    $sql = "SELECT * FROM user_profile WHERE `Email` = '$email'";
+
+    $user_id = $_SESSION['user_id'];
+
+    $sql = "SELECT users.*, user_profile.* FROM users
+            INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
+            WHERE users.email = '$email'";
+
+    // $sql = "SELECT projects.*, users.*, user_profile.*
+    // FROM projects
+    // INNER JOIN users ON projects.user_id = users.User_ID
+    // INNER JOIN user_profile ON projects.user_id = user_profile.User_ID
+    // WHERE users.User_ID = $user_id";
+
+
+
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
-        
         $row = $result->fetch_assoc();
 
         $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
-        
     } else {
-        
         echo "User not found!";
     }
 
-    $conn->close();
-
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -38,7 +46,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Gotto Job Profile</title>
+        <title>Portfolify Profile</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,114 +107,129 @@
                             <h4><?php echo $fullName ?></h4> 
                             <h5><?php echo $row['Bio'] ?></h5>
                             <h5><?php echo $row['Gender'] ?></h5>
+                            <button class="custom-btn btn" onclick="window.location.href='edit_profile.php'">Edit Profile</button>
                         </div>
 
-
                         <div class="col-lg-5 col-12 mb-3 mx-auto">
-                            <div class="contact-info-wrap">
-                                <div class="contact-info d-flex align-items-center mb-3">
-                                    <i class="custom-icon bi-building"></i>
+                            <div class="profile-analytics-wrap">
+                                <div class="profile-analytics d-flex align-items-center mb-3">
+                                    <i class="custom-icon bi-graph-up"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Location</span>
-                                        <?php echo $row['Location'] ?>
+                                        <span class="profile-analytics-small-title">Profile Views</span>
+                                        <?php echo $row['profile_views'] ?>
                                     </p>
                                 </div>
 
-                                <div class="contact-info d-flex align-items-center">
-                                    <i class="custom-icon bi-globe"></i>
+                                <div class="profile-analytics d-flex align-items-center">
+                                    <i class="custom-icon bi-calendar-event"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Social Media</span>
-
-                                        <a href="#" class="site-footer-link">
-                                            <?php echo $row['SocialMediaLinks'] ?>
-                                        </a>
+                                        <span class="profile-analytics-small-title">Last Active</span>
+                                        <?php echo $row['LastActive'] ?>
                                     </p>
                                 </div>
 
-                                <!-- <div class="contact-info d-flex align-items-center">
-                                    <i class="custom-icon bi-telephone"></i>
+                                <div class="profile-analytics d-flex align-items-center">
+                                    <i class="custom-icon bi-person-check"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Phone</span>
-
-                                        <a href="tel: 305-240-9671" class="site-footer-link">
-                                            305-240-9671
-                                        </a>
+                                        <span class="profile-analytics-small-title">Followers</span>
+                                        <?php echo $row['Followers'] ?>
                                     </p>
-                                </div> -->
+                                </div>
 
-                                <div class="contact-info d-flex align-items-center">
+                                <div class="profile-analytics d-flex align-items-center">
                                     <i class="custom-icon bi-envelope"></i>
 
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title">Email</span>
-
-                                        <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                            <?php echo $row['Email'] ?>
-                                        </a>
+                                        <span class="profile-analytics-small-title">Messages Received</span>
+                                        <?php echo $row['MessagesReceived'] ?>
                                     </p>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Projects Section -->
+                        <section class="projects-section section-padding">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-12 col-12 text-center">
+                                        <h2>My Projects</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <?php
+                                    // Fetch projects associated with the user
+                                    $project_query = "SELECT * FROM projects WHERE `user_id` = '$user_id' AND proj_status = 1";
+                                    $project_result = $conn->query($project_query);
+
+                                    if ($project_result->num_rows > 0) {
+                                        while ($project_row = $project_result->fetch_assoc()) {
+                                            ?>
+                                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                                <div class="card h-100"> <!-- Added class "h-100" for card height -->
+                                                    <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                                    <div class="card-body d-flex flex-column"> <!-- Added class "d-flex flex-column" for flexbox layout -->
+                                                        <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
+                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> <!-- Added class "flex-grow-1" for card text to grow and take remaining space -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <div class="col-lg-12 col-12 text-center">
+                                            <p>No projects found.</p>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                                
+                                </div>
+                            </div>
+                        </section>
+
+
 
                         <section class="cta-section">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-8 col-12 mx-auto">
-                                        <form class="custom-form contact-form" action="#" method="post" role="form">
-                                            <h2 class="text-center mb-4">Upload your project</h2>
+                                    <form class="custom-form contact-form" action="upload.php" method="post" role="form" enctype="multipart/form-data">
+                                        <h2 class="text-center mb-4">Upload your project</h2>
 
-                                            <div class="row">
-                                                <div class="col-lg-12 col-12">
-                                                    <label for="first-name">Title</label>
-
-                                                    <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Jack Doe" required>
-                                                </div>
-
-                                                <div class="col-lg-12 col-12">
-                                                    <label for="email">Upload your file</label>
-
-                                                    <input type="file" name="email" id="email"  class="form-control"  required>
-                                                </div>
-
-                                                <div class="col-lg-12 col-12">
-                                                    <label for="message">Describe your project</label>
-
-                                                    <textarea name="message" rows="6" class="form-control" id="message" placeholder="What can we help you?"></textarea>
-                                                </div>
-
-                                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                                    <button type="submit" class="form-control">Send Message</button>
-                                                </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-12">
+                                                <label for="full-name">Title</label>
+                                                <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
                                             </div>
-                                        </form>
+
+                                            <div class="col-lg-12 col-12">
+                                                <label for="file">Upload your file</label>
+                                                <input type="file" name="file" id="file" class="form-control" required>
+                                            </div>
+
+                                            <div class="col-lg-12 col-12">
+                                                <label for="desc">Describe your project</label>
+                                                <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
+                                            </div>
+
+                                            <!-- Hidden input field to store the user_id -->
+                                            <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                            <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                                <button type="submit" class="form-control">Upload</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
                                     </div>
                                 </div>
                             </div>
                         <section>
-
-                    </div>
-                </div>
-            </section>
-
-            <section class="cta-section">
-                <!-- <div class="section-overlay"></div> -->
-
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-6 col-10">
-                            <h2 class="text-white mb-2">Over 10k opening jobs</h2>
-                        </div>
-
-                        <div class="col-lg-4 col-12 ms-auto">
-                            <div class="custom-border-btn-wrap d-flex align-items-center mt-lg-4 mt-2">
-                                <a href="#" class="custom-btn custom-border-btn btn me-4">Create an account</a>
-                                <a href="#" class="custom-link">Post a job</a>
-                            </div>
-                        </div>
 
                     </div>
                 </div>
