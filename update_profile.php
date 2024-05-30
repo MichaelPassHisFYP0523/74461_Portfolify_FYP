@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if (in_array($fileType, $allowedTypes)) {
                 if (move_uploaded_file($profilePicture['tmp_name'], $targetFilePath)) {
-                    $sql = "UPDATE user_profile SET ProfilePicture = ? WHERE UserID = ?";
+                    $sql = "UPDATE user_profile SET ProfilePicture = ? WHERE User_ID = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param('si', $targetFilePath, $userId);
                     if ($stmt->execute()) {
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $location = $_POST['location'];
         $socialMediaLinks = $_POST['socialMediaLinks'];
 
-        $sql = "UPDATE user_profile SET FirstName = ?, LastName = ?, Bio = ?, Gender = ?, Location = ?, SocialMediaLinks = ? WHERE UserID = ?";
+        $sql = "UPDATE user_profile SET FirstName = ?, LastName = ?, Bio = ?, Gender = ?, Location = ?, SocialMediaLinks = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssssssi', $firstName, $lastName, $bio, $gender, $location, $socialMediaLinks, $userId);
         if ($stmt->execute()) {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Handle work experience update
         $workExperience = $_POST['workExperience'];
         $skill = $_POST['skills'];
-        $sql = "UPDATE user_profile SET Skills = ?, Experience = ? WHERE UserID = ?";
+        $sql = "UPDATE user_profile SET Skills = ?, Experience = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssi', $skill, $workExperience, $userId);
         if ($stmt->execute()) {
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif (isset($_POST['studyBackground'])) {
         // Handle study background update
         $studyBackground = $_POST['studyBackground'];
-        $sql = "UPDATE user_profile SET Education = ? WHERE UserID = ?";
+        $sql = "UPDATE user_profile SET Education = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('si', $studyBackground, $userId);
         if ($stmt->execute()) {
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $allowedTypes = array('pdf', 'doc', 'docx');
             if (in_array($fileType, $allowedTypes)) {
                 if (move_uploaded_file($resume['tmp_name'], $targetFilePath)) {
-                    $sql = "UPDATE user_profile SET Resume = ? WHERE UserID = ?";
+                    $sql = "UPDATE user_profile SET Resume = ? WHERE User_ID = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param('si', $targetFilePath, $userId);
                     if ($stmt->execute()) {

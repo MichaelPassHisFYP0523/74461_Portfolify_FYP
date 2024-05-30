@@ -1,32 +1,33 @@
 <?php
 
-    //session_start();
+    session_start();
 
-    //if (!isset($_SESSION['email'])) {
+    if (!isset($_SESSION['email'])) {
         
-    //    header("Location: Sign_In.php");
-    //   exit();
-    //}
+       header("Location: Sign_In.php");
+      exit();
+    }
 
     include 'con.php';
 
-    //$email = $_SESSION['email'];
-    //$sql = "SELECT * FROM user_profile WHERE `Email` = '$email'";
-    //$result = $conn->query($sql);
+    $email = $_SESSION['email'];
 
-    //if ($result->num_rows == 1) {
-        
-    //    $row = $result->fetch_assoc();
+    $user_id = $_SESSION['user_id'];
 
-    //    $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
-        
-    //} else {
-        
-    //    echo "User not found!";
-    //}
+    $sql = "SELECT users.*, user_profile.* FROM users
+            INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
+            WHERE users.email = '$email'";
 
-    //$conn->close();
+    $result = $conn->query($sql);
 
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+
+        $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
+
+    } else {
+        echo "User not found!";
+    }
 ?>
 
 <!doctype html>
@@ -136,7 +137,7 @@
                             <form action="update_profile.php" method="post" enctype="multipart/form-data" class="mt-4">
                                 <div class="text-center">
                                     <h4>Profile Picture</h4>
-                                    <img src="<?php echo $row['ProfilePicture'] ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
+                                    <img src="<?php echo $row['ProfilePicture'] ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px">
                                     <div class="mb-3">
                                         <label for="profilePicture" class="form-label">Change Profile Picture</label>
                                         <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
@@ -179,7 +180,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo $row['Email'] ?>" readonly>
+                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo $row['email'] ?>" readonly>
                                 </div>
                                 <div class="mb-3 text-center">
                                     <button type="submit" class="custom-btn btn">Save Personal Information</button>

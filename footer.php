@@ -4,7 +4,7 @@
                     <div class="row">
 
                         <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
+                            <p class="copyright-text">Copyright © Portfolify 23/24</p>
                         </div>
 
                         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>

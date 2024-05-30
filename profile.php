@@ -16,14 +16,6 @@
             INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
             WHERE users.email = '$email'";
 
-    // $sql = "SELECT projects.*, users.*, user_profile.*
-    // FROM projects
-    // INNER JOIN users ON projects.user_id = users.User_ID
-    // INNER JOIN user_profile ON projects.user_id = user_profile.User_ID
-    // WHERE users.User_ID = $user_id";
-
-
-
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
