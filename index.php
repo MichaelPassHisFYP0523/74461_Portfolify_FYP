@@ -101,63 +101,9 @@
             </section>
             <!-- End nav bar -->
 
-        <div class="container">
-                    <div class="row">
 
-                        <div class="col-lg-6 col-12 mb-5 mb-lg-0">
-                            <div class="hero-section-text mt-5">
-                                <h2 class="text-Black">Are you looking for your dream passionate partner to collaborate in a project?</h2>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-12">
-                            <form class="custom-form hero-form" action="#" method="get" role="form">
-                                <h3 class="text-white mb-3">Search your dream project</h3>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-12">
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="basic-addon1"><i class="bi-person custom-icon"></i></span>
-
-                                            <input type="text" name="job-title" id="job-title" class="form-control" placeholder="Project Title" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6 col-12">
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="basic-addon2"><i class="bi-geo-alt custom-icon"></i></span>
-
-                                            <input type="text" name="job-location" id="job-location" class="form-control" placeholder="Location" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12 col-12">
-                                        <button type="submit" class="form-control">
-                                            Find a project
-                                        </button>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="d-flex flex-wrap align-items-center mt-4 mt-lg-0">
-                                            <span class="text-white mb-lg-0 mb-md-0 me-2">Popular keywords:</span>
-
-                                            <div>
-                                                <a href="job-listings.html" class="badge">Web design</a>
-
-                                                <a href="job-listings.html" class="badge">Marketing</a>
-
-                                                <a href="job-listings.html" class="badge">Customer support</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
             </p>
-        </section>
+        <!-- </section> -->
 
 
             <section class="about-section">
@@ -405,7 +351,7 @@
                     <?php
                         include "con.php";
 
-                        $query = "SELECT * FROM `project` ORDER BY `project_date` DESC LIMIT 6";
+                        $query = "SELECT * FROM `projects` ORDER BY `created_at` DESC LIMIT 6";
                         $result = mysqli_query($conn, $query);
 
                         if (mysqli_num_rows($result) > 0) {
@@ -420,17 +366,18 @@
 
                                         <div class="job-body">
                                             <h4 class="job-title">
-                                                <a href="project-details.php?id=<?php echo $row['project_ID']; ?>" class="job-title-link"><?php echo $row['project_title']; ?></a>
+                                                <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="job-title-link"><?php echo $row['title']; ?></a>
                                             </h4>
 
                                             <div class="job-details">
-                                                <p><?php echo $row['project_desc']; ?></p>
-                                                <p>Price: $<?php echo $row['project_price']; ?></p>
-                                            </div>
+                                            <p><?php echo $row['description']; ?></p>
+                                            <p>Price: $<?php echo $row['project_price']; ?></p>
+                                        </div>
+
                                             <p></p>
                                             <div class="action-flex align-items-center border-top pt-3n-buttons">
                                                 <p></p>
-                                                <a href="project-detail.php?id=<?php echo $row['project_ID']; ?>" class="custom-btn btn ms-auto">View Details</a>
+                                                <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="custom-btn btn ms-auto">View Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -824,7 +771,7 @@
                     <div class="row">
 
                         <div class="col-lg-4 col-12 d-flex align-items-center">
-                            
+                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
                         </div>
 
                         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>

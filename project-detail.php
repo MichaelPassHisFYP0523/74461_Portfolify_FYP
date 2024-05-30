@@ -1,3 +1,32 @@
+<?php
+    $project = null; 
+
+    if (isset($_GET['id'])) {
+        $project_id = $_GET['id']; 
+
+        include "con.php";
+
+        $stmt = $conn->prepare("SELECT * FROM `projects` WHERE `project_id` = ? LIMIT 1");
+        $stmt->bind_param("s", $project_id); 
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+
+            $project = $result->fetch_assoc();
+
+        } else {
+            echo "No project found with the given ID.";
+        }
+
+        $stmt->close();
+        $conn->close();
+    } else {
+        echo "No project ID provided.";
+    }
+?>
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -120,11 +149,11 @@ Bootstrap 5 HTML CSS Template
                     <div class="row">
 
                         <div class="col-lg-8 col-12">
-                            <h2 class="job-title mb-0">Technical Lead</h2>
+                            <h2 class="job-title mb-0"><?php echo htmlspecialchars($project['title']); ?></h2>
 
                             <div class="job-thumb job-thumb-detail">
                                 <div class="d-flex flex-wrap align-items-center border-bottom pt-lg-3 pt-2 pb-3 mb-4">
-                                    <p class="job-location mb-0">
+                                    <!-- <p class="job-location mb-0">
                                         <i class="custom-icon bi-geo-alt me-1"></i>
                                         Kuala, Malaysia
                                     </p>
@@ -147,12 +176,12 @@ Bootstrap 5 HTML CSS Template
                                         <p class="mb-0">
                                             <a href="job-listings.html" class="badge">Freelance</a>
                                         </p>
-                                    </div>
+                                    </div> -->
                                 </div>
 
-                                <h4 class="mt-4 mb-2">Job Description</h4>
+                                <h4 class="mt-4 mb-2">Project Description</h4>
 
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                <p><?php echo htmlspecialchars($project['description']); ?></p>
 
                                 <h5 class="mt-4 mb-3">The Role</h5>
 
@@ -185,52 +214,6 @@ Bootstrap 5 HTML CSS Template
                                         <a href="#" class="bi-share"></a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-12 mt-5 mt-lg-0">
-                            <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
-                                <div class="d-flex align-items-center">
-                                    <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
-                                        <img src="images/logos/google.png" class="job-image me-3 img-fluid" alt="">
-
-                                        <p class="mb-0">Google</p>
-                                    </div>
-
-                                    <a href="#" class="bi-bookmark ms-auto me-2"></a>
-
-                                    <a href="#" class="bi-heart"></a>
-                                </div>
-
-                                <h6 class="mt-3 mb-2">About the Company</h6>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur elit sed do eiusmod tempor incididunt labore.</p>
-
-                                <h6 class="mt-4 mb-3">Contact Information</h6>
-
-                                <p class="mb-2">
-                                    <i class="custom-icon bi-globe me-1"></i>
-
-                                    <a href="#" class="site-footer-link">
-                                        www.jobbportal.com
-                                    </a>
-                                </p>
-
-                                <p class="mb-2">
-                                    <i class="custom-icon bi-telephone me-1"></i>
-
-                                    <a href="tel: 305-240-9671" class="site-footer-link">
-                                        305-240-9671
-                                    </a>
-                                </p>
-
-                                <p>
-                                    <i class="custom-icon bi-envelope me-1"></i>
-
-                                    <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                        info@jobportal.co
-                                    </a>
-                                </p>
                             </div>
                         </div>
 
@@ -439,168 +422,9 @@ Bootstrap 5 HTML CSS Template
                     </div>
                 </div>
             </section>
-
-
-            <section class="cta-section">
-                <div class="section-overlay"></div>
-
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-6 col-10">
-                            <h2 class="text-white mb-2">Over 10k opening jobs</h2>
-
-                            <p class="text-white">Gotto Job is a free HTML CSS template for job hunting related websites. This layout is based on the famous Bootstrap 5 CSS framework. Thank you for visiting Tooplate website.</p>
-                        </div>
-
-                        <div class="col-lg-4 col-12 ms-auto">
-                            <div class="custom-border-btn-wrap d-flex align-items-center mt-lg-4 mt-2">
-                                <a href="#" class="custom-btn custom-border-btn btn me-4">Create an account</a>
-
-                                <a href="#" class="custom-link">Post a job</a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
         </main>
 
-        <footer class="site-footer">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-lg-4 col-md-6 col-12 mb-3">
-                        <div class="d-flex align-items-center mb-4">
-                            <img src="images/logo.png" class="img-fluid logo-image">
-
-                            <div class="d-flex flex-column">
-                                <strong class="logo-text">Gotto</strong>
-                                <small class="logo-slogan">Online Job Portal</small>
-                            </div>
-                        </div>  
-
-                        <p class="mb-2">
-                            <i class="custom-icon bi-globe me-1"></i>
-
-                            <a href="#" class="site-footer-link">
-                                www.jobbportal.com
-                            </a>
-                        </p>
-
-                        <p class="mb-2">
-                            <i class="custom-icon bi-telephone me-1"></i>
-
-                            <a href="tel: 305-240-9671" class="site-footer-link">
-                                305-240-9671
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="custom-icon bi-envelope me-1"></i>
-
-                            <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                info@jobportal.co
-                            </a>
-                        </p>
-
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-6 ms-lg-auto">
-                        <h6 class="site-footer-title">Company</h6>
-
-                        <ul class="footer-menu">
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">About</a></li>
-
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Blog</a></li>
-
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Jobs</a></li>
-
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Contact</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <h6 class="site-footer-title">Resources</h6>
-
-                        <ul class="footer-menu">
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Guide</a></li>
-
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">How it works</a></li>
-
-                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Salary Tool</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-4 col-md-8 col-12 mt-3 mt-lg-0">
-                        <h6 class="site-footer-title">Newsletter</h6>
-
-                        <form class="custom-form newsletter-form" action="#" method="post" role="form">
-                            <h6 class="site-footer-title">Get notified jobs news</h6>
-
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1"><i class="bi-person"></i></span>
-
-                                <input type="text" name="newsletter-name" id="newsletter-name" class="form-control" placeholder="yourname@gmail.com" required>
-
-                                <button type="submit" class="form-control">
-                                    <i class="bi-send"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
-
-                            <ul class="footer-menu d-flex">
-                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Privacy Policy</a></li>
-
-                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Terms</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-5 col-12 mt-2 mt-lg-0">
-                            <ul class="social-icon">
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-twitter"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-facebook"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-linkedin"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-instagram"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-youtube"></a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-3 col-12 mt-2 d-flex align-items-center mt-lg-0">
-                            <p>Design: <a class="sponsored-link" rel="sponsored" href="https://www.tooplate.com" target="_blank">Tooplate</a></p>
-                        </div>
-
-                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include "footer.php"; ?>
 
         <!-- JAVASCRIPT FILES -->
         <script src="js/jquery.min.js"></script>
@@ -611,3 +435,4 @@ Bootstrap 5 HTML CSS Template
 
     </body>
 </html>
+
