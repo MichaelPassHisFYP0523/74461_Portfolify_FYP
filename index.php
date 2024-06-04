@@ -153,6 +153,16 @@
                             <h2>Featured Jobs</h2>
                         </div>
 
+                        <?php
+                            include "con.php";
+
+                            $query = "SELECT * FROM `job` ORDER BY `date_posted` DESC LIMIT 6 WHERE date_posted = '1'";
+                            $result = mysqli_query($conn, $query);
+
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+
                         <div class="col-lg-12 col-12">
                             <div class="job-thumb d-flex">
                                 <div class="job-image-wrap bg-white shadow-lg">
@@ -332,6 +342,13 @@
                                 </div>
                             </div>
 
+                            <?php
+                                    }
+                                } else {
+                                    // If no projects found
+                                    echo "No job found";
+                                }
+                            ?>
                     
                         </div>
 

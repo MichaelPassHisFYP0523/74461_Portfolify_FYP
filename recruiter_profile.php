@@ -12,8 +12,8 @@
 
     $user_id = $_SESSION['user_id'];
 
-    $sql = "SELECT users.*, user_profile.* FROM users
-            INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
+    $sql = "SELECT users.*, recruiter_profile.* FROM users
+            INNER JOIN recruiter_profile ON users.User_ID = recruiter_profile.User_ID
             WHERE users.email = '$email'";
 
     $result = $conn->query($sql);
@@ -21,12 +21,11 @@
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
 
-        $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
-        
     } else {
-    //     echo "User not found!";
+        // echo "User not found!";
         session_destroy();
         header("Location: Sign_In.php");
+        
     }
 
 ?>
@@ -92,17 +91,17 @@
                 </div>
             </header>
 
-
+            <!-- Profile Overview -->
             <section class="contact-section section-padding">
                 <div class="container">
                     <div class="row justify-content-center">
 
                         <div class="col-lg-6 col-12 mb-lg-5 mb-3 text-center">
-                            <img src="<?php echo $row['ProfilePicture'] ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
-                            <h4><?php echo $fullName ?></h4> 
-                            <h5><?php echo $row['Bio'] ?></h5>
-                            <h5><?php echo $row['Gender'] ?></h5>
-                            <button class="custom-btn btn" onclick="window.location.href='edit_profile.php'">Edit Profile</button>
+                            <img src="<?php echo $row['logo'] ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
+                            <h4><?php echo $row['company_name'] ?></h4> 
+                            <h5><?php echo $row['company_name'] ?></h5>
+                            <h5><?php echo $row['about'] ?></h5>
+                            <button class="custom-btn btn" onclick="window.location.href='edit_recruiter.php'">Edit Profile</button>
                         </div>
 
                         <div class="col-lg-5 col-12 mb-3 mx-auto">
@@ -163,11 +162,11 @@
                                         while ($project_row = $project_result->fetch_assoc()) {
                                             ?>
                                             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                <div class="card h-100"> <!-- Added class "h-100" for card height -->
+                                                <div class="card h-100"> 
                                                     <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
-                                                    <div class="card-body d-flex flex-column"> <!-- Added class "d-flex flex-column" for flexbox layout -->
+                                                    <div class="card-body d-flex flex-column"> 
                                                         <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
-                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> <!-- Added class "flex-grow-1" for card text to grow and take remaining space -->
+                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,44 +186,101 @@
                             </div>
             </section>
 
+            <!-- Post a Job -->
+            <section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12 mx-auto">
+                        <form class="custom-form contact-form" action="job_posting.php" method="post" role="form" enctype="multipart/form-data">
+                            <h2 class="text-center mb-4">Post a job</h2>
 
+                            <div class="row">
+                                <div class="col-lg-12 col-12">
+                                    <label for="job_title">Title</label>
+                                    <input type="text" name="job_title" id="job_title" class="form-control" placeholder="Eg. Project manager" required>
+                                </div>
 
-                        <section class="cta-section">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-8 col-12 mx-auto">
-                                    <form class="custom-form contact-form" action="upload.php" method="post" role="form" enctype="multipart/form-data">
-                                        <h2 class="text-center mb-4">Upload your project</h2>
+                                <div class="col-lg-12 col-12">
+                                    <label for="desc">Types</label>
+                                    <textarea name="jobType" id="jobType" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
+                                </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-12 col-12">
-                                                <label for="full-name">Title</label>
-                                                <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
-                                            </div>
+                                <div class="col-lg-12 col-12">
+                                    <label for="location">Location</label>
+                                    <input type="text" name="location" id="location" rows="6" class="form-control" placeholder="Kuching, Malaysia" required>
+                                </div>
 
-                                            <div class="col-lg-12 col-12">
-                                                <label for="file">Upload your file</label>
-                                                <input type="file" name="file" id="file" class="form-control" required>
-                                            </div>
+                                <div class="col-lg-12 col-12">
+                                    <label for="salary">Salary</label>
+                                    <input type="text" name="salary" id="salary" rows="6" class="form-control" placeholder="2k - 4k" required>
+                                </div>
 
-                                            <div class="col-lg-12 col-12">
-                                                <label for="desc">Describe your project</label>
-                                                <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
-                                            </div>
+                                <div class="col-lg-12 col-12">
+                                    <label for="requirement">Requirement</label>
+                                    <textarea name="requirement" id="desc" rows="6" class="form-control" placeholder="Describe your requirement for this position" required></textarea>
+                                </div>
 
-                                            <!-- Hidden input field to store the user_id -->
-                                            <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+                                <label class="col-lg-12 col-12" for="jobType">Choose a job type:</label>
+                                    <select name="jobType" id="jobType">
+                                        <option value="partTime">Part-Time</option>
+                                        <option value="fullTime">Full-Time</option>
+                                        <option value="contract">Contract</option>
+                                        <option value="intern">Internship</option>
+                                    </select>
 
-                                            <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                                <button type="submit" class="form-control">Upload</button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
 
-                                    </div>
+                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                    <button type="submit" class="form-control">Upload</button>
                                 </div>
                             </div>
-                        <section>
+                        </form>
+
+                        </div>
+                    </div>
+                </div>
+            <section>
+
+            <div></div>
+
+            <!-- Upload project -->
+            <section class="cta-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12 mx-auto">
+                        <form class="custom-form contact-form" action="upload.php" method="post" role="form" enctype="multipart/form-data">
+                            <h2 class="text-center mb-4">Upload your project</h2>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-12">
+                                    <label for="full-name">Title</label>
+                                    <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="file">Upload your file</label>
+                                    <input type="file" name="file" id="file" class="form-control" required>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="desc">Describe your project</label>
+                                    <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
+                                </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                    <button type="submit" class="form-control">Upload</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        </div>
+                    </div>
+                </div>
+            <section>
 
                     </div>
                 </div>
