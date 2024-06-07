@@ -1,31 +1,117 @@
 <?php
-    $project = null; 
+    session_start();
 
-    if (isset($_GET['id'])) {
-        $project_id = $_GET['id']; 
+    if (!isset($_SESSION['email'])) {
+        header("Location: Sign_In.php");
+        exit();
+    }
 
-        include "con.php";
+    include "con.php";
 
-        $stmt = $conn->prepare("SELECT * FROM `projects` WHERE `project_id` = ? LIMIT 1");
-        $stmt->bind_param("s", $project_id); 
-
+    function getUserByEmail($conn, $email) {
+        $stmt = $conn->prepare("SELECT user_id, role FROM users WHERE email = ? LIMIT 1");
+        if (!$stmt) {
+            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-
-            $project = $result->fetch_assoc();
-
+            return $result->fetch_assoc();
         } else {
-            echo "No project found with the given ID.";
+            return null;
         }
 
         $stmt->close();
+    }
+
+    function getUserProfileById($conn, $user_id) {
+        $stmt = $conn->prepare("SELECT * FROM user_profile WHERE User_ID = ? LIMIT 1");
+        if (!$stmt) {
+            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        } else {
+            return null;
+        }
+
+        $stmt->close();
+    }
+
+    function getRecruiterProfileById($conn, $user_id) {
+        $stmt = $conn->prepare("SELECT * FROM recruiter_profile WHERE User_ID = ? LIMIT 1");
+        if (!$stmt) {
+            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        } else {
+            return null;
+        }
+
+        $stmt->close();
+    }
+
+    $project = null;
+    $user_profile = null;
+
+    if (isset($_GET['id'])) {
+        $project_id = $_GET['id'];
+
+        $email = $_SESSION['email'];
+
+        $user = getUserByEmail($conn, $email);
+        if ($user === null) {
+            die("User not found for email: " . htmlspecialchars($email));
+        }
+
+        $user_id = $user['user_id'];
+        $role = $user['role'];
+
+        // Fetch the project details
+        $stmt = $conn->prepare("SELECT * FROM `projects` WHERE `project_id` = ? LIMIT 1");
+        if (!$stmt) {
+            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
+        $stmt->bind_param("s", $project_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $project = $result->fetch_assoc();
+        } else {
+            die("No project found with the given ID.");
+        }
+
+        $stmt->close();
+
+        // Fetch the appropriate user profile details
+        if ($role === 'user') {
+            $user_profile = getUserProfileById($conn, $user_id);
+        } else if ($role === 'recruiter') {
+            $user_profile = getRecruiterProfileById($conn, $user_id);
+        }
+
+        if ($user_profile === null) {
+            die("Profile not found for user_id: " . htmlspecialchars($user_id));
+        }
+
         $conn->close();
     } else {
-        echo "No project ID provided.";
+        die("No project ID provided.");
     }
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -36,7 +122,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Gotto Job Details</title>
+        <title>Projects Details</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,29 +207,6 @@ Bootstrap 5 HTML CSS Template
 
         <main>
 
-            <header class="site-header">
-                <div class="section-overlay"></div>
-
-                <div class="container">
-                    <div class="row">
-                        
-                        <div class="col-lg-12 col-12 text-center">
-                            <h1 class="text-white">Job Details</h1>
-
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center">
-                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-
-                                    <li class="breadcrumb-item active" aria-current="page">Job Details</li>
-                                </ol>
-                            </nav>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-
             <section class="job-section section-padding pb-0">
                 <div class="container">
                     <div class="row">
@@ -153,272 +216,122 @@ Bootstrap 5 HTML CSS Template
 
                             <div class="job-thumb job-thumb-detail">
                                 <div class="d-flex flex-wrap align-items-center border-bottom pt-lg-3 pt-2 pb-3 mb-4">
-                                    <!-- <p class="job-location mb-0">
-                                        <i class="custom-icon bi-geo-alt me-1"></i>
-                                        Kuala, Malaysia
-                                    </p>
-
-                                    <p class="job-date mb-0">
-                                        <i class="custom-icon bi-clock me-1"></i>
-                                        10 hours ago
-                                    </p>
-
-                                    <p class="job-price mb-0">
-                                        <i class="custom-icon bi-cash me-1"></i>
-                                        $20k
-                                    </p>
-
-                                    <div class="d-flex">
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge badge-level">Internship</a>
-                                        </p>
-
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge">Freelance</a>
-                                        </p>
-                                    </div> -->
                                 </div>
 
                                 <h4 class="mt-4 mb-2">Project Description</h4>
 
                                 <p><?php echo htmlspecialchars($project['description']); ?></p>
 
-                                <h5 class="mt-4 mb-3">The Role</h5>
+                                <h5 class="mt-4 mb-3">More Information</h5>
 
-                                <p class="mb-1"><strong>Benefits:</strong> Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito adipcingi elit</p>
+                                <a href="<?php echo htmlspecialchars($project['project_path']); ?>" target="_blank" >Download Project Details</a>
+                                </div>
 
-                                <p><strong>Good salary:</strong> Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito</p>
-
-                                <h5 class="mt-4 mb-3">Requirements</h5>
-
-                                <ul>
-                                    <li>Strong knowledge in computing skill</li>
-
-                                    <li>Minimum 5 years of working experiences consectetur omeg</li>
-
-                                    <li>Excellent interpersonal skills</li>
-                                </ul>
+                                <div>
 
                                 <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
-                                    <a href="#" class="custom-btn btn mt-2">Apply now</a>
-
-                                    <a href="#" class="custom-btn custom-border-btn btn mt-2 ms-lg-4 ms-3">Save this job</a>
-
-                                    <div class="job-detail-share d-flex align-items-center">
-                                        <p class="mb-0 me-lg-4 me-3">Share:</p>
-
-                                        <a href="#" class="bi-facebook"></a>
-
-                                        <a href="#" class="bi-twitter mx-3"></a>
-
-                                        <a href="#" class="bi-share"></a>
-                                    </div>
+                                    <form id="applyForm" class="d-flex flex-column align-items-center w-100">
+                                        <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['project_id']); ?>">
+                                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                                        <button type="submit" class="custom-btn btn mt-2">Request Collaborate</button>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
+                            
+                            <div class="col-lg-4 col-12 mt-5 mt-lg-0">
+                                <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
+                                    <div class="d-flex align-items-center">
+                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
+                                            <img src="<?php echo htmlspecialchars($user_profile['ProfilePicture']); ?>" class="job-image me-3 img-fluid" alt="">
+                                            <p class="mb-0"><?php echo htmlspecialchars($user_profile['FirstName']); ?></p>
+                                        </div>
+                                    </div>
+                                    <h6 class="mt-3 mb-2">About the author</h6>
+
+                                    <p><?php echo htmlspecialchars($user_profile['Bio']); ?></p>
+
+                                    <h6 class="mt-4 mb-3">Contact Information</h6>
+
+                                    <p class="mb-2">
+                                        <i class="custom-icon bi-globe me-1"></i>
+
+                                        <a href="#" class="site-footer-link">
+                                            <?php echo htmlspecialchars($user_profile['SocialMediaLinks']); ?>
+                                        </a>
+                                    </p>
+
+                                    <p>
+                                        <i class="custom-icon bi-envelope me-1"></i>
+
+                                        <a href="mailto:info@yourgmail.com" class="site-footer-link">
+                                            <?php echo htmlspecialchars($user_profile['email']); ?>
+                                        </a>
+                                    </p>
+                                </div>
+                        </div>
                         </div>
 
+                        
                     </div>
                 </div>
             </section>
-
 
             <section class="job-section section-padding">
                 <div class="container">
                     <div class="row align-items-center">
 
                         <div class="col-lg-6 col-12 mb-lg-4">
-                            <h3>Similar Jobs</h3>
-
-                            <p><strong>Over 10k opening jobs</strong> Lorem Ipsum dolor sit amet, consectetur adipsicing kengan omeg kohm tokito adipcingi elit eismuod larehai</p>
+                            <h3>Feature Project</h3>
                         </div>
 
                         <div class="col-lg-4 col-12 d-flex ms-auto mb-5 mb-lg-4">
                             <a href="job-listings.html" class="custom-btn custom-border-btn btn ms-lg-auto">Browse Job Listings</a>
                         </div>
 
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="job-thumb job-thumb-box">
-                                <div class="job-image-box-wrap">
-                                    <a href="job-details.html">
-                                        <img src="images/jobs/it-professional-works-startup-project.jpg" class="job-image img-fluid" alt="">
-                                    </a>
+                        <?php
+                            include "con.php";
 
-                                    <div class="job-image-box-wrap-info d-flex align-items-center">
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge badge-level">Internship</a>
-                                        </p>
+                            $query = "SELECT * FROM `projects` WHERE `proj_status` = 1 ORDER BY `created_at` DESC LIMIT 3";
+                            $result = mysqli_query($conn, $query);
 
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge">Freelance</a>
-                                        </p>
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <div class="job-thumb job-thumb-box">
+                                    
+                                    <div class="job-image-box-wrap">
+                                        <img src="<?php echo $row['project_image']; ?>" class="job-image img-fluid" alt="job image">
                                     </div>
-                                </div>
 
-                                <div class="job-body">
-                                    <h4 class="job-title">
-                                        <a href="job-details.html" class="job-title-link">Technical Lead</a>
-                                    </h4>
+                                    <div class="job-body">
+                                        <h4 class="job-title">
+                                            <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="job-title-link"><?php echo $row['title']; ?></a>
+                                        </h4>
 
-                                    <div class="d-flex align-items-center">
-                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mt-2 mb-4">
-                                            <img src="images/logos/salesforce.png" class="job-image me-3 img-fluid" alt="">
+                                        <div class="job-details">
+                                        <p><?php echo $row['description']; ?></p>
+                                        <p>Price: $<?php echo $row['project_price']; ?></p>
+                                    </div>
 
-                                            <p class="mb-0">Salesforce</p>
+                                        <p></p>
+                                        <div class="action-flex align-items-center border-top pt-3n-buttons">
+                                            <p></p>
+                                            <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="custom-btn btn ms-auto">Collaborate</a>
                                         </div>
-
-                                        <a href="#" class="bi-bookmark ms-auto me-2">
-                                        </a>
-
-                                        <a href="#" class="bi-heart">
-                                        </a>
-                                    </div>
-
-                                    <div class="d-flex align-items-center">
-                                        <p class="job-location">
-                                            <i class="custom-icon bi-geo-alt me-1"></i>
-                                            Kuala, Malaysia
-                                        </p>
-
-                                        <p class="job-date">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            10 hours ago
-                                        </p>
-                                    </div>
-
-                                    <div class="d-flex align-items-center border-top pt-3">
-                                        <p class="job-price mb-0">
-                                            <i class="custom-icon bi-cash me-1"></i>
-                                            $50k
-                                        </p>
-
-                                        <a href="job-details.html" class="custom-btn btn ms-auto">Apply now</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="job-thumb job-thumb-box">
-                                <div class="job-image-box-wrap">
-                                    <a href="job-details.html">
-                                        <img src="images/jobs/marketing-assistant.jpg" class="job-image img-fluid" alt="marketing assistant">
-                                    </a>
-
-                                    <div class="job-image-box-wrap-info d-flex align-items-center">
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge badge-level">Senior</a>
-                                        </p>
-
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge">Part Time</a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="job-body">
-                                    <h4 class="job-title">
-                                        <a href="job-details.html" class="job-title-link">Marketing Assistant</a>
-                                    </h4>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mt-2 mb-4">
-                                            <img src="images/logos/spotify.png" class="job-image me-3 img-fluid" alt="">
-
-                                            <p class="mb-0">Spotify</p>
-                                        </div>
-
-                                        <a href="#" class="bi-bookmark ms-auto me-2">
-                                        </a>
-
-                                        <a href="#" class="bi-heart">
-                                        </a>
-                                    </div>
-
-                                    <div class="d-flex align-items-center">
-                                        <p class="job-location">
-                                            <i class="custom-icon bi-geo-alt me-1"></i>
-                                            California, USA
-                                        </p>
-
-                                        <p class="job-date">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            8 days ago
-                                        </p>
-                                    </div>
-
-                                    <div class="d-flex align-items-center border-top pt-3">
-                                        <p class="job-price mb-0">
-                                            <i class="custom-icon bi-cash me-1"></i>
-                                            $20k
-                                        </p>
-
-                                        <a href="job-details.html" class="custom-btn btn ms-auto">Apply now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="job-thumb job-thumb-box">
-                                <div class="job-image-box-wrap">
-                                    <a href="job-details.html">
-                                        <img src="images/jobs/coding-man.jpg" class="job-image img-fluid" alt="">
-                                    </a>
-
-                                    <div class="job-image-box-wrap-info d-flex align-items-center">
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge badge-level">Junior</a>
-                                        </p>
-
-                                        <p class="mb-0">
-                                            <a href="job-listings.html" class="badge">Contract</a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="job-body">
-                                    <h4 class="job-title">
-                                        <a href="job-details.html" class="job-title-link">Programmer</a>
-                                    </h4>
-                                        
-                                    <div class="d-flex align-items-center">
-                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mt-2 mb-4">
-                                            <img src="images/logos/twitter.png" class="job-image me-3 img-fluid" alt="">
-
-                                            <p class="mb-0">Twiter</p>
-                                        </div>
-
-                                        <a href="#" class="bi-bookmark ms-auto me-2">
-                                        </a>
-
-                                        <a href="#" class="bi-heart">
-                                        </a>
-                                    </div>
-
-                                    <div class="d-flex align-items-center">
-                                        <p class="job-location">
-                                            <i class="custom-icon bi-geo-alt me-1"></i>
-                                            California, USA
-                                        </p>
-
-                                        <p class="job-date">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            23 hours ago
-                                        </p>
-                                    </div>
-
-                                    <div class="d-flex align-items-center border-top pt-3">
-                                        <p class="job-price mb-0">
-                                            <i class="custom-icon bi-cash me-1"></i>
-                                            $68k
-                                        </p>
-
-                                        <a href="job-details.html" class="custom-btn btn ms-auto">Apply now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <?php
+                            }
+                        } else {
+                            // If no projects found
+                            echo "No projects found";
+                        }
+                        ?>
                     </div>
                 </div>
             </section>
@@ -432,6 +345,52 @@ Bootstrap 5 HTML CSS Template
         <script src="js/owl.carousel.min.js"></script>
         <script src="js/counter.js"></script>
         <script src="js/custom.js"></script>
+
+        <!-- Bootstrap Notify -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-notify@latest/dist/bootstrap-notify.min.js"></script>
+
+        <script>
+        document.getElementById('applyForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            var formData = new FormData(this); 
+            
+            $.ajax({
+                type: "POST", 
+                url: "apply_project.php", 
+                data: formData, 
+                dataType: "json", 
+                processData: false, 
+                contentType: false, 
+                success: function(response) { 
+                    if (response.status === "success") {
+                        showNotification('top', 'right', response.message, 'success');
+                    } else if (response.status === "error") {
+                        showNotification('top', 'right', response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) { 
+                    console.error("AJAX Error: ", error);
+                    
+                }
+            });
+        });
+
+
+            function showNotification(from, align, message, type) {
+                $.notify({
+                icon: "fas fa-check-circle",
+                message: message
+                }, {
+                type: type,
+                timer: 4000,
+                placement: {
+                    from: from,
+                    align: align
+                }
+                });
+            }
+        </script>
 
     </body>
 </html>

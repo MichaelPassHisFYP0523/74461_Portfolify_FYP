@@ -150,13 +150,13 @@
                     <div class="row">
 
                         <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                            <h2>Featured Jobs</h2>
+                            <h2>Latest Jobs</h2>
                         </div>
 
                         <?php
                             include "con.php";
 
-                            $query = "SELECT * FROM `job` ORDER BY `date_posted` DESC LIMIT 6 WHERE date_posted = '1'";
+                            $query = "SELECT * FROM `job` WHERE job_status = 1 ORDER BY `date_posted` DESC LIMIT 6";
                             $result = mysqli_query($conn, $query);
 
                             if (mysqli_num_rows($result) > 0) {
@@ -172,28 +172,28 @@
                                 <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
                                     <div class="mb-3">
                                         <h4 class="job-title mb-lg-0">
-                                            <a href="job-details.html" class="job-title-link">Technical Lead</a>
+                                            <a href="job-details.html" class="job-title-link"><?php echo $row['job_title']; ?></a>
                                         </h4>
 
                                         <div class="d-flex flex-wrap align-items-center">
                                             <p class="job-location mb-0">
                                                 <i class="custom-icon bi-geo-alt me-1"></i>
-                                                Kuala Lumpur, Malaysia
+                                                <?php echo $row['job_location']; ?>
                                             </p>
 
                                             <p class="job-date mb-0">
                                                 <i class="custom-icon bi-clock me-1"></i>
-                                                10 hours ago
+                                                <?php echo $row['date_posted']; ?>
                                             </p>
 
                                             <p class="job-price mb-0">
                                                 <i class="custom-icon bi-cash me-1"></i>
-                                                RM 2000
+                                                <?php echo $row['salary']; ?>
                                             </p>
 
                                             <div class="d-flex">
                                                 <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge badge-level">Internship</a>
+                                                    <a href="job-listings.html" class="badge badge-level"><?php echo $row['job_types']; ?></a>
                                                 </p>
 
                         
@@ -207,145 +207,10 @@
                                 </div>
                             </div>
 
-                            <div class="job-thumb d-flex">
-                                <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="images/logos/apple.png" class="job-image img-fluid" alt="">
-                                </div>
-
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                    <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0">
-                                            <a href="job-details.html" class="job-title-link">Business Director</a>
-                                        </h4>
-
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <p class="job-location mb-0">
-                                                <i class="custom-icon bi-geo-alt me-1"></i>
-                                                George Town, Penang
-                                            </p>
-
-                                            <p class="job-date mb-0">
-                                                <i class="custom-icon bi-clock me-1"></i>
-                                                1 day ago
-                                            </p>
-
-                                            <p class="job-price mb-0">
-                                                <i class="custom-icon bi-cash me-1"></i>
-                                                RM 3000~5000
-                                            </p>
-
-                                            <div class="d-flex">
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge badge-level">Senior</a href="job-listings.html">
-                                                </p>
-
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge">Full Time</a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="job-section-btn-wrap">
-                                        <a href="job-details.html" class="custom-btn btn">Apply now</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="job-thumb d-flex">
-                                <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="images/logos/meta.png" class="job-image img-fluid" alt="">
-                                </div>
-
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                    <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0">
-                                            <a href="job-details.html" class="job-title-link">HR Manager</a>
-                                        </h4>
-
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <p class="job-location mb-0">
-                                                <i class="custom-icon bi-geo-alt me-1"></i>
-                                                Johor Bahru, Johor
-                                            </p>
-
-                                            <p class="job-date mb-0">
-                                                <i class="custom-icon bi-clock me-1"></i>
-                                                22 hours ago
-                                            </p>
-
-                                            <p class="job-price mb-0">
-                                                <i class="custom-icon bi-cash me-1"></i>
-                                                RM 4500
-                                            </p>
-
-                                            <div class="d-flex">
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge badge-level">Junior</a>
-                                                </p>
-
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge">Contract</a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="job-section-btn-wrap">
-                                        <a href="job-details.html" class="custom-btn btn">Apply now</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="job-thumb d-flex">
-                                <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="images/logos/creative-market.png" class="job-image img-fluid" alt="">
-                                </div>
-
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                    <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0">
-                                            <a href="job-details.html" class="job-title-link">UX Designer</a>
-                                        </h4>
-
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <p class="job-location mb-0">
-                                                <i class="custom-icon bi-geo-alt me-1"></i>
-                                                Melaka
-                                            </p>
-
-                                            <p class="job-date mb-0">
-                                                <i class="custom-icon bi-clock me-1"></i>
-                                                2 hours ago
-                                            </p>
-
-                                            <p class="job-price mb-0">
-                                                <i class="custom-icon bi-cash me-1"></i>
-                                                RM 3000~RM6000
-                                            </p>
-
-                                            <div class="d-flex">
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge badge-level">Entry</a>
-                                                </p>
-
-                                                <p class="mb-0">
-                                                    <a href="job-listings.html" class="badge">Remote</a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="job-section-btn-wrap">
-                                        <a href="job-details.html" class="custom-btn btn">Apply now</a>
-                                    </div>
-                                </div>
-                            </div>
-
                             <?php
                                     }
                                 } else {
-                                    // If no projects found
+                                    // If no job found
                                     echo "No job found";
                                 }
                             ?>
@@ -368,7 +233,7 @@
                     <?php
                         include "con.php";
 
-                        $query = "SELECT * FROM `projects` ORDER BY `created_at` DESC LIMIT 6";
+                        $query = "SELECT * FROM `projects` WHERE `proj_status` = 1 ORDER BY `created_at` DESC LIMIT 6";
                         $result = mysqli_query($conn, $query);
 
                         if (mysqli_num_rows($result) > 0) {

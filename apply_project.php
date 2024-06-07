@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -54,9 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $update_stmt->bind_param("si", $new_collab_id, $last_inserted_id);
 
             if ($update_stmt->execute()) {
-                echo "Application submitted successfully!";
+                $response = array(
+                    "status" => "success",
+                    "message" => "Application submitted successfully!"
+                );
             } else {
-                echo "Error updating collab_id: " . $update_stmt->error;
+                $response = array(
+                    "status" => "error",
+                    "message" => "Error submitting application: " . $update_stmt->error
+                );
             }
 
             $update_stmt->close();
@@ -70,5 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $conn->close();
+
+    echo json_encode($response);
 }
 ?>

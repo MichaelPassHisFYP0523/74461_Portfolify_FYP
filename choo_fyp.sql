@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 05, 2024 at 08:06 AM
+-- Generation Time: Jun 07, 2024 at 07:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,14 +28,23 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `collab_invites` (
-  `collab_id` int(11) NOT NULL,
-  `proj_id` int(11) DEFAULT NULL,
-  `sender_id` int(11) DEFAULT NULL,
-  `receiver_id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `collab_id` varchar(100) NOT NULL,
+  `proj_id` varchar(100) DEFAULT NULL,
+  `sender_id` varchar(100) DEFAULT NULL,
+  `receiver_id` varchar(100) DEFAULT NULL,
   `message` text DEFAULT NULL,
   `status` enum('pending','accepted','rejected') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `collab_invites`
+--
+
+INSERT INTO `collab_invites` (`id`, `collab_id`, `proj_id`, `sender_id`, `receiver_id`, `message`, `status`, `created_at`) VALUES
+(8, 'collab-000008', 'proj-6656c33962b9b', 'user-00005', 'user-00003', NULL, 'pending', '2024-06-06 10:01:30'),
+(10, 'collab-000010', 'proj-6656bed0b57a2', 'user-00005', 'user-00003', NULL, 'pending', '2024-06-06 10:03:22');
 
 -- --------------------------------------------------------
 
@@ -54,6 +63,16 @@ CREATE TABLE `job` (
   `recruiter_id` varchar(100) NOT NULL,
   `job_status` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `job`
+--
+
+INSERT INTO `job` (`job_id`, `job_title`, `job_location`, `salary`, `requirement`, `date_posted`, `job_types`, `recruiter_id`, `job_status`) VALUES
+('job_66604140a5c548.30884189', 'Senior executive', 'Kuala Lumpur', '4k-6k', '-5 years experience required\r\n-Degree in revelant industry', '2024-06-05', 'Full Time', 'user-00005', 1),
+('job_666042e12b9d85.91439437', 'Project Manager', 'Kuala Lumpur', '4k-6k', '-5 years experience required\r\n-Degree in revelant industry', '2024-06-05', 'Part Time', 'user-00005', 1),
+('job_66604307d9dff1.96974619', 'bbbbbbbbbbbbbbbbbbbbbbbbbb', 'bbbbbbb', 'bbbbbbb', 'bbbbbbbbbbbbbbbbbbbb', '2024-06-05', 'Full Time', 'user-00005', 1),
+('job_6660456c6e2994.31544677', 'Graphic designer', 'Kuching, Malaysia', '3.5k', '-', '2024-06-05', 'Full Time', 'user-00005', 1);
 
 -- --------------------------------------------------------
 
@@ -77,12 +96,11 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`project_id`, `user_id`, `title`, `description`, `created_at`, `project_path`, `proj_status`, `project_image`) VALUES
-('proj-6656bb77d5eb3', 'user-00003', 'Smart Home Energy Management System', 'Develop a system that optimizes energy usage in a smart home by controlling appliances based on user preferences, weather forecasts, and real-time energy prices.', '2024-05-29 05:14:04', './files/project/IMG_20240309_185541.jpg', 1, '../images/Team_Office.jpg'),
 ('proj-6656bb957636b', 'user-00003', 'Virtual Interior Design Assistant', 'Create a virtual assistant that helps users visualize and design interior spaces by suggesting furniture arrangements, color schemes, and decor options.', '2024-05-29 05:22:29', './files/project/IMG_20240418_185958.jpg', 1, '../images/Team_Office.jpg'),
 ('proj-6656bccb9d870', 'user-00003', 'E-Learning Platform for Skill Development', 'Build an online platform that offers courses and resources for skill development in various domains, catering to different learning styles and proficiency levels.', '2024-05-29 05:27:39', './files/project/proj-6656bccb9d870.jpg', 1, '../images/Team_Office.jpg'),
 ('proj-6656bed0b57a2', 'user-00003', 'Urban Traffic Management System', 'Design a system to optimize traffic flow in urban areas using real-time data from sensors, cameras, and GPS devices, reducing congestion and improving efficiency.', '2024-05-29 05:36:16', './files/project/proj-6656bed0b57a2.png', 1, '../images/Team_Office.jpg'),
 ('proj-6656c028ad038', 'user-00003', 'Remote Agricultural Monitoring System', 'Create a system that uses satellite imagery and IoT sensors to monitor crop health, soil moisture levels, and weather conditions, enabling farmers to make data-driven decisions for better yield and resource management.', '2024-05-29 05:42:00', './files/project/proj-6656c028ad038.jpg', 1, '../images/Team_Office.jpg'),
-('proj-6656c33962b9b', 'user-00003', 'Smart Home Energy Management System', 'Develop a system that optimizes energy usage in a smart home by controlling appliances based on user preferences, weather forecasts, and real-time energy prices.', '2024-05-29 05:55:05', './files/project/proj-6656c33962b9b.jpg', 0, '../images/Team_Office.jpg');
+('proj-6656c33962b9b', 'user-00003', 'Smart Home Energy Management System', 'Embark on the creation of an innovative energy management ecosystem tailored for smart homes, designed to revolutionize how households interact with energy. This advanced system will go beyond traditional automation, utilizing cutting-edge machine learning algorithms to continuously learn and adapt to the dynamic needs of users and the environment. By orchestrating appliance usage in real-time, considering factors like occupancy, time-of-use pricing, weather conditions, and individual user preferences, it will pave the way for a greener, more efficient, and cost-effective future in residential energy consumption.\"', '2024-05-29 05:55:05', './files/project/proj-6656c33962b9b.jpg', 1, '../images/Team_Office.jpg');
 
 -- --------------------------------------------------------
 
@@ -172,7 +190,14 @@ INSERT INTO `user_profile` (`u_id`, `email`, `User_ID`, `FirstName`, `Lastname`,
 -- Indexes for table `collab_invites`
 --
 ALTER TABLE `collab_invites`
-  ADD PRIMARY KEY (`collab_id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `collab_id` (`collab_id`);
+
+--
+-- Indexes for table `job`
+--
+ALTER TABLE `job`
+  ADD PRIMARY KEY (`job_id`);
 
 --
 -- Indexes for table `projects`
@@ -198,6 +223,16 @@ ALTER TABLE `users`
 --
 ALTER TABLE `user_profile`
   ADD PRIMARY KEY (`u_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `collab_invites`
+--
+ALTER TABLE `collab_invites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables

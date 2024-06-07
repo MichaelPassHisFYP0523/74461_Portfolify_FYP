@@ -64,7 +64,7 @@
     <body id="top">
 
         <!-- Navigation Bar -->
-        <?php include 'navbar.php'; ?>
+        <?php include 'navbar_recruiter.php'; ?>
         <!-- End Navbar -->
 
         <main>
@@ -76,7 +76,7 @@
                     <div class="row">
                         
                         <div class="col-lg-12 col-12 text-center">
-                            <h1 class="text-white">My profile</h1>
+                            <h1 class="text-white">Company profile</h1>
 
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb justify-content-center">
@@ -191,6 +191,24 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8 col-12 mx-auto">
+
+                        <!-- Display success or error message -->
+                        <?php if (isset($_SESSION['success_message'])): ?>
+                            <div class="alert alert-success">
+                                <?php
+                                echo $_SESSION['success_message'];
+                                unset($_SESSION['success_message']);
+                                ?>
+                            </div>
+                        <?php elseif (isset($_SESSION['error_message'])): ?>
+                            <div class="alert alert-danger">
+                                <?php
+                                echo $_SESSION['error_message'];
+                                unset($_SESSION['error_message']);
+                                ?>
+                            </div>
+                        <?php endif; ?>
+
                         <form class="custom-form contact-form" action="job_posting.php" method="post" role="form" enctype="multipart/form-data">
                             <h2 class="text-center mb-4">Post a job</h2>
 
@@ -201,8 +219,15 @@
                                 </div>
 
                                 <div class="col-lg-12 col-12">
-                                    <label for="desc">Types</label>
-                                    <textarea name="jobType" id="jobType" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
+                                    <label class="col-lg-12 col-12" for="jobType">Types</label>
+                                    <select name="jobType" id="jobType" class="form-control">
+                                        <option value="" disabled selected>Select a job type</option>
+                                        <option value="Part Time">Part-Time</option>
+                                        <option value="Full Time">Full-Time</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Intern">Internship</option>
+                                    </select>
+
                                 </div>
 
                                 <div class="col-lg-12 col-12">
@@ -220,22 +245,16 @@
                                     <textarea name="requirement" id="desc" rows="6" class="form-control" placeholder="Describe your requirement for this position" required></textarea>
                                 </div>
 
-                                <label class="col-lg-12 col-12" for="jobType">Choose a job type:</label>
-                                    <select name="jobType" id="jobType">
-                                        <option value="partTime">Part-Time</option>
-                                        <option value="fullTime">Full-Time</option>
-                                        <option value="contract">Contract</option>
-                                        <option value="intern">Internship</option>
-                                    </select>
-
                                 <!-- Hidden input field to store the user_id -->
                                 <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
 
                                 <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                    <button type="submit" class="form-control">Upload</button>
+                                    <button type="submit" class="form-control">Post</button>
                                 </div>
                             </div>
                         </form>
+
+                        <div class="mt-5"></div>
 
                         </div>
                     </div>

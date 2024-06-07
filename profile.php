@@ -163,11 +163,11 @@
                                         while ($project_row = $project_result->fetch_assoc()) {
                                             ?>
                                             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                <div class="card h-100"> <!-- Added class "h-100" for card height -->
+                                                <div class="card h-100"> 
                                                     <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
-                                                    <div class="card-body d-flex flex-column"> <!-- Added class "d-flex flex-column" for flexbox layout -->
+                                                    <div class="card-body d-flex flex-column"> 
                                                         <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
-                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> <!-- Added class "flex-grow-1" for card text to grow and take remaining space -->
+                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -185,7 +185,7 @@
                                 
                                 </div>
                             </div>
-            </section>
+                        </section>
 
 
 

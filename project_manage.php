@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Portfolify</title>
+
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="css/owl.carousel.min.css" rel="stylesheet">
+
+        <link href="css/owl.theme.default.min.css" rel="stylesheet">
+
+        <link href="css/tooplate-gotto-job.css" rel="stylesheet">
+        
+
+    </head>
+    
+    <body id="top">
+
+    <?php include 'navbar.php'; ?>
+
+        <main>
+
+            <!-- Navigation bar -->
+            <section class="hero-section d-flex justify-content-center align-items-center">
+                <div class="section-overlay"></div>
+
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+                            <div class="hero-section-text mt-5">
+                                <h2 class="text-white">Post a job now!</h6>
+
+                                
+
+                                <a href="#categories-section" class="custom-btn custom-border-btn btn">Browse Categories</a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-12">
+                            <form class="custom-form hero-form" action="#" method="get" role="form">
+                                <h3 class="text-white mb-3">Search your dream job</h3>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-12">
+                                        <div class="input-group"> 
+                                            <span class="input-group-text" id="basic-addon1"><i class="bi-person custom-icon"></i></span>
+
+                                            <input type="text" name="job-title" id="job-title" class="form-control" placeholder="Job Title" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-12">
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon2"><i class="bi-geo-alt custom-icon"></i></span>
+
+                                            <input type="text" name="job-location" id="job-location" class="form-control" placeholder="Location" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <button type="submit" class="form-control">
+                                            Find a job
+                                        </button>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="d-flex flex-wrap align-items-center mt-4 mt-lg-0">
+                                            <span class="text-white mb-lg-0 mb-md-0 me-2">Popular keywords:</span>
+
+                                            <div>
+                                                <a href="job-listings.html" class="badge">Web design</a>
+
+                                                <a href="job-listings.html" class="badge">Marketing</a>
+
+                                                <a href="job-listings.html" class="badge">Customer support</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <!-- End nav bar -->
+
+
+            </p>
+        <!-- </section> -->
+
+            <section class="job-section job-featured-section section-padding" id="job-section">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-6 col-12 text-center mx-auto mb-4">
+                            <h2>Project posted</h2>
+                        </div>
+
+                        <?php
+                            include "con.php";
+
+                            $query = "SELECT * FROM `projects` WHERE proj_status = 1 ORDER BY `created_at`";
+                            $result = mysqli_query($conn, $query);
+
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+
+                        <div class="col-lg-12 col-12">
+                            <div class="job-thumb d-flex">
+                                <div class="job-image-wrap bg-white shadow-lg">
+                                    <img src="images/logos/google.png" class="job-image img-fluid" alt="">
+                                </div>
+
+                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                                    <div class="mb-3">
+                                        <h4 class="job-title mb-lg-0">
+                                            <a href="job-details.html" class="job-title-link"><?php echo $row['title']; ?></a>
+                                        </h4>
+
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <p class="job-location mb-0">
+                                                <i class="custom-icon bi-geo-alt me-1"></i>
+                                                <?php echo $row['job_location']; ?>
+                                            </p>
+
+                                            <p class="job-date mb-0">
+                                                <i class="custom-icon bi-clock me-1"></i>
+                                                <?php echo $row['date_posted']; ?>
+                                            </p>
+
+                                            <p class="job-price mb-0">
+                                                <i class="custom-icon bi-cash me-1"></i>
+                                                <?php echo $row['salary']; ?>
+                                            </p>
+
+                                            <div class="d-flex">
+                                                <p class="mb-0">
+                                                    <a href="job-listings.html" class="badge badge-level"><?php echo $row['job_types']; ?></a>
+                                                </p>
+
+                        
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="job-section-btn-wrap">
+                                        <a href="job-details.html" class="custom-btn btn">Apply now</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php
+                                    }
+                                } else {
+                                    // If no job found
+                                    echo "No job found";
+                                }
+                            ?>
+                    
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="site-footer-bottom">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-12 d-flex align-items-center">
+                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
+                        </div>
+
+                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
+
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End footer -->
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script src="js/counter.js"></script>
+        <script src="js/custom.js"></script>
+
+    </body>
+</html>
