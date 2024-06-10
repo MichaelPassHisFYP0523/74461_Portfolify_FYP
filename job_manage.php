@@ -78,7 +78,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Portfolify Project</title>
+        <title>Portfolify</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,34 +111,36 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Active Project</h2>
+                        <h2>Active Job Ad</h2>
                     </div>
                     <?php foreach ($projects as $project): ?>
                     <div class="col-lg-12 col-12">
-                        <a href="project_candidate.php?id=<?php echo $project['project_id']; ?>" class="project-link">
-                            <div class="job-thumb d-flex">
-                                <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
-                                </div>
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                    <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0"><?php echo $project['title']; ?></h4>
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <p class="job-date mb-0">
-                                                <i class="custom-icon bi-clock me-1"></i>
-                                                <?php echo $project['created_at']; ?>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <p class="applicant-count mb-0">
-                                            <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
+                        <div class="job-thumb d-flex">
+                            <div class="job-image-wrap bg-white shadow-lg">
+                                <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
+                            </div>
+                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                                <div class="mb-3">
+                                    <h4 class="job-title mb-lg-0">
+                                        <a href="project_candidate.php?id=<?php echo $project['project_id']; ?>" class="job-title-link"><?php echo $project['title']; ?></a>
+                                    </h4>
+
+                                    <div class="d-flex flex-wrap align-items-center">
+                                        <p class="job-date mb-0">
+                                            <i class="custom-icon bi-clock me-1"></i>
+                                            <?php echo $project['created_at']; ?>
                                         </p>
-                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $project['project_id']; ?>', 'deactivate');">Deactivate</a>
                                     </div>
+                                </div>
+
+                                <div class="ms-auto">
+                                    <p class="applicant-count mb-0">
+                                        <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
+                                    </p>
+                                        <a href="#" class="deactivate-link" onclick="submitForm(event, '<?php echo $project['project_id']; ?>');">Deactivate</a>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -176,7 +178,7 @@
                                     <p class="applicant-count mb-0">
                                         <strong><?php echo htmlspecialchars($inactiveProjects['applicant_count']); ?></strong> Applicants
                                     </p>
-                                        <a href="#" class="deactivate-link" onclick="activateProject(event, '<?php echo $inactiveProjects['project_id']; ?>', 'activate');">Activate</a>
+                                        <a href="#" class="deactivate-link" onclick="submitForm(event, '<?php echo $inactiveProjects['project_id']; ?>');">Activate</a>
                                 </div>
                             </div>
                         </div>
@@ -214,46 +216,23 @@
         <script src="js/custom.js"></script>
 
         <script>
-
-        function deactivateStatus(event, projectId, action) {
-                event.preventDefault(); 
+        function submitForm(event, projectId) {
+                event.preventDefault(); // Prevent the default link behavior
 
                 // Send an AJAX request to the server-side script
                 var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
+                xhr.open("POST", "deactivate_project.php", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         // Handle the server response
                         alert(xhr.responseText);
-                        location.reload();
                         // You can also update the UI as needed
                     }
                 };
                 // Send the project ID as data
-                xhr.send("project_id=" + projectId + "&action=" + action);
+                xhr.send("project_id=" + projectId);
             }
-
-        function activateProject(event, projectId, action) {
-            event.preventDefault(); 
-
-            // Send an AJAX request to the server-side script
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Handle the server response
-                    alert(xhr.responseText);
-                    location.reload();
-                    // You can also update the UI as needed
-                }
-            };
-            // Send the project ID as data
-            xhr.send("project_id=" + projectId + "&action=" + action);
-        }
-
-
         </script>
 
     </body>

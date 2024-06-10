@@ -45,7 +45,7 @@ https://www.tooplate.com/view/2134-gotto-job
 
 body {
   background-color: var(--white-color);
-  font-family: var(--body-font-family); 
+  font-family: var(--); 
 }
 
 
@@ -1728,3 +1728,18 @@ button:hover {
         margin-bottom: 20px;
     }
 
+    .project-image {
+      height: 210px; 
+      object-fit: cover; 
+  }
+  
+.modal-header,
+.modal-title,
+.modal-body {
+  font-family: var(--body-font-family);
+}
+
+.close:hover, .close:focus {
+  background: none;
+  border: none;
+}

@@ -24,7 +24,6 @@
         $fullName = $row['FirstName'] . ' ' . $row['Lastname'];
         
     } else {
-    //     echo "User not found!";
         session_destroy();
         header("Location: Sign_In.php");
     }
@@ -91,8 +90,8 @@
                     </div>
                 </div>
             </header>
-
-
+            
+            <!-- Profile Overview -->
             <section class="contact-section section-padding">
                 <div class="container">
                     <div class="row justify-content-center">
@@ -144,91 +143,94 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+            </section>
 
-                        <!-- Projects Section -->
-                        <section class="projects-section section-padding">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-12 col-12 text-center">
-                                        <h2>My Projects</h2>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <?php
-                                    // Fetch projects associated with the user
-                                    $project_query = "SELECT * FROM projects WHERE `user_id` = '$user_id' AND proj_status = 1";
-                                    $project_result = $conn->query($project_query);
-
-                                    if ($project_result->num_rows > 0) {
-                                        while ($project_row = $project_result->fetch_assoc()) {
-                                            ?>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                <div class="card h-100"> 
-                                                    <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
-                                                    <div class="card-body d-flex flex-column"> 
-                                                        <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
-                                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                        <div class="col-lg-12 col-12 text-center">
-                                            <p>No projects found.</p>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
-                                </div>
-                                
+            <!-- Projects Section -->
+            <section class="projects-section section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-12 text-center">
+                            <h2>My Projects</h2>
+                            <div class="row mb-4">
+                                <div class="col-lg-12 col-12 text-center">
+                                    <a href="project_manage.php" class="btn btn-secondary mr-2">Manage Projects</a>
+                                    <a href="#upload-section" class="btn btn-primary">Add Project</a>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <?php
+                        // Fetch projects associated with the user
+                        $project_query = "SELECT * FROM projects WHERE `user_id` = '$user_id'";
+                        $project_result = $conn->query($project_query);
 
-
-
-                        <section class="cta-section">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-8 col-12 mx-auto">
-                                    <form class="custom-form contact-form" action="upload.php" method="post" role="form" enctype="multipart/form-data">
-                                        <h2 class="text-center mb-4">Upload your project</h2>
-
-                                        <div class="row">
-                                            <div class="col-lg-12 col-12">
-                                                <label for="full-name">Title</label>
-                                                <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
-                                            </div>
-
-                                            <div class="col-lg-12 col-12">
-                                                <label for="file">Upload your file</label>
-                                                <input type="file" name="file" id="file" class="form-control" required>
-                                            </div>
-
-                                            <div class="col-lg-12 col-12">
-                                                <label for="desc">Describe your project</label>
-                                                <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
-                                            </div>
-
-                                            <!-- Hidden input field to store the user_id -->
-                                            <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
-
-                                            <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                                <button type="submit" class="form-control">Upload</button>
-                                            </div>
+                        if ($project_result->num_rows > 0) {
+                            while ($project_row = $project_result->fetch_assoc()) {
+                                ?>
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <div class="card h-100"> 
+                                        <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                        <div class="card-body d-flex flex-column"> 
+                                            <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
+                                            <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
                                         </div>
-                                    </form>
-
                                     </div>
                                 </div>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="col-lg-12 col-12 text-center">
+                                <p>No projects found.</p>
                             </div>
-                        <section>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    
+                </div>
+            </section>
 
+            <!-- Upload project -->
+            <section id="upload-section" class="cta-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12 mx-auto">
+                        <form class="custom-form contact-form" action="upload.php" method="post" role="form" enctype="multipart/form-data">
+                            <h2 class="text-center mb-4">Upload your project</h2>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-12">
+                                    <label for="full-name">Title</label>
+                                    <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="file">Upload your file</label>
+                                    <input type="file" name="file" id="file" class="form-control" required>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="desc">Describe your project</label>
+                                    <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
+                                </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                    <button type="submit" class="form-control">Upload</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        </div>
                     </div>
                 </div>
             </section>
+
         </main>
 
         <!-- Footer -->
