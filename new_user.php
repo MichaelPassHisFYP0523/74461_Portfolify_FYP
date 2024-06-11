@@ -1,74 +1,93 @@
-<?php 
-session_start();
+<?php
+include "con.php";
 
-if (!isset($_SESSION['email'])) {
-    echo "You must be logged in to apply.";
-    exit();
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $email = $_POST['email'];
+    $position = $_POST['position'];
+    $password = $_POST['password'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    include "con.php";
+    // Password encryption
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $project_id = $_POST['project_id'];
-    $sender_id = $_SESSION['user_id'];  // Assuming you store user ID in the session
+    // Retrieve the last ID from users table
+    $getLastIdSql = "SELECT `User_ID` FROM `users` ORDER BY `User_ID` DESC LIMIT 1";
+    $lastIdResult = $conn->query($getLastIdSql);
 
-    // Fetch the project owner ID from the database
-    $query = "SELECT user_id FROM `projects` WHERE `project_id` = ?";
-    $stmt = $conn->prepare($query);
-    if (!$stmt) {
-        echo "Error preparing statement: " . $conn->error;
-        exit();
-    }
-    $stmt->bind_param("s", $project_id);
-    if (!$stmt->execute()) {
-        echo "Error executing statement: " . $stmt->error;
-        exit();
-    }
-    $stmt->bind_result($receiver_id);
-    $stmt->fetch();
-    $stmt->close();
-
-    if ($receiver_id) {
-        $status = 'pending';
-        $created_at = date('Y-m-d H:i:s');
-
-        // Insert the application into the database without collab_id
-        $stmt = $conn->prepare("INSERT INTO `collab_invites` (`proj_id`, `sender_id`, `receiver_id`, `status`, `created_at`) VALUES (?, ?, ?, ?, ?)");
-        if (!$stmt) {
-            echo "Error preparing insert statement: " . $conn->error;
-            exit();
-        }
-        $stmt->bind_param("sssss", $project_id, $sender_id, $receiver_id, $status, $created_at);
-
-        if ($stmt->execute()) {
-            // Retrieve the last inserted id
-            $last_inserted_id = $conn->insert_id;
-            $new_collab_id = "collab-" . str_pad($last_inserted_id, 6, '0', STR_PAD_LEFT);
-
-            // Update the collab_id in the database
-            $update_stmt = $conn->prepare("UPDATE `collab_invites` SET `collab_id` = ? WHERE `id` = ?");
-            if (!$update_stmt) {
-                echo "Error preparing update statement: " . $conn->error;
-                exit();
-            }
-            $update_stmt->bind_param("si", $new_collab_id, $last_inserted_id);
-
-            if ($update_stmt->execute()) {
-                echo "Application submitted successfully!";
-            } else {
-                echo "Error updating collab_id: " . $update_stmt->error;
-            }
-
-            $update_stmt->close();
-        } else {
-            echo "Error submitting application: " . $stmt->error;
-        }
-
-        $stmt->close();
+    if ($lastIdResult->num_rows > 0) {
+        $row = $lastIdResult->fetch_assoc();
+        $last_id = $row["User_ID"];
+        $numeric_part = $last_id ? (int)substr($last_id, 5) : 0; 
+        $new_id = "user-" . sprintf('%05d', $numeric_part + 1); 
     } else {
-        echo "Project owner not found.";
+        $new_id = "user-00001";
     }
 
+    // Determine the role
+    $role = ($position == 'Recruiter') ? 'recruiter' : 'user';
+
+    // Insert into users table
+    $sql = "INSERT INTO `users`(`User_ID`, `email`, `password`, `role`) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("ssss", $new_id, $email, $hashed_password, $role);
+
+
+    if ($stmt->execute()) {
+        // Insert into the appropriate profile table based on the role
+        if ($role == 'recruiter') {
+            // Retrieve the last ID from recruiter_profile
+            $getLastId = "SELECT `r_id` FROM `recruiter_profile` ORDER BY `r_id` DESC LIMIT 1";
+            $lastId = $conn->query($getLastId);
+
+            if ($lastId->num_rows > 0) {
+                $row = $lastId->fetch_assoc();
+                $last_id = $row["r_id"];
+                $numeric_part = $last_id ? (int)substr($last_id, 2) : 0; 
+                $profile_id = "r-" . sprintf('%05d', $numeric_part + 1); 
+            } else {
+                $profile_id = "r-00001";
+            }
+
+            // Insert into recruiter_profile
+            $profile_sql = "INSERT INTO `recruiter_profile`(`r_id`, `User_ID`) VALUES (?, ?)";
+        } else {
+            // Retrieve the last ID from user_profile
+            $getLastId = "SELECT `u_id` FROM `user_profile` ORDER BY `u_id` DESC LIMIT 1";
+            $lastId = $conn->query($getLastId);
+
+            if ($lastId->num_rows > 0) {
+                $row = $lastId->fetch_assoc();
+                $last_id = $row["u_id"];
+                $numeric_part = $last_id ? (int)substr($last_id, 2) : 0; 
+                $profile_id = "u-" . sprintf('%05d', $numeric_part + 1); 
+            } else {
+                $profile_id = "u-00001";
+            }
+
+            // Insert into user_profile
+            $profile_sql = "INSERT INTO `user_profile`(`u_id`, `email`, `User_ID`) VALUES (?, ?, ?)";
+        }
+
+        $stmt_profile = $conn->prepare($profile_sql);
+        if ($role == 'recruiter') {
+            $stmt_profile->bind_param("ss", $profile_id, $new_id);
+        } else {
+            $stmt_profile->bind_param("sss", $profile_id, $email, $new_id);
+        }
+
+        if ($stmt_profile->execute()) {
+            echo "User registration successful!";
+        } else {
+            echo "Error inserting into profile table: " . $stmt_profile->error;
+        }
+        $stmt_profile->close();
+    } else {
+        echo "Error inserting into users: " . $stmt->error;
+    }
+
+    // Close the prepared statement
+    $stmt->close();
     $conn->close();
 }
 ?>

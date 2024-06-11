@@ -16,14 +16,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['project_id'])) {
         $sql = "UPDATE projects SET proj_status = 1 WHERE project_id = ?";
         $successMessage = "Project activated successfully.";
         $errorMessage = "Error activating project: ";
-        
+
     } else {
         echo "Invalid action.";
         exit();
     }
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("s", $project_id);
+    $stmt->bind_param("s", $project_id);
         if ($stmt->execute()) {
             echo $successMessage;
         } else {
