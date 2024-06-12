@@ -24,13 +24,31 @@
         exit();
     }
 
-    // Get the project ID from the URL parameter
-    if(isset($_GET['id'])) {
+    $collab_invites = [];
+
+    if (isset($_GET['id'])) {
         $project_id = $_GET['id'];
+    
+        $sql = "SELECT ci.*, u.email, u.role, u.created_at AS user_created_at
+                FROM collab_invites ci
+                JOIN users u ON ci.sender_id = u.User_ID
+                WHERE ci.proj_id = ?";
+        
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("s", $project_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $collab_invites[] = $row;
+            }
+            
+            $stmt->close();
+        } else {
+            echo "Error preparing statement: " . $conn->error;
+        }
     } else {
-        // Handle the case where project ID is not provided
-        echo "Project ID not provided.";
-        exit();
+        echo "No project ID provided.";
     }
 
     // Fetch project title
@@ -43,26 +61,6 @@
     } else {
         echo "Error: " . $conn->error;
         exit();
-    }
-
-    // Fetch collab invites for the given project ID
-    $query = "SELECT ci.*, u.email, u.role
-            FROM collab_invites ci
-            INNER JOIN users u ON ci.sender_id = u.User_ID OR ci.receiver_id = u.User_ID
-            WHERE ci.proj_id = ?";
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param("s", $project_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $collab_invites = [];
-        while ($row = $result->fetch_assoc()) {
-            $collab_invites[] = $row;
-        }
-
-        $stmt->close();
-    } else {
-        echo "Error: " . $conn->error;
     }
 
     $conn->close();
@@ -116,19 +114,20 @@
                     <?php if (!empty($collab_invites)) { ?>
                         <?php foreach ($collab_invites as $invite): ?>
                         <div class="col-lg-12 col-12 mb-4">
-                            <div class="job-thumb d-flex">
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                            <a href="portfolio.php?id=<?php echo $invite['sender_id']; ?>">
+                                <div class="job-thumb d-flex">
+                                    <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
                                     <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0">From: <?php echo $invite['email']; ?></h4>
-                                        <h4 class="job-title mb-lg-0">From: <?php echo $invite['sender_id']; ?></h4>
-                                        <p class="job-role"><strong>Role:</strong> <?php echo $invite['role']; ?></p>
-                                        <p class="job-message"><strong>Message:</strong> <?php echo $invite['message']; ?></p>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <a href="portfolio.php?id=<?php echo $invite['sender_id']; ?>">View Profile</a>
+                                            <p class="job-title mb-lg-0"><strong>From:</strong> <?php echo $invite['email']; ?></p>
+                                            <p class="job-message"><strong>Message:</strong> </p>
+                                            <p><?php echo $invite['message']; ?></p>
+                                        </div>
+                                        <div class="ms-auto">
+                                            <a href="portfolio.php?id=<?php echo $invite['sender_id']; ?>">View Profile</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <?php endforeach; ?>
                     <?php } else { ?>

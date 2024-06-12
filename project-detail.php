@@ -1,117 +1,80 @@
 <?php
-    session_start();
+session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: Sign_In.php");
+if (!isset($_SESSION['email'])) {
+    header("Location: Sign_In.php");
+    exit();
+}
+
+include "con.php";
+
+// Fetch the user_id from users based on the email
+$email = $_SESSION['email'];
+$stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $user_id = $user['User_ID'];
+} else {
+    echo "User not found";
+    exit();
+}
+
+if (isset($_GET['id'])) {
+    $project_id = $_GET['id'];
+
+    // Fetch the project details
+    $stmt = $conn->prepare("SELECT * FROM projects WHERE project_id = ?");
+    $stmt->bind_param("s", $project_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows > 0) {
+        $project = $result->fetch_assoc();
+        $project_user_id = $project['user_id'];
+
+        // Fetch the user role based on project user_id
+        $stmt_user = $conn->prepare("SELECT role FROM users WHERE User_ID = ?");
+        $stmt_user->bind_param("s", $project_user_id);
+        $stmt_user->execute();
+        $result_user = $stmt_user->get_result();
+
+        if ($result_user && $result_user->num_rows > 0) {
+            $user_role = $result_user->fetch_assoc()['role'];
+
+            // Fetch user or recruiter profile based on role
+            if ($user_role === 'user') {
+                $stmt_profile = $conn->prepare("SELECT * FROM user_profile WHERE user_id = ?");
+            } elseif ($user_role === 'recruiter') {
+                $stmt_profile = $conn->prepare("SELECT * FROM recruiter_profile WHERE user_id = ?");
+            }
+
+            $stmt_profile->bind_param("s", $project_user_id);
+            $stmt_profile->execute();
+            $result_profile = $stmt_profile->get_result();
+
+            if ($result_profile && $result_profile->num_rows > 0) {
+                $profile = $result_profile->fetch_assoc();
+            } else {
+                echo "Profile not found";
+                exit();
+            }
+        } else {
+            echo "User role not found";
+            exit();
+        }
+    } else {
+        echo "Project not found";
         exit();
     }
-
-    include "con.php";
-
-    function getUserByEmail($conn, $email) {
-        $stmt = $conn->prepare("SELECT user_id, role FROM users WHERE email = ? LIMIT 1");
-        if (!$stmt) {
-            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-        }
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            return $result->fetch_assoc();
-        } else {
-            return null;
-        }
-
-        $stmt->close();
-    }
-
-    function getUserProfileById($conn, $user_id) {
-        $stmt = $conn->prepare("SELECT * FROM user_profile WHERE User_ID = ? LIMIT 1");
-        if (!$stmt) {
-            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-        }
-        $stmt->bind_param("s", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            return $result->fetch_assoc();
-        } else {
-            return null;
-        }
-
-        $stmt->close();
-    }
-
-    function getRecruiterProfileById($conn, $user_id) {
-        $stmt = $conn->prepare("SELECT * FROM recruiter_profile WHERE User_ID = ? LIMIT 1");
-        if (!$stmt) {
-            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-        }
-        $stmt->bind_param("s", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            return $result->fetch_assoc();
-        } else {
-            return null;
-        }
-
-        $stmt->close();
-    }
-
-    $project = null;
-    $user_profile = null;
-
-    if (isset($_GET['id'])) {
-        $project_id = $_GET['id'];
-
-        $email = $_SESSION['email'];
-
-        $user = getUserByEmail($conn, $email);
-        if ($user === null) {
-            die("User not found for email: " . htmlspecialchars($email));
-        }
-
-        $user_id = $user['user_id'];
-        $role = $user['role'];
-
-        // Fetch the project details
-        $stmt = $conn->prepare("SELECT * FROM `projects` WHERE `project_id` = ? LIMIT 1");
-        if (!$stmt) {
-            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-        }
-        $stmt->bind_param("s", $project_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $project = $result->fetch_assoc();
-        } else {
-            die("No project found with the given ID.");
-        }
-
-        $stmt->close();
-
-        // Fetch the appropriate user profile details
-        if ($role === 'user') {
-            $user_profile = getUserProfileById($conn, $user_id);
-        } else if ($role === 'recruiter') {
-            $user_profile = getRecruiterProfileById($conn, $user_id);
-        }
-
-        if ($user_profile === null) {
-            die("Profile not found for user_id: " . htmlspecialchars($user_id));
-        }
-
-        $conn->close();
-    } else {
-        die("No project ID provided.");
-    }
+} else {
+    echo "Invalid project ID";
+    exit();
+}
 ?>
-
 
 <!doctype html>
 <html lang="en">
@@ -123,6 +86,9 @@
         <meta name="author" content="">
 
         <title>Projects Details</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,7 +138,7 @@ Bootstrap 5 HTML CSS Template
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav align-items-center ms-lg-5">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Homepage</a>
+                            <a class="nav-link" href="index.php">Homepage</a>
                         </li>
 
                         <li class="nav-item">
@@ -207,6 +173,7 @@ Bootstrap 5 HTML CSS Template
 
         <main>
 
+            <!-- Project Description -->
             <section class="job-section section-padding pb-0">
                 <div class="container">
                     <div class="row">
@@ -225,17 +192,20 @@ Bootstrap 5 HTML CSS Template
                                 <h5 class="mt-4 mb-3">More Information</h5>
 
                                 <a href="<?php echo htmlspecialchars($project['project_path']); ?>" target="_blank" >Download Project Details</a>
-                                </div>
+                            </div>
 
-                                <div>
 
                                 <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
-                                    <form id="applyForm" class="d-flex flex-column align-items-center w-100">
-                                        <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['project_id']); ?>">
-                                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                                        <button type="submit" class="custom-btn btn mt-2">Request Collaborate</button>
-                                    </form>
-                                </div>
+                                <form id="applyForm" class="d-flex flex-column align-items-center w-100" method="post" action="your_php_script.php">
+                                    <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['project_id']); ?>">
+                                    <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                                    <input type="hidden" name="owner_id" value="<?php echo htmlspecialchars ($project['user_id']); ?>">
+                                    <div class="form-group w-100">
+                                        <label for="message">Your Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message here..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="custom-btn btn mt-2">Collaborate</button>
+                                </form>
                                 </div>
                             </div>
                             
@@ -243,40 +213,63 @@ Bootstrap 5 HTML CSS Template
                                 <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
                                     <div class="d-flex align-items-center">
                                         <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
-                                            <img src="<?php echo htmlspecialchars($user_profile['ProfilePicture']); ?>" class="job-image me-3 img-fluid" alt="">
-                                            <p class="mb-0"><?php echo htmlspecialchars($user_profile['FirstName']); ?></p>
+                                            <?php if ($user_role === 'user') : ?>
+                                                <img src="<?php echo htmlspecialchars($profile['ProfilePicture']); ?>" class="job-image me-3 img-fluid" alt="">
+                                                <p class="mb-0"><?php echo htmlspecialchars($profile['FirstName']); ?></p>
+                                            <?php elseif ($user_role === 'recruiter') : ?>
+                                                <img src="<?php echo htmlspecialchars($profile['logo']); ?>" class="job-image me-3 img-fluid" alt="">
+                                                <p class="mb-0"><?php echo htmlspecialchars($profile['company_name']); ?></p>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                    <h6 class="mt-3 mb-2">About the author</h6>
 
-                                    <p><?php echo htmlspecialchars($user_profile['Bio']); ?></p>
+                                    <?php if ($user_role === 'user') : ?>
+                                        <!-- Display user profile information -->
+                                        <h6 class="mt-3 mb-2">About the User</h6>
+                                        <p><?php echo htmlspecialchars($profile['Bio']); ?></p>
+                                        <!-- Additional user profile fields... -->
+                                    <?php elseif ($user_role === 'recruiter') : ?>
+                                        <!-- Display recruiter profile information -->
+                                        <h6 class="mt-3 mb-2">About the Company</h6>
+                                        <p><?php echo htmlspecialchars($profile['about']); ?></p>
+                                        <!-- Additional recruiter profile fields... -->
+                                    <?php endif; ?>
 
+                                    <!-- Common contact information -->
                                     <h6 class="mt-4 mb-3">Contact Information</h6>
-
                                     <p class="mb-2">
                                         <i class="custom-icon bi-globe me-1"></i>
-
-                                        <a href="#" class="site-footer-link">
-                                            <?php echo htmlspecialchars($user_profile['SocialMediaLinks']); ?>
-                                        </a>
+                                        <?php if ($user_role === 'user') : ?>
+                                            <a href="#" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['SocialMediaLinks']); ?>
+                                            </a>
+                                        <?php elseif ($user_role === 'recruiter') : ?>
+                                            <a href="<?php echo htmlspecialchars($profile['website']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['website']); ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </p>
-
                                     <p>
                                         <i class="custom-icon bi-envelope me-1"></i>
-
-                                        <a href="mailto:info@yourgmail.com" class="site-footer-link">
-                                            <?php echo htmlspecialchars($user_profile['email']); ?>
-                                        </a>
+                                        <?php if ($user_role === 'user') : ?>
+                                            <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['email']); ?>
+                                            </a>
+                                        <?php elseif ($user_role === 'recruiter') : ?>
+                                            <a href="mailto:<?php echo htmlspecialchars($profile['contact_email']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['contact_email']); ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </p>
                                 </div>
-                        </div>
-                        </div>
+                            </div>
 
-                        
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <!-- Browse Other Project -->
             <section class="job-section section-padding">
                 <div class="container">
                     <div class="row align-items-center">
@@ -313,7 +306,6 @@ Bootstrap 5 HTML CSS Template
 
                                         <div class="job-details">
                                         <p><?php echo $row['description']; ?></p>
-                                        <p>Price: $<?php echo $row['project_price']; ?></p>
                                     </div>
 
                                         <p></p>
@@ -335,6 +327,7 @@ Bootstrap 5 HTML CSS Template
                     </div>
                 </div>
             </section>
+
         </main>
 
         <?php include "footer.php"; ?>
@@ -349,9 +342,12 @@ Bootstrap 5 HTML CSS Template
         <!-- Bootstrap Notify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-notify@latest/dist/bootstrap-notify.min.js"></script>
 
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
         <script>
         document.getElementById('applyForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
+            event.preventDefault(); 
             
             var formData = new FormData(this); 
             
@@ -365,8 +361,11 @@ Bootstrap 5 HTML CSS Template
                 success: function(response) { 
                     if (response.status === "success") {
                         showNotification('top', 'right', response.message, 'success');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 3000);
                     } else if (response.status === "error") {
-                        showNotification('top', 'right', response.message, 'error');
+                        showNotification('top', 'right', response.message, 'warning');
                     }
                 },
                 error: function(xhr, status, error) { 
@@ -394,4 +393,3 @@ Bootstrap 5 HTML CSS Template
 
     </body>
 </html>
-

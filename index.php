@@ -28,8 +28,6 @@
         
 
     </head>
-    
-    <body id="top">
 
     <?php include 'navbar.php'; ?>
 
@@ -45,9 +43,6 @@
                         <div class="col-lg-6 col-12 mb-5 mb-lg-0">
                             <div class="hero-section-text mt-5">
                                 <h2 class="text-white">Are you looking for your dream job to enhance your career?</h6>
-
-                                
-
                                 <a href="#categories-section" class="custom-btn custom-border-btn btn">Browse Categories</a>
                             </div>
                         </div>
@@ -172,7 +167,7 @@
                                 <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
                                     <div class="mb-3">
                                         <h4 class="job-title mb-lg-0">
-                                            <a href="job-details.html" class="job-title-link"><?php echo $row['job_title']; ?></a>
+                                            <a href="job-detail.php?id=<?php echo $row['job_id']; ?>" class="job-title-link"><?php echo $row['job_title']; ?></a>
                                         </h4>
 
                                         <div class="d-flex flex-wrap align-items-center">
@@ -282,21 +277,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="site-footer">
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
-                        </div>
-
-                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include "footer.php"; ?>
         <!-- End footer -->
 
         <!-- JAVASCRIPT FILES -->

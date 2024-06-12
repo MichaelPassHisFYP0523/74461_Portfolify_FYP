@@ -1,16 +1,11 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['email'])) {
-    echo "You must be logged in to apply.";
-    exit();
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include "con.php";
 
     $project_id = $_POST['project_id'];
-    $sender_id = $_SESSION['user_id'];  // Assuming you store user ID in the session
+    $sender_id = $_POST['user_id']; 
+    $message = $_POST['message']; 
 
     // Fetch the project owner ID from the database
     $query = "SELECT user_id FROM `projects` WHERE `project_id` = ?";
@@ -29,16 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 
     if ($receiver_id) {
+        if ($receiver_id == $sender_id) {
+            echo json_encode(array("status" => "error", "message" => "You cannot send a collaboration request to yourself."));
+            exit();
+        }
+        
         $status = 'pending';
         $created_at = date('Y-m-d H:i:s');
 
         // Insert the application into the database without collab_id
-        $stmt = $conn->prepare("INSERT INTO `collab_invites` (`proj_id`, `sender_id`, `receiver_id`, `status`, `created_at`) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO `collab_invites` (`proj_id`, `sender_id`, `receiver_id`, `status`, `message`, `created_at`) VALUES (?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
             echo "Error preparing insert statement: " . $conn->error;
             exit();
         }
-        $stmt->bind_param("sssss", $project_id, $sender_id, $receiver_id, $status, $created_at);
+        $stmt->bind_param("ssssss", $project_id, $sender_id, $receiver_id, $status, $message, $created_at);
 
         if ($stmt->execute()) {
             // Retrieve the last inserted id

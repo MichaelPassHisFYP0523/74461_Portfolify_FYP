@@ -1,20 +1,54 @@
 <?php
-    session_start();
+session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: Sign_In.php");
-        exit();
-    }
+include("con.php");
 
-    // Get the sender ID from the URL parameter
-    if(isset($_GET['id'])) {
-        $sender_id = $_GET['id'];
-    } else {
-        // Handle the case where project ID is not provided
-        echo "Sender ID not provided.";
-        exit();
-    }
+if (!isset($_SESSION['email'])) {
+    header("Location: Sign_In.php");
+    exit();
+}
+
+// Get the sender ID from the URL parameter
+if(isset($_GET['id'])) {
+    $sender_id = $_GET['id'];
+} else {
+    echo "Sender ID not provided.";
+    exit();
+}
+
+// Fetch the user role
+$sql = "SELECT `role` FROM `users` WHERE `User_ID` = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("s", $sender_id);
+    $stmt->execute();
+    $stmt->bind_result($user_role);
+    $stmt->fetch();
+    $stmt->close();
+} else {
+    echo "Error fetching user role: " . $conn->error;
+    exit();
+}
+
+// Fetch profile data based on user role
+if ($user_role == 'recruiter') {
+    $sql = "SELECT `company_name`, `contact_email`, `contact_phone`, `about`, `website`, `logo`, `background` 
+            FROM `recruiter_profile` WHERE `User_ID` = ?";
+} else {
+    $sql = "SELECT `FirstName`, `LastName`, `ProfilePicture`, `Gender`, `Bio`, `Location`, `Skills`, `Education`, 
+            `Experience`, `SocialMediaLinks`, `Resume`, `profile_views` FROM `user_profile` WHERE `User_ID` = ?";
+}
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("s", $sender_id);
+    $stmt->execute();
+    $profile_data = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+} else {
+    echo "Error fetching profile data: " . $conn->error;
+    exit();
+}
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -88,17 +122,31 @@
                 <div class="container">
                     <div class="row justify-content-center align-items-center">
                     <div class="col-lg-5 col-12 mt-5 mt-lg-0">
-                            <div class="about-image-wrap">
-                                <img src="images/horizontal-shot-happy-mixed-race-females.jpg" class="about-image about-image-border-radius img-fluid" alt="">
-                            </div>
+                        <h2>View profile</h2>
+                        <div class="about-image-wrap">
+                            <?php if ($user_role == 'recruiter'): ?>
+                                <img src="<?php echo $profile_data['logo']; ?>"  alt="">
+                            <?php else: ?>
+                                <img src="<?php echo $profile_data['ProfilePicture']; ?>"  alt="">
+                            <?php endif; ?>
                         </div>
+                    </div>
                         <div class="col-lg-5 col-12">
                             <div class="about-info-text">
-                                <h2 class="mb-0">Introducing Portfolify</h2>
-                                <h4 class="mb-2">Get hired. Collaborate in projects and showcase your works </h4>
-                                <p>We offer users and recruiters a platform to find jobs, offer jobs, and upload projects to collaborate.</p>
-                                <a class="btn custom-btn" data-toggle="modal" data-target="#contactModal">Contact Me!</a>
-                                <a href="#" class="btn custom-btn">View My Projects and Portfolios</a>
+                            <?php if ($user_role == 'recruiter'): ?>
+                                <h2 class="mb-0"><?php echo $profile_data['company_name']; ?></h2>
+                                <h4 class="mb-2">About Us</h4>
+                                <p><?php echo $profile_data['about']; ?></p>
+                                <p><strong>Contact Email:</strong> <?php echo $profile_data['contact_email']; ?></p>
+                                <p><strong>Contact Phone:</strong> <?php echo $profile_data['contact_phone']; ?></p>
+                                <p><strong>Website:</strong> <a href="<?php echo $profile_data['website']; ?>" target="_blank"><?php echo $profile_data['website']; ?></a></p>
+                            <?php else: ?>
+                                <h2 class="mb-0"><?php echo $profile_data['FirstName'] . " " . $profile_data['LastName']; ?></h2>
+                                <h4 class="mb-2">Profile</h4>
+                                <p><strong>Gender:</strong> <?php echo $profile_data['Gender']; ?></p>
+                                <p><strong>Bio:</strong> <?php echo $profile_data['Bio']; ?></p>
+                                <p><strong>Social Media Links:</strong> <?php echo $profile_data['SocialMediaLinks']; ?></p>
+                            <?php endif; ?>
                             </div>
                         </div>
                         
@@ -106,41 +154,46 @@
                 </div>
             </section>
 
-            <!-- Modal -->
-            <div class="modal fade" id="contactModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Get in Touch</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+            <!-- Projects Section -->
+            <section class="projects-section section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-12 text-center">
+                            <h2>My Projects</h2>
                         </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" id="name" name="name" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" id="email" name="email" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Job/Collaboration Description</label>
-                                    <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
-                                </div>
-                                <button type="submit" class="btn custom-btn">Submit</button>
-                            </form>
-                        </div>
-
                     </div>
+                    <div class="row">
+                        <?php
+                        // Fetch projects associated with the user
+                        $project_query = "SELECT * FROM projects WHERE `user_id` = '$sender_id'";
+                        $project_result = $conn->query($project_query);
+
+                        if ($project_result->num_rows > 0) {
+                            while ($project_row = $project_result->fetch_assoc()) {
+                                ?>
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <div class="card h-100"> 
+                                        <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                        <div class="card-body d-flex flex-column"> 
+                                            <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
+                                            <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="col-lg-12 col-12 text-center">
+                                <p>No projects found.</p>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    
                 </div>
-            </div>
+            </section>
 
         </main>
 
