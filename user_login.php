@@ -6,7 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Adjust the column name 'email' to match your database
     $sql = "SELECT * FROM users WHERE `email` = '$email'";
     echo $sql;
     $result = $conn->query($sql);
@@ -20,11 +19,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_start();
             $_SESSION['email'] = $email;
             $_SESSION['user_id'] = $row['User_ID'];
-            // Determine user type
+
             $user_type = $row['role'];
+
+            $user_id = $row['User_ID'];
             
             // Redirect based on user type
             if ($user_type == 'user') {
+                // UPDATE query to update LastActive
+                $update_sql = "UPDATE user_profile SET LastActive = NOW() WHERE User_ID = ?";
+                $stmt = $conn->prepare($update_sql);
+                $stmt->bind_param('s', $user_id);
+                $stmt->execute();
+
                 header("Location: profile.php");
                 exit();
             } elseif ($user_type == 'recruiter') {

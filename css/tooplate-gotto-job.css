@@ -729,12 +729,17 @@ nav[aria-label="breadcrumb"] {
   background: var(--secondary-color);
 }
 
-.about-image-wrap,
-.video-thumb {
+.about-image-wrap img,
+.video-thumb img {
   position: relative;
-  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
+  object-fit: cover; 
+  overflow: hidden;
 }
+
 
 .about-info {
   background: var(--primary-color);
@@ -755,10 +760,18 @@ nav[aria-label="breadcrumb"] {
   border-radius: var(--border-radius-medium);
 }
 
-.about-image {
+/* .about-image {
   display: block;
   object-fit: cover;
   height: 100%;
+} */
+
+.about-image {
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px; /* Adjust as necessary to maintain the rounded corners */
 }
 
 .custom-border-radius-start {
@@ -1739,7 +1752,13 @@ button:hover {
   font-family: var(--body-font-family);
 }
 
+
 .close:hover, .close:focus {
-  background: none;
   border: none;
+  background: none;
+}
+
+
+a:hover {
+  text-decoration: none;
 }

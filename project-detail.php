@@ -1,27 +1,27 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['email'])) {
-    header("Location: Sign_In.php");
-    exit();
-}
+// if (!isset($_SESSION['email'])) {
+//     header("Location: Sign_In.php");
+//     exit();
+// }
 
 include "con.php";
 
 // Fetch the user_id from users based on the email
-$email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+// $email = $_SESSION['email'];
+// $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+// $stmt->bind_param("s", $email);
+// $stmt->execute();
+// $result = $stmt->get_result();
 
-if ($result && $result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    $user_id = $user['User_ID'];
-} else {
-    echo "User not found";
-    exit();
-}
+// if ($result && $result->num_rows > 0) {
+//     $user = $result->fetch_assoc();
+//     $user_id = $user['User_ID'];
+// } else {
+//     echo "User not found";
+//     exit();
+// }
 
 if (isset($_GET['id'])) {
     $project_id = $_GET['id'];
@@ -227,12 +227,12 @@ Bootstrap 5 HTML CSS Template
                                         <!-- Display user profile information -->
                                         <h6 class="mt-3 mb-2">About the User</h6>
                                         <p><?php echo htmlspecialchars($profile['Bio']); ?></p>
-                                        <!-- Additional user profile fields... -->
+                                        
                                     <?php elseif ($user_role === 'recruiter') : ?>
                                         <!-- Display recruiter profile information -->
                                         <h6 class="mt-3 mb-2">About the Company</h6>
                                         <p><?php echo htmlspecialchars($profile['about']); ?></p>
-                                        <!-- Additional recruiter profile fields... -->
+                                        
                                     <?php endif; ?>
 
                                     <!-- Common contact information -->
@@ -279,7 +279,7 @@ Bootstrap 5 HTML CSS Template
                         </div>
 
                         <div class="col-lg-4 col-12 d-flex ms-auto mb-5 mb-lg-4">
-                            <a href="job-listings.html" class="custom-btn custom-border-btn btn ms-lg-auto">Browse Job Listings</a>
+                            <a href="job-listings.html" class="custom-btn custom-border-btn btn ms-lg-auto">Browse Project Listings</a>
                         </div>
 
                         <?php

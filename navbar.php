@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link custom-btn btn" href="Sign_In.php">Login</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link custom-btn btn" href="Sign_out.php">Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
