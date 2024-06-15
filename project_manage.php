@@ -10,63 +10,8 @@
 
     $email = $_SESSION['email'];
 
-    // Fetch the User_ID based on the email
-    $sql = "SELECT `User_ID` FROM `users` WHERE `email` = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->bind_result($user_id);
-        $stmt->fetch();
-        $stmt->close();
-        echo "User ID: " . $user_id . "<br>";
-    } else {
-        echo "Error: " . $conn->error;
-        exit();
-    }
+    $user_id = $_SESSION['user_id'];
 
-    // Fetch projects based on the user_id and proj_status
-    $query = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-            FROM `projects` p 
-            WHERE p.proj_status = 1 AND p.user_id = ? 
-            ORDER BY p.created_at";
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param("s", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $projects = [];
-        while ($row = $result->fetch_assoc()) {
-            $projects[] = $row;
-        }
-
-        $stmt->close();
-    } else {
-        echo "Error: " . $conn->error;
-    }
-
-    // Fetch inactive projects
-    $queryInactive = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-                    FROM `projects` p 
-                    WHERE p.proj_status = 0 AND p.user_id = ? 
-                    ORDER BY p.created_at";
-    if ($stmtInactive = $conn->prepare($queryInactive)) {
-        $stmtInactive->bind_param("s", $user_id);
-        $stmtInactive->execute();
-        $resultInactive = $stmtInactive->get_result();
-
-        $inactiveProjects = [];
-        while ($row = $resultInactive->fetch_assoc()) {
-            $inactiveProjects[] = $row;
-        }
-
-        $stmtInactive->close();
-    } else {
-        echo "Error: " . $conn->error;
-    }
-
-    $conn->close();
 ?>
 
 <!doctype html>
@@ -78,7 +23,10 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Portfolify Project</title>
+        <title>Portfolify Profile</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,96 +45,184 @@
 
         <link href="css/tooplate-gotto-job.css" rel="stylesheet">
         
-
     </head>
     
     <body id="top">
 
-    <?php include 'navbar.php'; ?>
+        <!-- Navigation Bar -->
+        <?php include 'navbar.php'; ?>
+        <!-- End Navbar -->
 
         <main>
 
-        <!-- Active Project -->
-        <section class="job-section job-featured-section section-padding" id="job-section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Active Project</h2>
+            <header>
+
+                <div class="container">
+                    <div class="row">
+                        
+                        <div class="col-lg-12 col-12 text-center">
+                            <h1>My profile</h1>
+
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb justify-content-center">
+                                    <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+
+                                    <li class="breadcrumb-item"><a href="profile.php"></a>Profile</li>
+
+                                    <li class="breadcrumb-item active" aria-current="page">Manage project</li>
+                                </ol>
+                            </nav>
+                        </div>
+
                     </div>
-                    <?php foreach ($projects as $project): ?>
-                    <div class="col-lg-12 col-12">
-                        <a href="project_candidate.php?id=<?php echo $project['project_id']; ?>" class="project-link">
-                            <div class="job-thumb d-flex">
-                                <div class="job-image-wrap bg-white shadow-lg">
-                                    <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
-                                </div>
-                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                    <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0"><?php echo $project['title']; ?></h4>
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <p class="job-date mb-0">
-                                                <i class="custom-icon bi-clock me-1"></i>
-                                                <?php echo $project['created_at']; ?>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <p class="applicant-count mb-0">
-                                            <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
-                                        </p>
-                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $project['project_id']; ?>', 'deactivate');">Deactivate</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <?php endforeach; ?>
                 </div>
-            </div>
-        </section>
+            </header>
 
-        <!-- Inactive Project -->
-        <section class="job-section job-featured-section section-padding" id="job-section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Inactive Project</h2>
-                    </div>
-                    <?php foreach ($inactiveProjects as $inactiveProjects): ?>
-                    <div class="col-lg-12 col-12">
-                        <div class="job-thumb d-flex">
-                            <div class="job-image-wrap bg-white shadow-lg">
-                                <img src="<?php echo $inactiveProjects['project_image']; ?>" class="job-image img-fluid" alt="">
-                            </div>
-                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                <div class="mb-3">
-                                    <h4 class="job-title mb-lg-0">
-                                        <a href="job-details.html" class="job-title-link"><?php echo $inactiveProjects['title']; ?></a>
-                                    </h4>
-
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <p class="job-date mb-0">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            <?php echo $inactiveProjects['created_at']; ?>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="ms-auto">
-                                    <p class="applicant-count mb-0">
-                                        <strong><?php echo htmlspecialchars($inactiveProjects['applicant_count']); ?></strong> Applicants
-                                    </p>
-                                        <a href="#" class="deactivate-link" onclick="activateProject(event, '<?php echo $inactiveProjects['project_id']; ?>', 'activate');">Activate</a>
+            <!-- Projects Section -->
+            <section class="projects-section section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-12 text-center">
+                            <h2>My Projects</h2>
+                            <div class="row mb-4">
+                                <div class="col-lg-12 col-12 text-center">
+                                    <a href="project_manage.php" class="btn btn-secondary">Manage Projects</a>
+                                    <a href="#upload-section" class="btn btn-primary">Add Project</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <?php endforeach; ?>
+                    <div class="row">
+                        <?php
+                        // Fetch projects associated with the user
+                        $project_query = "SELECT * FROM projects WHERE `user_id` = '$user_id'";
+                        $project_result = $conn->query($project_query);
+
+                        if ($project_result->num_rows > 0) {
+                            while ($project_row = $project_result->fetch_assoc()) {
+                                ?>
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <div class="card h-100"> 
+                                        <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                        <div class="card-body d-flex flex-column"> 
+                                            <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
+                                            <div class="mt-auto">
+                                                <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal"  
+                                                data-project-id="<?php echo $project_row['project_id']; ?>"
+                                                data-project-title="<?php echo $project_row['title']; ?>"
+                                                data-project-description="<?php echo $project_row['description']; ?>"
+                                                data-project-image="<?php echo $project_row['project_image']; ?>" 
+                                                data-project-file=<?php echo $project_row['project_path'];?> >Edit</a>
+                                                <button type="button" class="btn btn-danger" onclick="deleteProject('<?php echo $project_row['project_id']; ?>')">Delete</button>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="col-lg-12 col-12 text-center">
+                                <p>No projects found.</p>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    
+                </div>
+            </section>
+
+            <!-- Upload project -->
+            <section id="upload-section" class="cta-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12 mx-auto">
+                            <form class="custom-form contact-form" id="uploadForm" method="post" enctype="multipart/form-data">
+                                <h2 class="text-center mb-4">Upload your project</h2>
+
+                                <div class="row">
+                                    <div class="col-lg-12 col-12">
+                                        <label for="full-name">Title</label>
+                                        <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Development of ..." required >
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="file">Upload your file</label>
+                                        <input type="file" name="file" id="file" class="form-control" required data-toggle="tooltip" title="Upload the main file of your project">
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="desc">Describe your project</label>
+                                        <textarea name="description" id="desc" rows="6" class="form-control" placeholder="This project is about ..." required></textarea>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="image_file">Project image (Optional)</label>
+                                        <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" data-toggle="tooltip" title="Upload an optional image related to your project">
+                                    </div>
+
+                                    <!-- Hidden input field to store the user_id -->
+                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+                                    
+                                    <!-- Store the action -->
+                                    <input type="hidden" name="action" value="upload">
+
+                                    <!-- Collaboration preference -->
+                                    <div class="col-lg-12 col-12">
+                                        <label>Collaborate?</label><br>
+                                        <input type="radio" name="collaborate" value="1" id="collaborate-yes" required data-toggle="tooltip" title="Select 'Yes' if you are open to collaboration">
+                                        <label for="collaborate-yes">Yes</label>
+                                        <input type="radio" name="collaborate" value="0" id="collaborate-no" data-toggle="tooltip" title="Select 'No' if you do not want to collaborate">
+                                        <label for="collaborate-no">No</label>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                        <button type="button" onclick="uploadProject()" class="form-control" >Upload</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edit Project Modal -->
+            <div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editProjectForm">
+                                <div class="col-md-12 mb-3">
+                                    <label for="edit-title" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="edit-title" name="title" required>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="edit-description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="edit-description" name="description" rows="3" required></textarea>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="edit-proj-file" class="form-label">Project File</label>
+                                    <input type="file" class="form-control" id="edit-proj-file" name="proj_file">
+                                    <a id="current-project-file" href="#" target="_blank" class="ms-2">View Current File</a>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="edit-image-file" class="form-label">Project Image (Optional)</label>
+                                    <input type="file" class="form-control" id="edit-image-file" name="image_file" accept="image/*">
+                                </div>
+                                <input type="hidden" id="edit-project-id" name="project_id">
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        </main>
+            </main>
 
         <!-- Footer -->
         <footer class="site-footer">
@@ -195,9 +231,13 @@
                     <div class="row">
 
                         <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
-                        </div>
 
+                            <ul class="footer-menu d-flex">
+                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Privacy Policy</a></li>
+
+                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Terms</a></li>
+                            </ul>
+                        </div>
                         <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
 
                     </div>
@@ -213,48 +253,105 @@
         <script src="js/counter.js"></script>
         <script src="js/custom.js"></script>
 
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+        <!-- Popper.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <!-- AJAX -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
         <script>
+            // Display the data in modal
+            document.addEventListener('DOMContentLoaded', function() {
+                var editProjectModal = document.getElementById('editProjectModal');
+                
+                editProjectModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget; 
+                    var projectId = button.getAttribute('data-project-id');
+                    var projectTitle = button.getAttribute('data-project-title');
+                    var projectDescription = button.getAttribute('data-project-description');
+                    var projectFile = button.getAttribute('data-project-file');
 
-        function deactivateStatus(event, projectId, action) {
-                event.preventDefault(); 
+                    // Update the modal's content with project data
+                    var modalTitleInput = editProjectModal.querySelector('#edit-title');
+                    var modalDescriptionTextarea = editProjectModal.querySelector('#edit-description');
+                    var modalProjectIdInput = editProjectModal.querySelector('#edit-project-id');
+                    var modalImagePreview = editProjectModal.querySelector('#edit-project-image-preview');
+                    var modalProjectFileLink = editProjectModal.querySelector('#current-project-file');
 
-                // Send an AJAX request to the server-side script
+                    modalTitleInput.value = projectTitle;
+                    modalDescriptionTextarea.value = projectDescription;
+                    modalProjectIdInput.value = projectId;
+                    modalProjectFileLink.href = projectFile;
+                    modalProjectFileLink.textContent = projectFile ? 'View Current File' : 'No File';
+                });
+            });
+
+            // Edit the project
+            document.getElementById('editProjectForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(this);
+                formData.append('action', 'edit');  
+
                 var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        // Handle the server response
+                xhr.open("POST", "project_actions.php", true);
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
                         alert(xhr.responseText);
-                        location.reload();
-                        // You can also update the UI as needed
+                        location.reload(); 
+                    } else {
+                        alert('Error: ' + xhr.statusText);
                     }
                 };
-                // Send the project ID as data
-                xhr.send("project_id=" + projectId + "&action=" + action);
+                xhr.send(formData);
+            });
+
+            // Upload a project
+            function uploadProject() {
+                
+                var formData = new FormData(document.getElementById('uploadForm'));
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "project_actions.php", true);
+                xhr.onload = function () {
+                    if (xhr.status == 200) {
+                        alert(xhr.responseText);
+                        location.reload();
+                    }
+                };
+                xhr.send(formData);
             }
 
-        function activateProject(event, projectId, action) {
-            event.preventDefault(); 
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
 
-            // Send an AJAX request to the server-side script
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Handle the server response
-                    alert(xhr.responseText);
-                    location.reload();
-                    // You can also update the UI as needed
+            // Delete the project
+            function deleteProject(projectId) {
+                if (confirm('Are you sure you want to delete this project?')) {
+                    $.ajax({
+                        url: 'project_actions.php',
+                        type: 'POST',
+                        data: { action: 'delete', project_id: projectId },
+                        success: function(response) {
+                            if (response == 'success') {
+                                $('#project-' + projectId).remove();
+                                alert('Project deleted successfully.');
+                                location.reload();
+                            } else {
+                                alert('Error deleting project: ' + response);
+                            }
+                        }
+                    });
                 }
-            };
-            // Send the project ID as data
-            xhr.send("project_id=" + projectId + "&action=" + action);
-        }
-
+            }
 
         </script>
 
-    </body>
-</html>

@@ -1,10 +1,12 @@
 <?php
 session_start();
+
 include 'con.php';
 
-$userId = $_SESSION['email'];
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userId = $_POST['user_id'];
+
     if (isset($_FILES['profilePicture'])) {
         // Handle profile picture update
         $profilePicture = $_FILES['profilePicture'];
@@ -27,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (move_uploaded_file($profilePicture['tmp_name'], $targetFilePath)) {
                     $sql = "UPDATE user_profile SET ProfilePicture = ? WHERE User_ID = ?";
                     $stmt = $conn->prepare($sql);
-                    $stmt->bind_param('si', $targetFilePath, $userId);
+                    $stmt->bind_param('ss', $targetFilePath, $userId);
                     if ($stmt->execute()) {
                         $_SESSION['success_message'] = "Profile picture updated successfully.";
                     } else {
@@ -54,12 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $sql = "UPDATE user_profile SET FirstName = ?, LastName = ?, Bio = ?, Gender = ?, Location = ?, SocialMediaLinks = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssssssi', $firstName, $lastName, $bio, $gender, $location, $socialMediaLinks, $userId);
+        $stmt->bind_param('sssssss', $firstName, $lastName, $bio, $gender, $location, $socialMediaLinks, $userId);
         if ($stmt->execute()) {
-            // echo "Personal information updated successfully.";
             $_SESSION['success_message'] = "Personal information updated successfully.";
         } else {
-            // echo "Failed to update personal information.";
             $_SESSION['error_message'] = "Failed to update personal information.";
         }
     } elseif (isset($_POST['workExperience'])) {
@@ -70,10 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssi', $skill, $workExperience, $userId);
         if ($stmt->execute()) {
-            // echo "Work experience updated successfully.";
             $_SESSION['success_message'] = "Work experience updated successfully";
         } else {
-            // echo "Failed to update work experience.";
             $_SESSION['error_message'] = "Failed to update work experience..";
         }
     } elseif (isset($_POST['studyBackground'])) {
@@ -81,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $studyBackground = $_POST['studyBackground'];
         $sql = "UPDATE user_profile SET Education = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('si', $studyBackground, $userId);
+        $stmt->bind_param('ss', $studyBackground, $userId);
         if ($stmt->execute()) {
             $_SESSION['success_message'] = "Study background updated successfully.";
         } else {
@@ -108,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (move_uploaded_file($resume['tmp_name'], $targetFilePath)) {
                     $sql = "UPDATE user_profile SET Resume = ? WHERE User_ID = ?";
                     $stmt = $conn->prepare($sql);
-                    $stmt->bind_param('si', $targetFilePath, $userId);
+                    $stmt->bind_param('ss', $targetFilePath, $userId);
                     if ($stmt->execute()) {
                         $_SESSION['success_message'] = "Resume uploaded successfully.";
                     } else {

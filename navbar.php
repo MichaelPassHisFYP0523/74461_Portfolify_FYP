@@ -46,7 +46,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link custom-btn btn" href="Sign_out.php">Logout</a>
+                            <a class="nav-link custom-btn btn" href="Sign_Out.php">Logout</a>
                         </li>
                     </ul>
                 </div>

@@ -1,16 +1,13 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['email'])) {
-    header("Location: Sign_In.php");
-    exit();
-}
-
+include "auth.php";
 include 'con.php';
+
+checkLogin();
 
 $email = $_SESSION['email'];
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];echo $user_id;
 
 $sql = "SELECT users.*, recruiter_profile.* FROM users
         INNER JOIN recruiter_profile ON users.User_ID = recruiter_profile.User_ID
@@ -23,6 +20,7 @@ if ($result->num_rows == 1) {
 } else {
     echo "User not found!";
 }
+
 ?>
 
 <!doctype html>

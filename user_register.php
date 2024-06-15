@@ -59,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Insert into recruiter_profile
                 $profile_sql = "INSERT INTO `recruiter_profile`(`r_id`, `User_ID`) VALUES (?, ?)";
+
             } else {
                 // Retrieve the last ID from user_profile
                 $getLastId = "SELECT `u_id` FROM `user_profile` ORDER BY `u_id` DESC LIMIT 1";

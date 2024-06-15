@@ -1,18 +1,11 @@
 <?php
 
-    session_start();
-
-    if (!isset($_SESSION['email'])) {
-        
-       header("Location: Sign_In.php");
-      exit();
-    }
-
+    include 'auth.php';
     include 'con.php';
 
     $email = $_SESSION['email'];
 
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'];echo $user_id;
 
     $sql = "SELECT users.*, user_profile.* FROM users
             INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
@@ -142,6 +135,10 @@
                                         <label for="profilePicture" class="form-label">Change Profile Picture</label>
                                         <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
                                     </div>
+
+                                    <!-- Hidden input field to store the user_id -->
+                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+                                    
                                     <button type="submit" class="custom-btn btn">Save Profile Picture</button>
                                 </div>
                             </form>
@@ -182,6 +179,10 @@
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" value="<?php echo $row['email'] ?>" readonly>
                                 </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
                                 <div class="mb-3 text-center">
                                     <button type="submit" class="custom-btn btn">Save Personal Information</button>
                                 </div>
@@ -200,6 +201,10 @@
                                     <label for="skills" class="form-label">Skills</label>
                                     <textarea class="form-control" id="skills" name="skills"><?php echo $row['Skills'] ?></textarea>
                                 </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
                                 <div class="mb-3 text-center">
                                     <button type="submit" class="custom-btn btn">Save Work Experience</button>
                                 </div>
@@ -214,6 +219,10 @@
                                     <label for="studyBackground" class="form-label">Education</label>
                                     <textarea class="form-control" id="studyBackground" name="studyBackground"><?php echo $row['Education'] ?></textarea>
                                 </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
                                 <div class="mb-3 text-center">
                                     <button type="submit" class="custom-btn btn">Save Education</button>
                                 </div>
@@ -235,6 +244,10 @@
                                         <label for="resume" class="form-label">Upload Resume</label>
                                         <input type="file" class="form-control" id="resume" name="resume" accept=".pdf, .doc, .docx">
                                     </div>
+
+                                    <!-- Hidden input field to store the user_id -->
+                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+                                    
                                     <button type="submit" class="custom-btn btn">Upload Resume</button>
                                 </div>
                             </form>
@@ -248,25 +261,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="site-footer">
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 col-12 d-flex align-items-center">
-
-                            <ul class="footer-menu d-flex">
-                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Privacy Policy</a></li>
-
-                                <li class="footer-menu-item"><a href="#" class="footer-menu-link">Terms</a></li>
-                            </ul>
-                        </div>
-                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include 'footer.php'; ?>
         <!-- End footer -->
 
         <!-- JAVASCRIPT FILES -->

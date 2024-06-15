@@ -264,54 +264,55 @@
 
         <!-- Upload project -->
         <section id="upload-section" class="cta-section">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8 col-12 mx-auto">
-                            <form class="custom-form contact-form" id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
-                                <h2 class="text-center mb-4">Upload your project</h2>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-12 mx-auto">
+                        <form class="custom-form contact-form" id="uploadForm" method="post" enctype="multipart/form-data">
+                            <h2 class="text-center mb-4">Upload your project</h2>
 
-                                <div class="row">
-                                    <div class="col-lg-12 col-12">
-                                        <label for="full-name">Title</label>
-                                        <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Jack Doe" required>
-                                    </div>
-
-                                    <div class="col-lg-12 col-12">
-                                        <label for="file">Upload your file</label>
-                                        <input type="file" name="file" id="file" class="form-control" required>
-                                    </div>
-
-                                    <div class="col-lg-12 col-12">
-                                        <label for="desc">Describe your project</label>
-                                        <textarea name="description" id="desc" rows="6" class="form-control" placeholder="What can we help you?" required></textarea>
-                                    </div>
-
-                                    <div class="col-lg-12 col-12">
-                                        <label for="file">Project image (Optional)</label>
-                                        <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*">
-                                    </div>
-
-                                    <!-- Hidden input field to store the user_id -->
-                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
-
-                                    <!-- Collaboration preference -->
-                                    <div class="col-lg-12 col-12">
-                                        <label>Collaborate?</label><br>
-                                        <input type="radio" name="collaborate" value="1" id="collaborate-yes" required>
-                                        <label for="collaborate-yes">Yes</label>
-                                        <input type="radio" name="collaborate" value="0" id="collaborate-no">
-                                        <label for="collaborate-no">No</label>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-4 col-6 mx-auto">
-                                        <button type="button" onclick="uploadProject()" class="form-control">Upload</button>
-                                    </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-12">
+                                    <label for="full-name">Title</label>
+                                    <input type="text" name="full_name" id="full-name" class="form-control" placeholder="Development of ..." required >
                                 </div>
-                            </form>
-                        </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="file">Upload your file</label>
+                                    <input type="file" name="file" id="file" class="form-control" required data-toggle="tooltip" title="Upload the main file of your project">
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="desc">Describe your project</label>
+                                    <textarea name="description" id="desc" rows="6" class="form-control" placeholder="This project is about ..." required></textarea>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="image_file">Project image (Optional)</label>
+                                    <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" data-toggle="tooltip" title="Upload an optional image related to your project">
+                                </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                <!-- Collaboration preference -->
+                                <div class="col-lg-12 col-12">
+                                    <label>Collaborate?</label><br>
+                                    <input type="radio" name="collaborate" value="1" id="collaborate-yes" required data-toggle="tooltip" title="Select 'Yes' if you are open to collaboration">
+                                    <label for="collaborate-yes">Yes</label>
+                                    <input type="radio" name="collaborate" value="0" id="collaborate-no" data-toggle="tooltip" title="Select 'No' if you do not want to collaborate">
+                                    <label for="collaborate-no">No</label>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                    <button type="button" onclick="uploadProject()" class="form-control" >Upload</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
+            </div>
         </section>
+
 
         </main>
 
@@ -361,6 +362,11 @@
                 };
                 xhr.send(formData);
             }
+
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+
         </script>
 
         
