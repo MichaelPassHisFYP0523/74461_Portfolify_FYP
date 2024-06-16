@@ -61,13 +61,13 @@
                     <div class="row">
                         
                         <div class="col-lg-12 col-12 text-center">
-                            <h1>My profile</h1>
+                            <h1>My project</h1>
 
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb justify-content-center">
                                     <li class="breadcrumb-item"><a href="index.php">Home</a></li>
 
-                                    <li class="breadcrumb-item"><a href="profile.php"></a>Profile</li>
+                                    <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
 
                                     <li class="breadcrumb-item active" aria-current="page">Manage project</li>
                                 </ol>
@@ -86,7 +86,7 @@
                             <h2>My Projects</h2>
                             <div class="row mb-4">
                                 <div class="col-lg-12 col-12 text-center">
-                                    <a href="project_manage.php" class="btn btn-secondary">Manage Projects</a>
+                                    <a href="project_invite.php" class="btn btn-secondary">Collaboration Invite</a>
                                     <a href="#upload-section" class="btn btn-primary">Add Project</a>
                                 </div>
                             </div>

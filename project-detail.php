@@ -1,16 +1,7 @@
 <?php
-// session_start();
-
-// if (!isset($_SESSION['email'])) {
-//     header("Location: Sign_In.php");
-//     exit();
-// }
 
 include "auth.php";
 include "con.php";
-
-// Check if the user is logged in
-// checkLogin();
 
 // Fetch the user_id from users based on the email
 // $email = $_SESSION['email'];
@@ -111,15 +102,6 @@ if (isset($_GET['id'])) {
 
         <link href="css/tooplate-gotto-job.css" rel="stylesheet">
         
-<!--
-
-Tooplate 2134 Gotto Job
-
-https://www.tooplate.com/view/2134-gotto-job
-
-Bootstrap 5 HTML CSS Template
-
--->
     </head>
     
     <body id="top">
@@ -177,42 +159,106 @@ Bootstrap 5 HTML CSS Template
 
         <main>
 
-        <!-- Project Description -->
-        <section class="job-section section-padding pb-0">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-12">
-                        <h2 class="job-title mb-0"><?php echo htmlspecialchars($project['title']); ?></h2>
-                        <div class="job-thumb job-thumb-detail">
-                            <div class="d-flex flex-wrap align-items-center border-bottom pt-lg-3 pt-2 pb-3 mb-4">
+            <!-- Project Description -->
+            <section class="job-section section-padding pb-0">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-8 col-12">
+                            <h2 class="job-title mb-0"><?php echo htmlspecialchars($project['title']); ?></h2>
+
+                            <div class="job-thumb job-thumb-detail">
+                                <div class="d-flex flex-wrap align-items-center border-bottom pt-lg-3 pt-2 pb-3 mb-4">
+                                </div>
+
+                                <h4 class="mt-4 mb-2">Project Description</h4>
+
+                                <p><?php echo htmlspecialchars($project['description']); ?></p>
+
+                                <h5 class="mt-4 mb-3">More Information</h5>
+
+                                <a href="<?php echo htmlspecialchars($project['project_path']); ?>" target="_blank" >Download Project Details</a>
                             </div>
-                            <h4 class="mt-4 mb-2">Project Description</h4>
-                            <p><?php echo htmlspecialchars($project['description']); ?></p>
-                            <h5 class="mt-4 mb-3">More Information</h5>
-                            <a href="<?php echo htmlspecialchars($project['project_path']); ?>" target="_blank">Download Project Details</a>
-                        </div>
+
 
                         <!-- Application Form -->
                         <?php if (isset($_SESSION['email'])): ?>
-                            <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
+                                <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
                                 <form id="applyForm" class="d-flex flex-column align-items-center w-100" method="post" action="apply_project.php">
                                     <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['project_id']); ?>">
                                     <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                                    <input type="hidden" name="owner_id" value="<?php echo htmlspecialchars($project['user_id']); ?>">
+                                    <input type="hidden" name="owner_id" value="<?php echo htmlspecialchars ($project['user_id']); ?>">
                                     <div class="form-group w-100">
                                         <label for="message">Your Message</label>
                                         <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message here..." required></textarea>
                                     </div>
                                     <button type="submit" class="custom-btn btn mt-2">Collaborate</button>
                                 </form>
-                            </div>
-                        <?php else: ?>
+                                </div>
+                                <?php else: ?>
                             <p>Please <a href="Sign_In.php">log in</a> to apply for this project.</p>
                         <?php endif; ?>
+                            </div>
+                            
+                            <div class="col-lg-4 col-12 mt-5 mt-lg-0">
+                                <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
+                                    <div class="d-flex align-items-center">
+                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
+                                            <?php if ($user_role === 'user') : ?>
+                                                <img src="<?php echo htmlspecialchars($profile['ProfilePicture']); ?>" class="job-image me-3 img-fluid" alt="">
+                                                <p class="mb-0"><?php echo htmlspecialchars($profile['FirstName']); ?></p>
+                                            <?php elseif ($user_role === 'recruiter') : ?>
+                                                <img src="<?php echo htmlspecialchars($profile['logo']); ?>" class="job-image me-3 img-fluid" alt="">
+                                                <p class="mb-0"><?php echo htmlspecialchars($profile['company_name']); ?></p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+
+                                    <?php if ($user_role === 'user') : ?>
+                                        <!-- Display user profile information -->
+                                        <h6 class="mt-3 mb-2">About the User</h6>
+                                        <p><?php echo htmlspecialchars($profile['Bio']); ?></p>
+                                        
+                                    <?php elseif ($user_role === 'recruiter') : ?>
+                                        <!-- Display recruiter profile information -->
+                                        <h6 class="mt-3 mb-2">About the Company</h6>
+                                        <p><?php echo htmlspecialchars($profile['about']); ?></p>
+                                        
+                                    <?php endif; ?>
+
+                                    <!-- Common contact information -->
+                                    <h6 class="mt-4 mb-3">Contact Information</h6>
+                                    <p class="mb-2">
+                                        <i class="custom-icon bi-globe me-1"></i>
+                                        <?php if ($user_role === 'user') : ?>
+                                            <a href="#" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['SocialMediaLinks']); ?>
+                                            </a>
+                                        <?php elseif ($user_role === 'recruiter') : ?>
+                                            <a href="<?php echo htmlspecialchars($profile['website']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['website']); ?>
+                                            </a>
+                                        <?php endif; ?>
+                                    </p>
+                                    <p>
+                                        <i class="custom-icon bi-envelope me-1"></i>
+                                        <?php if ($user_role === 'user') : ?>
+                                            <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['email']); ?>
+                                            </a>
+                                        <?php elseif ($user_role === 'recruiter') : ?>
+                                            <a href="mailto:<?php echo htmlspecialchars($profile['contact_email']); ?>" class="site-footer-link">
+                                                <?php echo htmlspecialchars($profile['contact_email']); ?>
+                                            </a>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
             <!-- Browse Other Project -->
             <section class="job-section section-padding">

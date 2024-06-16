@@ -140,7 +140,7 @@
             </section>
 
             <!-- Latest Job -->
-            <section class="job-section job-featured-section section-padding" id="job-section">
+            <section>
                 <div class="container">
                     <div class="row">
 
@@ -249,7 +249,6 @@
 
                                             <div class="job-details">
                                             <p><?php echo $row['description']; ?></p>
-                                            <p>Price: $<?php echo $row['project_price']; ?></p>
                                         </div>
 
                                             <p></p>
@@ -267,8 +266,6 @@
                             echo "No projects found";
                         }
                         ?>
-
-
                     </div>
                 </div>
             </section>

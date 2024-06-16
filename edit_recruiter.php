@@ -1,5 +1,5 @@
 <?php
-
+// session_start();
 include "auth.php";
 include 'con.php';
 
@@ -53,22 +53,20 @@ if ($result->num_rows == 1) {
 <!-- End Navbar -->
 
 <main>
-
-    <header class="site-header">
-        <div class="section-overlay"></div>
-
+    <header>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-12 text-center">
-                    <h1 class="text-white">Company profile</h1>
-
+                    <h1>Company profile</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Company profile</li>
                         </ol>
                     </nav>
                 </div>
+
             </div>
         </div>
     </header>

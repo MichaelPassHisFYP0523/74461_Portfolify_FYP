@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 // Default redirect to profile page if no intended page is found
                 header("Location: profile.php");
-                echo "Redirecting to profile.php";
+                // echo "Redirecting to profile.php";
             }
             exit();
         } else {

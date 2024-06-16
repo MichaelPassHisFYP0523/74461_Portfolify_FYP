@@ -1,10 +1,4 @@
 <?php
-// session_start();
-
-// if (!isset($_SESSION['email'])) {
-//     header("Location: Sign_In.php");
-//     exit();
-// }
 
 include 'auth.php';
 include 'con.php';
@@ -65,22 +59,22 @@ if ($result->num_rows == 1) {
     <!-- End Navbar -->
 
     <main>
-        <header class="site-header">
-            <div class="section-overlay"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12 col-12 text-center">
-                        <h1 class="text-white">My profile</h1>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                            </ol>
-                        </nav>
-                    </div>
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-12 text-center">
+                    <h1>My profile</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                        </ol>
+                    </nav>
                 </div>
+
             </div>
-        </header>
+        </div>
+    </header>
 
         <!-- Profile Overview -->
         <section class="contact-section section-padding">
@@ -185,6 +179,54 @@ if ($result->num_rows == 1) {
                 </div>
             </div>
         </section>
+
+        <!-- Job Section (Visible only to recruiters) -->
+        <?php if ($role === 'recruiter'): ?>
+            <section class="projects-section section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-12 text-center">
+                        <h2>Job Posted</h2>
+                        <div class="row mb-4">
+                            <div class="col-lg-12 col-12 text-center">
+                                <a href="project_invite.php" class="btn btn-secondary">Job application</a>
+                                <a href="project_manage.php" class="btn btn-secondary">Manage Jobs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <?php
+                    // Fetch projects associated with the user
+                    $job_query = "SELECT * FROM job WHERE recruiter_id = '$user_id'";
+                    $job_result = $conn->query($job_query);
+
+                    if ($job_result->num_rows > 0) {
+                        while ($job_row = $job_result->fetch_assoc()) {
+                            ?>
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <div class="card h-100"> 
+                                    <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                    <div class="card-body d-flex flex-column"> 
+                                        <h5 class="card-title"><?php echo $job_row['job_title']; ?></h5>
+                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="col-lg-12 col-12 text-center">
+                            <p>No job found.</p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </section>
+        <?php endif; ?>
     </main>
 
     <!-- Footer -->

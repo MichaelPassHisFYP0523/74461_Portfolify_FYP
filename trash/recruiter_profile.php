@@ -313,6 +313,49 @@
             </div>
         </section>
 
+        <!-- Upload Job Section (Visible only to recruiters) -->
+        <?php if ($role === 'recruiter'): ?>
+        <section id="upload-section" class="cta-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-12 mx-auto">
+                        <form class="custom-form contact-form" id="uploadForm" method="post" enctype="multipart/form-data">
+                            <h2 class="text-center mb-4">Post a Job</h2>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-12">
+                                    <label for="job-title">Job Title</label>
+                                    <input type="text" name="job_title" id="job-title" class="form-control" placeholder="Job Title" required >
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="job-description">Job Description</label>
+                                    <textarea name="job_description" id="job-description" rows="6" class="form-control" placeholder="Job Description" required></textarea>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="job-requirements">Job Requirements</label>
+                                    <textarea name="job_requirements" id="job-requirements" rows="6" class="form-control" placeholder="Job Requirements" required></textarea>
+                                </div>
+
+                                <div class="col-lg-12 col-12">
+                                    <label for="company-logo">Company Logo (Optional)</label>
+                                    <input type="file" name="company_logo" id="company-logo" class="form-control" accept="image/*" data-toggle="tooltip" title="Upload an optional image related to the job">
+                                </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                    <button type="submit" class="form-control">Post Job</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php endif; ?>
 
         </main>
 

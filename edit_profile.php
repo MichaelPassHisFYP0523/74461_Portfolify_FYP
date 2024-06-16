@@ -1,5 +1,5 @@
 <?php
-
+// session_start();
     include 'auth.php';
     include 'con.php';
 
@@ -60,28 +60,23 @@
         <!-- End Navbar -->
 
         <main>
-
-            <header class="site-header">
-                <div class="section-overlay"></div>
-
-                <div class="container">
-                    <div class="row">
-                        
-                        <div class="col-lg-12 col-12 text-center">
-                            <h1 class="text-white">My profile</h1>
-
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center">
-                                    <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-
-                                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                                </ol>
-                            </nav>
-                        </div>
-
+        <header>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-12 text-center">
+                        <h1>My profile</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                                <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Edit profile</li>
+                            </ol>
+                        </nav>
                     </div>
+
                 </div>
-            </header>
+            </div>
+        </header>
 
             <section class="contact-section section-padding">
                 <div class="container">

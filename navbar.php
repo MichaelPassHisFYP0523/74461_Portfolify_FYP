@@ -29,7 +29,7 @@
                             <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                                 <li><a class="dropdown-item" href="job-listings.html">Job Listings</a></li>
 
-                                <li><a class="dropdown-item" href="job-details.html">Project Listings</a></li>
+                                <li><a class="dropdown-item" href="project-listing.php">Project Listings</a></li>
                             </ul>
                         </li>
 
