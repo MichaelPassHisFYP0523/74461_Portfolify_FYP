@@ -197,7 +197,7 @@
                                     </div>
 
                                     <div class="job-section-btn-wrap">
-                                        <a href="job-details.html" class="custom-btn btn">Apply now</a>
+                                        <a href="job-detail.php?id=<?php echo $row['job_id']; ?>" class="custom-btn btn">Apply now</a>
                                     </div>
                                 </div>
                             </div>

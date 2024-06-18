@@ -189,8 +189,8 @@ if ($result->num_rows == 1) {
                         <h2>Job Posted</h2>
                         <div class="row mb-4">
                             <div class="col-lg-12 col-12 text-center">
-                                <a href="project_invite.php" class="btn btn-secondary">Job application</a>
-                                <a href="project_manage.php" class="btn btn-secondary">Manage Jobs</a>
+                                <a href="job_application.php" class="btn btn-secondary">Job application</a>
+                                <a href="job_manage.php" class="btn btn-secondary">Manage Jobs</a>
                             </div>
                         </div>
                     </div>
@@ -206,10 +206,12 @@ if ($result->num_rows == 1) {
                             ?>
                             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                                 <div class="card h-100"> 
-                                    <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                    
                                     <div class="card-body d-flex flex-column"> 
                                         <h5 class="card-title"><?php echo $job_row['job_title']; ?></h5>
-                                        <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
+                                        <p class="card-text flex-grow-1"><?php echo $job_row['date_posted']; ?>
+                                        <?php echo $job_row['job_location']; ?>
+                                        <?php echo $job_row['job_types']; ?></p> 
                                     </div>
                                 </div>
                             </div>

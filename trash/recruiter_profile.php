@@ -16,7 +16,7 @@
             INNER JOIN recruiter_profile ON users.User_ID = recruiter_profile.User_ID
             WHERE users.email = '$email'";
 
-    $result = $conn->query($sql);
+    $result = $con->query($sql);
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();

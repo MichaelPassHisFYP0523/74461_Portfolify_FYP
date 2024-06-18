@@ -1,11 +1,6 @@
 <?php
-    session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: Sign_In.php");
-        exit();
-    }
-
+    include 'auth.php';
     include 'con.php';
 
     $email = $_SESSION['email'];
@@ -22,48 +17,6 @@
     } else {
         echo "Error: " . $conn->error;
         exit();
-    }
-
-    // Fetch projects based on the user_id and proj_status
-    $query = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-            FROM `projects` p 
-            WHERE p.proj_status = 1 AND p.user_id = ? 
-            ORDER BY p.created_at";
-    if ($stmt = $conn->prepare($query)) {
-        $stmt->bind_param("s", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $projects = [];
-        while ($row = $result->fetch_assoc()) {
-            $projects[] = $row;
-        }
-
-        $stmt->close();
-    } else {
-        echo "Error: " . $conn->error;
-    }
-
-    // Fetch inactive projects
-    $queryInactive = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-                    FROM `projects` p 
-                    WHERE p.proj_status = 0 AND p.user_id = ? 
-                    ORDER BY p.created_at";
-    if ($stmtInactive = $conn->prepare($queryInactive)) {
-        $stmtInactive->bind_param("s", $user_id);
-        $stmtInactive->execute();
-        $resultInactive = $stmtInactive->get_result();
-
-        $inactiveProjects = [];
-        while ($row = $resultInactive->fetch_assoc()) {
-            $inactiveProjects[] = $row;
-        }
-
-        $stmtInactive->close();
-    } else {
-        echo "Error: " . $conn->error;
     }
 
     $conn->close();
@@ -106,106 +59,236 @@
 
         <main>
 
-        <!-- Active Project -->
-        <section class="job-section job-featured-section section-padding" id="job-section">
+        <header>
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Active Job Ad</h2>
+                    
+                    <div class="col-lg-12 col-12 text-center">
+                        <h1>Job posted</h1>
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+
+                                <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
+
+                                <li class="breadcrumb-item active" aria-current="page">Job</li>
+                            </ol>
+                        </nav>
                     </div>
-                    <?php foreach ($projects as $project): ?>
-                    <div class="col-lg-12 col-12">
-                        <div class="job-thumb d-flex">
-                            <div class="job-image-wrap bg-white shadow-lg">
-                                <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
-                            </div>
-                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                <div class="mb-3">
-                                    <h4 class="job-title mb-lg-0">
-                                        <a href="project_candidate.php?id=<?php echo $project['project_id']; ?>" class="job-title-link"><?php echo $project['title']; ?></a>
-                                    </h4>
 
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <p class="job-date mb-0">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            <?php echo $project['created_at']; ?>
-                                        </p>
-                                    </div>
-                                </div>
+                </div>
+            </div>
+        </header>
 
-                                <div class="ms-auto">
-                                    <p class="applicant-count mb-0">
-                                        <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
-                                    </p>
-                                        <a href="#" class="deactivate-link" onclick="submitForm(event, '<?php echo $project['project_id']; ?>');">Deactivate</a>
+            <!-- Active Job -->
+            <section>
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-6 col-12 text-center mx-auto mb-4">
+                            <h2>Active Jobs</h2>
+                            <div class="mb-4">
+                                <div class="col-lg-12 col-12 text-center">
+                                    <a href="project_invite.php" class="btn btn-secondary">Job application</a>
+                                    <a href="#upload-section" class="btn btn-primary">Post Job</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
 
-        <!-- Inactive Project -->
-        <section class="job-section job-featured-section section-padding" id="job-section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Inactive Project</h2>
-                    </div>
-                    <?php foreach ($inactiveProjects as $inactiveProjects): ?>
-                    <div class="col-lg-12 col-12">
-                        <div class="job-thumb d-flex">
-                            <div class="job-image-wrap bg-white shadow-lg">
-                                <img src="<?php echo $inactiveProjects['project_image']; ?>" class="job-image img-fluid" alt="">
-                            </div>
-                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                <div class="mb-3">
-                                    <h4 class="job-title mb-lg-0">
-                                        <a href="job-details.html" class="job-title-link"><?php echo $inactiveProjects['title']; ?></a>
-                                    </h4>
+                        <?php
+                            include "con.php";
 
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <p class="job-date mb-0">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            <?php echo $inactiveProjects['created_at']; ?>
-                                        </p>
+                            $query = "SELECT * FROM `job` WHERE recruiter_id = '$user_id'";
+                            $result = mysqli_query($conn, $query);
+
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+
+                        <di class="col-lg-12 col-12">
+                            <div class="job-thumb d-flex">
+                                <div class="job-image-wrap bg-white shadow-lg">
+                                    <img src="images/logos/google.png" class="job-image img-fluid" alt="">
+                                </div>
+
+                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                                    <div class="mb-3">
+                                        <h4 class="job-title mb-lg-0">
+                                            <a href="job-detail.php?id=<?php echo $row['job_id']; ?>" class="job-title-link"><?php echo $row['job_title']; ?></a>
+                                        </h4>
+
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <p class="job-location mb-0">
+                                                <i class="custom-icon bi-geo-alt me-1"></i>
+                                                <?php echo $row['job_location']; ?>
+                                            </p>
+
+                                            <p class="job-date mb-0">
+                                                <i class="custom-icon bi-clock me-1"></i>
+                                                <?php echo $row['date_posted']; ?>
+                                            </p>
+
+                                            <p class="job-price mb-0">
+                                                <i class="custom-icon bi-cash me-1"></i>
+                                                <?php echo $row['salary']; ?>
+                                            </p>
+
+                                            <div class="d-flex">
+                                                <p class="mb-0">
+                                                    <a href="job-listings.html" class="badge badge-level"><?php echo $row['job_types']; ?></a>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div class="job-section-btn-wrap">
+                                    <a href="#" class="edit-link" 
+                                        data-id="<?php echo $row['job_id']; ?>" 
+                                        data-title="<?php echo $row['job_title']; ?>" 
+                                        data-location="<?php echo $row['job_location']; ?>" 
+                                        data-salary="<?php echo $row['salary']; ?>" 
+                                        data-types="<?php echo $row['job_types']; ?>" 
+                                        data-description="<?php echo $row['job_desc']; ?>"
+                                        data-requirements="<?php echo $row['requirement']; ?>"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editJobModal">
+                                        Edit
+                                    </a> |
+                                    <a href="#" class="delete-link" onclick="deleteJob('<?php echo $row['job_id']; ?>')">Delete</a>
                                 </div>
 
-                                <div class="ms-auto">
-                                    <p class="applicant-count mb-0">
-                                        <strong><?php echo htmlspecialchars($inactiveProjects['applicant_count']); ?></strong> Applicants
-                                    </p>
-                                        <a href="#" class="deactivate-link" onclick="submitForm(event, '<?php echo $inactiveProjects['project_id']; ?>');">Activate</a>
                                 </div>
                             </div>
+
+                            <?php
+                                }
+                                } else {
+                            ?>
+                                <div class="col-lg-12 col-12 text-center">
+                                <p class="col-lg-12 col-12 text-center">No job found</p>
+                                </div>
+                            <?php
+                                }
+                            ?>
+                    
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edit modal -->
+            <div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editJobModalLabel">Edit Job</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editJobForm">
+                                <input type="hidden" id="job_id" name="job_id">
+                                <div class="mb-3">
+                                    <label for="job_title" class="form-label">Job Title</label>
+                                    <input type="text" class="form-control" id="job_title" name="job_title" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="job_description" class="form-label">Job Description</label>
+                                    <textarea class="form-control" id="job_description" name="job_description" rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="job_requirements" class="form-label">Job Requirements</label>
+                                    <textarea class="form-control" id="job_requirements" name="job_requirements" rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="job_location" class="form-label">Job Location</label>
+                                    <input type="text" class="form-control" id="job_location" name="job_location" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="salary" class="form-label">Salary</label>
+                                    <input type="text" class="form-control" id="salary" name="salary" required>
+                                </div>
+                                <div class="mb-3">
+                                        <label for="job_types">Job Types</label>
+                                        <select name="job_types" id="job_types" class="form-control" required>
+                                            <option value="" disabled selected >Select Job Type</option>
+                                            <option value="Full Time">Full Time</option>
+                                            <option value="Part Time">Part Time</option>
+                                            <option value="Internship">Internship</option>
+                                        </select>
+                                    </div>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
                         </div>
                     </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
-        </section>
+
+            <!-- Post Job -->
+            <section id="upload-section" class="cta-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-12 mx-auto">
+                            <form class="custom-form contact-form" id="uploadJob" method="post" enctype="multipart/form-data">
+                                <h2 class="text-center mb-4">Post a Job</h2>
+
+                                <div class="row">
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job-title">Job Title</label>
+                                        <input type="text" name="job_title" id="job-title" class="form-control" placeholder="e.g., Software Engineer" required>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job-description">Job Description</label>
+                                        <textarea name="job_description" id="job-description" rows="6" class="form-control" placeholder="Describe the responsibilities and duties of the job" required></textarea>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job-requirements">Job Requirements</label>
+                                        <textarea name="job_requirements" id="job-requirements" rows="6" class="form-control" placeholder="List the qualifications and skills needed for the job" required></textarea>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job-salary">Job Salary</label>
+                                        <input type="text" name="salary" id="job-salary" class="form-control" placeholder="e.g., $4,000 - $7,000" required>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job-type">Job Types</label>
+                                        <select name="jobType" id="job-type" class="form-control" required>
+                                            <option value="" disabled selected>Select Job Type</option>
+                                            <option value="Full Time">Full Time</option>
+                                            <option value="Part Time">Part Time</option>
+                                            <option value="Internship">Internship</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="location">Location</label>
+                                        <input type="text" name="location" id="location" class="form-control" placeholder="e.g., New York, NY" required>
+                                    </div>
+
+                                    <!-- Hidden input field to store the user_id -->
+                                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                    <!-- Store the action -->
+                                    <input type="hidden" name="action" value="upload">
+
+                                    <div class="col-lg-4 col-md-4 col-6 mx-auto">
+                                        <button type="button" onclick="uploadJob()" class="form-control" >Post Job</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
         </main>
 
         <!-- Footer -->
-        <footer class="site-footer">
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
-                        </div>
-
-                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include 'footer.php'; ?>
         <!-- End footer -->
 
         <!-- JAVASCRIPT FILES -->
@@ -216,23 +299,86 @@
         <script src="js/custom.js"></script>
 
         <script>
-        function submitForm(event, projectId) {
-                event.preventDefault(); // Prevent the default link behavior
+        // Upload a job
+        function uploadJob() {
+            
+            var formData = new FormData(document.getElementById('uploadJob'));
 
-                // Send an AJAX request to the server-side script
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "job_actions.php", true);
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    alert(xhr.responseText);
+                    location.reload();
+                }
+            };
+            xhr.send(formData);
+        }
+
+        // Delete the job
+        function deleteJob(jobId) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                $.ajax({
+                    url: 'job_actions.php',
+                    type: 'POST',
+                    data: { action: 'delete', job_id: jobId },
+                    success: function(response) {
+                        if (response == 'success') {
+                            alert('Project deleted successfully.');
+                            location.reload();
+                        } else {
+                            alert('Error deleting project: ' + response);
+                        }
+                    }
+                });
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var editLinks = document.querySelectorAll('.edit-link');
+            
+            editLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    var jobId = this.getAttribute('data-id');
+                    var jobTitle = this.getAttribute('data-title');
+                    var jobLocation = this.getAttribute('data-location');
+                    var salary = this.getAttribute('data-salary');
+                    var jobTypes = this.getAttribute('data-types');
+                    var jobDescription = this.getAttribute('data-description');
+                    var jobRequirements = this.getAttribute('data-requirements');
+
+                    document.getElementById('job_id').value = jobId;
+                    document.getElementById('job_title').value = jobTitle;
+                    document.getElementById('job_location').value = jobLocation;
+                    document.getElementById('salary').value = salary;
+                    document.getElementById('job_types').value = jobTypes;
+                    document.getElementById('job_description').value = jobDescription;
+                    document.getElementById('job_requirements').value = jobRequirements;
+
+                });
+            });
+
+            document.getElementById('editJobForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(this);
+                formData.append('action', 'edit');
+
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "deactivate_project.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        // Handle the server response
-                        alert(xhr.responseText);
-                        // You can also update the UI as needed
+                xhr.open('POST', 'job_actions.php', true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert('Job updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error updating job: ' + xhr.statusText);
                     }
                 };
-                // Send the project ID as data
-                xhr.send("project_id=" + projectId);
-            }
+                xhr.send(formData);
+            });
+        });
+
         </script>
 
     </body>

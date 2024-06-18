@@ -1,11 +1,6 @@
 <?php
-    session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: Sign_In.php");
-        exit();
-    }
-
+    include 'auth.php';
     include 'con.php';
 
     $email = $_SESSION['email'];
@@ -80,9 +75,6 @@
 
         <title>Portfolify Project</title>
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         
@@ -108,28 +100,6 @@
     <?php include 'navbar.php'; ?>
 
         <main>
-
-        <header>
-            <div class="container">
-                <div class="row">
-                    
-                    <div class="col-lg-12 col-12 text-center">
-                        <h1>Collaboration Request</h1>
-
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-
-                                <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
-
-                                <li class="breadcrumb-item active" aria-current="page">Collab</li>
-                            </ol>
-                        </nav>
-                    </div>
-
-                </div>
-            </div>
-        </header>
 
         <!-- Active Project -->
         <section class="job-section job-featured-section section-padding" id="job-section">

@@ -1,12 +1,7 @@
 <?php
-session_start();
 
+include 'auth.php';
 include("con.php");
-
-if (!isset($_SESSION['email'])) {
-    header("Location: Sign_In.php");
-    exit();
-}
 
 // Get the sender ID from the URL parameter
 if(isset($_GET['id'])) {
@@ -31,11 +26,11 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Fetch profile data based on user role
 if ($user_role == 'recruiter') {
-    $sql = "SELECT `company_name`, `contact_email`, `contact_phone`, `about`, `website`, `logo`, `background` 
+    $sql = "SELECT *
             FROM `recruiter_profile` WHERE `User_ID` = ?";
 } else {
-    $sql = "SELECT `FirstName`, `LastName`, `ProfilePicture`, `Gender`, `Bio`, `Location`, `Skills`, `Education`, 
-            `Experience`, `SocialMediaLinks`, `Resume`, `profile_views` FROM `user_profile` WHERE `User_ID` = ?";
+    $sql = "SELECT * 
+            FROM `user_profile` WHERE `User_ID` = ?";
 }
 
 if ($stmt = $conn->prepare($sql)) {
@@ -43,6 +38,17 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->execute();
     $profile_data = $stmt->get_result()->fetch_assoc();
     $stmt->close();
+
+        // Increment the profile view count
+        $view_count_sql = "UPDATE `user_profile` SET profile_views = profile_views + 1 WHERE User_ID = ?";
+        if ($update_stmt = $conn->prepare($view_count_sql)) {
+            $update_stmt->bind_param("s", $sender_id);
+            $update_stmt->execute();
+            $update_stmt->close();
+        } else {
+            echo "Error updating profile views: " . $conn->error;
+            exit();
+        }
 } else {
     echo "Error fetching profile data: " . $conn->error;
     exit();
@@ -140,12 +146,15 @@ if ($stmt = $conn->prepare($sql)) {
                                 <p><strong>Contact Email:</strong> <?php echo $profile_data['contact_email']; ?></p>
                                 <p><strong>Contact Phone:</strong> <?php echo $profile_data['contact_phone']; ?></p>
                                 <p><strong>Website:</strong> <a href="<?php echo $profile_data['website']; ?>" target="_blank"><?php echo $profile_data['website']; ?></a></p>
+                                <p><strong>Company background:</strong> <?php echo $profile_data['background']; ?></p>
                             <?php else: ?>
-                                <h2 class="mb-0"><?php echo $profile_data['FirstName'] . " " . $profile_data['LastName']; ?></h2>
+                                <h2 class="mb-0"><?php echo $profile_data['FirstName'] . " " . $profile_data['Lastname']; ?></h2>
                                 <h4 class="mb-2">Profile</h4>
                                 <p><strong>Gender:</strong> <?php echo $profile_data['Gender']; ?></p>
                                 <p><strong>Bio:</strong> <?php echo $profile_data['Bio']; ?></p>
                                 <p><strong>Social Media Links:</strong> <?php echo $profile_data['SocialMediaLinks']; ?></p>
+                                <p><strong>Education:</strong> <?php echo $profile_data['Education']; ?></p>
+                                <p><strong>Experience:</strong> <?php echo $profile_data['Experience']; ?></p>
                             <?php endif; ?>
                             </div>
                         </div>

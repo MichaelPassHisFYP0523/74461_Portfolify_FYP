@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user_id = $_POST['user_id'];
             $proj_status = $_POST['collaborate'];
             $file = $_FILES['file'];
-            $image = $_FILES['image_file']; // This is the optional image upload field
+            $image = $_FILES['image_file']; 
         
             // Check if the file upload was successful
             if ($file['error'] === UPLOAD_ERR_OK) {
