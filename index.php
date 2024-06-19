@@ -140,7 +140,7 @@
             </section>
 
             <!-- Latest Job -->
-            <section>
+            <section class="job-applications-section section-padding">
                 <div class="container">
                     <div class="row">
 

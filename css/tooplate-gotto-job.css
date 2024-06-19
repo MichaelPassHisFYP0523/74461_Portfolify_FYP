@@ -45,7 +45,7 @@ https://www.tooplate.com/view/2134-gotto-job
 
 body {
   background-color: var(--white-color);
-  font-family: var(--); 
+  font-family: var(--body-font-family);  
 }
 
 

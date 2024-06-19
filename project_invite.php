@@ -1,11 +1,6 @@
 <?php
-    session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: Sign_In.php");
-        exit();
-    }
-
+    include 'auth.php';
     include 'con.php';
 
     $email = $_SESSION['email'];
@@ -18,7 +13,6 @@
         $stmt->bind_result($user_id);
         $stmt->fetch();
         $stmt->close();
-        echo "User ID: " . $user_id . "<br>";
     } else {
         echo "Error: " . $conn->error;
         exit();
@@ -80,9 +74,6 @@
 
         <title>Portfolify Project</title>
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         
@@ -109,17 +100,18 @@
 
         <main>
 
-        <header>
+        <header class="site-header">
+            <div class="section-overlay"></div>
+
             <div class="container">
                 <div class="row">
                     
                     <div class="col-lg-12 col-12 text-center">
-                        <h1>Collaboration Request</h1>
+                        <h1 class="text-white">Collaboration</h1>
 
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
                                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-
                                 <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
 
                                 <li class="breadcrumb-item active" aria-current="page">Collab</li>
@@ -214,21 +206,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="site-footer">
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 col-12 d-flex align-items-center">
-                            <p class="copyright-text">Copyright © Gotto Job 2048</p>
-                        </div>
-
-                        <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <?php include 'footer.php'; ?>
         <!-- End footer -->
 
         <!-- JAVASCRIPT FILES -->

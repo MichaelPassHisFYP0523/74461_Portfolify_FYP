@@ -3,6 +3,8 @@
 include "auth.php";
 include "con.php";
 
+checkLogin();
+
 // Fetch the user_id from users based on the email
 $email = $_SESSION['email'];
 $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");

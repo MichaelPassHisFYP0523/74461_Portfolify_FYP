@@ -1,5 +1,5 @@
 <?php
-// session_start();
+
 include "auth.php";
 include 'con.php';
 
@@ -7,7 +7,7 @@ checkLogin();
 
 $email = $_SESSION['email'];
 
-$user_id = $_SESSION['user_id'];echo $user_id;
+$user_id = $_SESSION['user_id'];
 
 $sql = "SELECT users.*, recruiter_profile.* FROM users
         INNER JOIN recruiter_profile ON users.User_ID = recruiter_profile.User_ID
@@ -53,16 +53,22 @@ if ($result->num_rows == 1) {
 <!-- End Navbar -->
 
 <main>
-    <header>
+
+    <header class="site-header">
+        <div class="section-overlay"></div>
+
         <div class="container">
             <div class="row">
+                
                 <div class="col-lg-12 col-12 text-center">
-                    <h1>Company profile</h1>
+                    <h1 class="text-white">Company Profile</h1>
+
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                             <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Company profile</li>
+
+                            <li class="breadcrumb-item active" aria-current="page">Profile Settings</li>
                         </ol>
                     </nav>
                 </div>
@@ -178,20 +184,7 @@ if ($result->num_rows == 1) {
 </main>
 
 <!-- Footer -->
-<footer class="site-footer">
-    <div class="site-footer-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-12 d-flex align-items-center">
-                    <ul class="footer-menu d-flex">
-                        <li class="footer-menu-item"><a href="#" class="footer-menu-link">Privacy Policy</a></li>
-                        <li class="footer-menu-item"><a href="#" class="footer-menu-link">Terms</a></li>
-                    </ul>
-                </div>
-                <a class="back-top-icon bi-arrow-up smoothscroll d-flex justify-content-center align-items-center" href="#top"></a>
-            </div>
-        </div>
-    </div>
+<?php include 'footer.php'; ?>
 </footer>
 <!-- End footer -->
 

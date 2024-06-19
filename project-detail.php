@@ -3,6 +3,8 @@
 include "auth.php";
 include "con.php";
 
+checkLogin();
+
 // Fetch the user_id from users based on the email
 $email = $_SESSION['email'];
 $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -135,7 +137,7 @@ if (isset($_GET['id'])) {
                         <!-- Application Form -->
                         <?php if (isset($_SESSION['email'])): ?>
                                 <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
-                                <form id="applyForm" class="d-flex flex-column align-items-center w-100" method="post" action="apply_project.php">
+                                <form id="applyForm" class="d-flex flex-column align-items-center w-100" method="post" action="project_process.php">
                                     <input type="hidden" name="project_id" value="<?php echo htmlspecialchars($project['project_id']); ?>">
                                     <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
                                     <input type="hidden" name="owner_id" value="<?php echo htmlspecialchars ($project['user_id']); ?>">

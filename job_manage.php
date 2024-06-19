@@ -13,7 +13,6 @@
         $stmt->bind_result($user_id);
         $stmt->fetch();
         $stmt->close();
-        echo "User ID: " . $user_id . "<br>";
     } else {
         echo "Error: " . $conn->error;
         exit();
@@ -59,20 +58,21 @@
 
         <main>
 
-        <header>
+        <header class="site-header">
+            <div class="section-overlay"></div>
+
             <div class="container">
                 <div class="row">
                     
                     <div class="col-lg-12 col-12 text-center">
-                        <h1>Job posted</h1>
+                        <h1 class="text-white">Vacancy</h1>
 
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
                                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-
                                 <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
 
-                                <li class="breadcrumb-item active" aria-current="page">Job</li>
+                                <li class="breadcrumb-item active" aria-current="page">Job Management</li>
                             </ol>
                         </nav>
                     </div>
@@ -82,7 +82,7 @@
         </header>
 
             <!-- Active Job -->
-            <section>
+            <section class="job-applications-section section-padding">
                 <div class="container">
                     <div class="row">
 

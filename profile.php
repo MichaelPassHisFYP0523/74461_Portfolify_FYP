@@ -5,7 +5,6 @@ include 'con.php';
 
 $user_id = $_SESSION['user_id'];
 $email = $_SESSION['email'];
-echo $user_id;
 
 // Fetch the user's role
 $sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
@@ -42,7 +41,9 @@ if ($result->num_rows == 1) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+
     <title>Portfolify Profile</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
@@ -59,22 +60,27 @@ if ($result->num_rows == 1) {
     <!-- End Navbar -->
 
     <main>
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-12 text-center">
-                    <h1>My profile</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                        </ol>
-                    </nav>
-                </div>
+        <header class="site-header">
+            <div class="section-overlay"></div>
 
+            <div class="container">
+                <div class="row">
+                    
+                    <div class="col-lg-12 col-12 text-center">
+                        <h1 class="text-white">My Profile</h1>
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+
+                                <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
         <!-- Profile Overview -->
         <section class="contact-section section-padding">

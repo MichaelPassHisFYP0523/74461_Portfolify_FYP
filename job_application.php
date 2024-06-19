@@ -13,7 +13,7 @@
         $stmt->bind_result($user_id);
         $stmt->fetch();
         $stmt->close();
-        echo "User ID: " . $user_id . "<br>";
+        
     } else {
         echo "Error: " . $conn->error;
         exit();
@@ -73,7 +73,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Portfolify Project</title>
+        <title>Portfolify Vacancy</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,12 +101,35 @@
 
         <main>
 
+        <header class="site-header">
+            <div class="section-overlay"></div>
+
+            <div class="container">
+                <div class="row">
+                    
+                    <div class="col-lg-12 col-12 text-center">
+                        <h1 class="text-white">Job Application</h1>
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                                <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
+
+                                <li class="breadcrumb-item active" aria-current="page">Application</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
         <!-- Active Project -->
         <section class="job-section job-featured-section section-padding" id="job-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Vacancy</h2>
+                        <h2>Job posted</h2>
                     </div>
                     <?php foreach ($jobs as $jobs): ?>
                     <div class="col-lg-12 col-12">
@@ -168,7 +191,7 @@
                                         <p class="applicant-count mb-0">
                                             <strong><?php echo htmlspecialchars($Inactivejobs['application_count']); ?></strong> Applicants
                                         </p>
-                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $Inactivejobs['job_id']; ?>', 'deactivate');">Activate</a>
+                                        <a href="#" class="deactivate-link" onclick="activateStatus(event, '<?php echo $Inactivejobs['job_id']; ?>', 'activate');">Activate</a>
                                     </div>
                                 </div>
                             </div>
@@ -208,42 +231,40 @@
 
         <script>
 
-        function deactivateStatus(event, projectId, action) {
+        function deactivateStatus(event, jobId, action) {
                 event.preventDefault(); 
 
                 // Send an AJAX request to the server-side script
                 var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
+                xhr.open("POST", "job_status.php", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         // Handle the server response
                         alert(xhr.responseText);
                         location.reload();
-                        // You can also update the UI as needed
                     }
                 };
                 // Send the project ID as data
-                xhr.send("project_id=" + projectId + "&action=" + action);
+                xhr.send("job_id=" + jobId + "&action=" + action);
             }
 
-        function activateProject(event, projectId, action) {
+        function activateStatus(event, jobId, action) {
             event.preventDefault(); 
 
             // Send an AJAX request to the server-side script
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "project_status.php", true);
+            xhr.open("POST", "job_status.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     // Handle the server response
                     alert(xhr.responseText);
                     location.reload();
-                    // You can also update the UI as needed
                 }
             };
             // Send the project ID as data
-            xhr.send("project_id=" + projectId + "&action=" + action);
+            xhr.send("job_id=" + jobId + "&action=" + action);
         }
 
 

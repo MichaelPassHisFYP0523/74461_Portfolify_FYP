@@ -1,11 +1,6 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['email'])) {
-    header("Location: Sign_In.php");
-    exit();
-}
-
+include 'auth.php';
 include 'con.php';
 
 $email = $_SESSION['email'];
@@ -18,7 +13,6 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_result($user_id);
     $stmt->fetch();
     $stmt->close();
-    echo "User ID: " . $user_id . "<br>";
 } else {
     echo "Error: " . $conn->error;
     exit();
@@ -75,7 +69,7 @@ $conn->close();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Job Applications</title>
+    <title>Portfolify Vacancy</title>
 
     <!-- CSS FILES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,13 +86,37 @@ $conn->close();
 <?php include 'navbar.php'; ?>
 
 <main>
+    <header class="site-header">
+            <div class="section-overlay"></div>
+
+            <div class="container">
+                <div class="row">
+                    
+                    <div class="col-lg-12 col-12 text-center">
+                        <h1 class="text-white">Job Application</h1>
+
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                                <li class="breadcrumb-item"><a href="profile.php">Profile</a></li>
+                                <li class="breadcrumb-item"><a href="job_application.php">Application</a></li>
+
+                                <li class="breadcrumb-item active" aria-current="page">Job Application</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
     <!-- Job Applications -->
     <section class="job-applications-section section-padding">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                    <h2><?php echo htmlspecialchars($job_title); ?></h2>
-                    <h2>Job Applications</h2>
+                    <h2><strong>Title: </strong><?php echo htmlspecialchars($job_title); ?></h2>
+
                 </div>
                 <?php if (!empty($job_applications)) { ?>
                     <?php foreach ($job_applications as $application): ?>
