@@ -13,6 +13,7 @@ $result = $stmt->get_result();
 if ($result && $result->num_rows > 0) {
     $user = $result->fetch_assoc();
     $user_id = $user['User_ID'];
+    $role = $user['role'];
 } else {
     echo "User not found";
     exit();
@@ -115,9 +116,27 @@ if (isset($_GET['id'])) {
                                 <h5 class="mt-4 mb-3">Requirements</h5>
                                 <p><?php echo nl2br(htmlspecialchars($job['requirement'])); ?></p>
 
+                                <?php if ($role !== 'recruiter') { ?>
                                 <div class="d-flex justify-content-center flex-wrap mt-5 border-top pt-4">
-                                    <a href="#" class="custom-btn btn mt-2">Apply now</a>
+                                    <button id="applyBtn" class="custom-btn btn mt-2">Apply now</button>
                                 </div>
+
+                                <!-- Application Form -->
+                                <div id="applicationForm" style="display: none;">
+                                    <form id="jobApplicationForm" enctype="multipart/form-data">
+                                        <input type="hidden" name="job_id" value="<?php echo htmlspecialchars($job_id); ?>">
+                                        <input type="hidden" name="applicant_id" value="<?php echo htmlspecialchars($user_id); ?>">
+
+                                        <label for="coverLetter">Cover Letter:</label>
+                                        <input type="file" id="coverLetter" name="coverLetter" accept=".pdf,.doc,.docx" required>
+
+                                        <label for="resume">Resume:</label>
+                                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+
+                                        <button type="submit" class="custom-btn btn mt-2">Submit Application</button>
+                                    </form>
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
 
@@ -190,7 +209,7 @@ if (isset($_GET['id'])) {
 
                                 <div class="job-body">
                                     <h4 class="job-title">
-                                        <a href="job-details.html" class="job-title-link"><?php echo $row['job_title']; ?></a>
+                                        <a href="job-detail.php?id=<?php echo $row['job_id']; ?>" class="job-title-link"><?php echo $row['job_title']; ?></a>
                                     </h4>
                                     
                                     <div class="d-flex align-items-center">
@@ -211,7 +230,7 @@ if (isset($_GET['id'])) {
                                             <?php echo $row['salary']; ?>
                                         </p>
 
-                                        <a href="job-details.html" class="custom-btn btn ms-auto">Apply now</a>
+                                        <a href="job-detail.php?id=<?php echo $row['job_id']; ?>" class="custom-btn btn ms-auto">Apply now</a>
                                     </div>
                                 </div>
                             </div>
@@ -240,6 +259,58 @@ if (isset($_GET['id'])) {
         <script src="js/owl.carousel.min.js"></script>
         <script src="js/counter.js"></script>
         <script src="js/custom.js"></script>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('applyBtn').addEventListener('click', function() {
+                document.getElementById('applicationForm').style.display = 'block';
+            });
+
+            document.getElementById('jobApplicationForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var form = document.getElementById('jobApplicationForm');
+                var formData = new FormData(form);
+
+                // Validate cover letter
+                var coverLetter = document.getElementById('coverLetter').files[0];
+                if (!coverLetter) {
+                    alert('Please upload a cover letter.');
+                    return;
+                }
+
+                // Optional: Validate resume
+                var resume = document.getElementById('resume').files[0];
+                if (!resume) {
+                    var confirmSubmit = confirm('Are you sure you want to submit without a resume?');
+                    if (!confirmSubmit) {
+                        return;
+                    }
+                }
+
+                // AJAX request to submit the form
+                var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'job_process.php', true);
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                var response = JSON.parse(xhr.responseText);
+                                if (response.status === "success") {
+                                    alert(response.message);
+                                    location.reload();
+                                } else {
+                                    alert(response.message);
+                                }
+                            } else {
+                                alert('Error submitting application.');
+                            }
+                        };
+
+                xhr.send(formData);
+            });
+        });
+
+        </script>
+
 
     </body>
 </html>

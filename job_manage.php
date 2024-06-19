@@ -90,7 +90,7 @@
                             <h2>Active Jobs</h2>
                             <div class="mb-4">
                                 <div class="col-lg-12 col-12 text-center">
-                                    <a href="project_invite.php" class="btn btn-secondary">Job application</a>
+                                    <a href="job_application.php" class="btn btn-secondary">Job application</a>
                                     <a href="#upload-section" class="btn btn-primary">Post Job</a>
                                 </div>
                             </div>

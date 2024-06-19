@@ -19,20 +19,20 @@
         exit();
     }
 
-    // Fetch projects based on the user_id and proj_status
-    $query = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-            FROM `projects` p 
-            WHERE p.proj_status = 1 AND p.user_id = ? 
-            ORDER BY p.created_at";
+    // Fetch job based on the user_id and job_status
+    $query = "SELECT j.*, 
+               (SELECT COUNT(*) FROM `job_application` ja WHERE ja.job_id = j.job_id) as application_count
+            FROM `job` j 
+            WHERE j.job_status = 1 AND j.recruiter_id = ? 
+            ORDER BY j.date_posted";
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param("s", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        $projects = [];
+        $jobs = [];
         while ($row = $result->fetch_assoc()) {
-            $projects[] = $row;
+            $jobs[] = $row;
         }
 
         $stmt->close();
@@ -40,25 +40,25 @@
         echo "Error: " . $conn->error;
     }
 
-    // Fetch inactive projects
-    $queryInactive = "SELECT p.*, 
-                    (SELECT COUNT(*) FROM `collab_invites` ci WHERE ci.proj_id = p.project_id) as applicant_count
-                    FROM `projects` p 
-                    WHERE p.proj_status = 0 AND p.user_id = ? 
-                    ORDER BY p.created_at";
-    if ($stmtInactive = $conn->prepare($queryInactive)) {
-        $stmtInactive->bind_param("s", $user_id);
-        $stmtInactive->execute();
-        $resultInactive = $stmtInactive->get_result();
+    // Fetch job based on the user_id and job_status = 0
+    $query = "SELECT j.*, 
+            (SELECT COUNT(*) FROM `job_application` ja WHERE ja.job_id = j.job_id) as application_count
+            FROM `job` j 
+            WHERE j.job_status = 0 AND j.recruiter_id = ? 
+            ORDER BY j.date_posted";
+    if ($stmt = $conn->prepare($query)) {
+    $stmt->bind_param("s", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $inactiveProjects = [];
-        while ($row = $resultInactive->fetch_assoc()) {
-            $inactiveProjects[] = $row;
-        }
+    $Inactivejobs = [];
+    while ($row = $result->fetch_assoc()) {
+        $Inactivejobs[] = $row;
+    }
 
-        $stmtInactive->close();
+    $stmt->close();
     } else {
-        echo "Error: " . $conn->error;
+    echo "Error: " . $conn->error;
     }
 
     $conn->close();
@@ -106,30 +106,30 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Active Project</h2>
+                        <h2>Vacancy</h2>
                     </div>
-                    <?php foreach ($projects as $project): ?>
+                    <?php foreach ($jobs as $jobs): ?>
                     <div class="col-lg-12 col-12">
-                        <a href="project_candidate.php?id=<?php echo $project['project_id']; ?>" class="project-link">
+                        <a href="job_candidate.php?id=<?php echo $jobs['job_id']; ?>" class="project-link">
                             <div class="job-thumb d-flex">
                                 <div class="job-image-wrap bg-white shadow-lg">
                                     <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
                                 </div>
                                 <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
                                     <div class="mb-3">
-                                        <h4 class="job-title mb-lg-0"><?php echo $project['title']; ?></h4>
+                                        <h4 class="job-title mb-lg-0"><?php echo $jobs['job_title']; ?></h4>
                                         <div class="d-flex flex-wrap align-items-center">
                                             <p class="job-date mb-0">
                                                 <i class="custom-icon bi-clock me-1"></i>
-                                                <?php echo $project['created_at']; ?>
+                                                <?php echo $jobs['date_posted']; ?>
                                             </p>
                                         </div>
                                     </div>
                                     <div class="ms-auto">
                                         <p class="applicant-count mb-0">
-                                            <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
+                                            <strong><?php echo htmlspecialchars($jobs['application_count']); ?></strong> Applicants
                                         </p>
-                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $project['project_id']; ?>', 'deactivate');">Deactivate</a>
+                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $jobs['job_id']; ?>', 'deactivate');">Deactivate</a>
                                     </div>
                                 </div>
                             </div>
@@ -145,36 +145,34 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6 col-12 text-center mx-auto mb-4">
-                        <h2>Inactive Project</h2>
+                        <h2>Inactive Jobs</h2>
                     </div>
-                    <?php foreach ($inactiveProjects as $inactiveProjects): ?>
+                    <?php foreach ($Inactivejobs as $Inactivejobs): ?>
                     <div class="col-lg-12 col-12">
-                        <div class="job-thumb d-flex">
-                            <div class="job-image-wrap bg-white shadow-lg">
-                                <img src="<?php echo $inactiveProjects['project_image']; ?>" class="job-image img-fluid" alt="">
-                            </div>
-                            <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
-                                <div class="mb-3">
-                                    <h4 class="job-title mb-lg-0">
-                                        <a href="job-details.html" class="job-title-link"><?php echo $inactiveProjects['title']; ?></a>
-                                    </h4>
-
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <p class="job-date mb-0">
-                                            <i class="custom-icon bi-clock me-1"></i>
-                                            <?php echo $inactiveProjects['created_at']; ?>
+                        <a href="job_candidate.php?id=<?php echo $project['project_id']; ?>" class="project-link">
+                            <div class="job-thumb d-flex">
+                                <div class="job-image-wrap bg-white shadow-lg">
+                                    <img src="<?php echo $project['project_image']; ?>" class="job-image img-fluid" alt="">
+                                </div>
+                                <div class="job-body d-flex flex-wrap flex-auto align-items-center ms-4">
+                                    <div class="mb-3">
+                                        <h4 class="job-title mb-lg-0"><?php echo $Inactivejobs['job_title']; ?></h4>
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <p class="job-date mb-0">
+                                                <i class="custom-icon bi-clock me-1"></i>
+                                                <?php echo $Inactivejobs['date_posted']; ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <p class="applicant-count mb-0">
+                                            <strong><?php echo htmlspecialchars($Inactivejobs['application_count']); ?></strong> Applicants
                                         </p>
+                                        <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $Inactivejobs['job_id']; ?>', 'deactivate');">Activate</a>
                                     </div>
                                 </div>
-
-                                <div class="ms-auto">
-                                    <p class="applicant-count mb-0">
-                                        <strong><?php echo htmlspecialchars($inactiveProjects['applicant_count']); ?></strong> Applicants
-                                    </p>
-                                        <a href="#" class="deactivate-link" onclick="activateProject(event, '<?php echo $inactiveProjects['project_id']; ?>', 'activate');">Activate</a>
-                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <?php endforeach; ?>
                 </div>
