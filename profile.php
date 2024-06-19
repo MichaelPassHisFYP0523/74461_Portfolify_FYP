@@ -1,37 +1,48 @@
 <?php
 
-include 'auth.php';
-include 'con.php';
+    include 'auth.php';
+    include 'con.php';
 
-$user_id = $_SESSION['user_id'];
-$email = $_SESSION['email'];
+    $user_id = $_SESSION['user_id'];
+    $email = $_SESSION['email'];
 
-// Fetch the user's role
-$sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
-$result = $conn->query($sql);
-if ($result->num_rows == 1) {
-    $user = $result->fetch_assoc();
-    $role = $user['role'];
-    
-    if ($role === 'user') {
-        $sql = "SELECT * FROM user_profile WHERE User_ID = '$user_id'";
-    } else if ($role === 'recruiter') {
-        $sql = "SELECT * FROM recruiter_profile WHERE User_ID = '$user_id'";
-    }
-    $profile_result = $conn->query($sql);
+    // Fetch the user's role
+    $sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
+    $result = $conn->query($sql);
+    if ($result->num_rows == 1) {
+        $user = $result->fetch_assoc();
+        $role = $user['role'];
+        
+        if ($role === 'user') {
+            $sql = "SELECT * FROM user_profile WHERE User_ID = '$user_id'";
+        } else if ($role === 'recruiter') {
+            $sql = "SELECT * FROM recruiter_profile WHERE User_ID = '$user_id'";
+        }
+        $profile_result = $conn->query($sql);
 
-    if ($profile_result->num_rows == 1) {
-        $profile = $profile_result->fetch_assoc();
+        if ($profile_result->num_rows == 1) {
+            $profile = $profile_result->fetch_assoc();
+        } else {
+            session_destroy();
+            header("Location: Sign_In.php");
+            exit();
+        }
+
+        // Count projects
+        $project_count_sql = "SELECT COUNT(*) AS project_count FROM projects WHERE user_id = '$user_id'";
+        $project_count_result = $conn->query($project_count_sql);
+        $project_count = $project_count_result->fetch_assoc()['project_count'];
+
+        // Count collaboration invites
+        $collab_count_sql = "SELECT COUNT(*) AS collab_count FROM collab_invites WHERE receiver_id = '$user_id'";
+        $collab_count_result = $conn->query($collab_count_sql);
+        $collab_count = $collab_count_result->fetch_assoc()['collab_count'];
+        
     } else {
         session_destroy();
         header("Location: Sign_In.php");
         exit();
     }
-} else {
-    session_destroy();
-    header("Location: Sign_In.php");
-    exit();
-}
 ?>
 
 <!doctype html>
@@ -87,7 +98,7 @@ if ($result->num_rows == 1) {
             <div class="container">
                 <div class="row justify-content-center">
                 <div class="col-lg-6 col-12 mb-lg-5 mb-3 text-center">
-                    <img src="<?php echo $role === 'user' ? $profile['ProfilePicture'] : $profile['logo']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
+                    <img src="<?php echo $role === 'user' ? $profile['ProfilePicture'] : $profile['logo']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 300px; height: 300px;">
                     <h4>
                         <?php 
                         echo $role === 'user' ? $profile['FirstName'] . ' ' . $profile['Lastname'] : $profile['company_name']; 
@@ -103,8 +114,9 @@ if ($result->num_rows == 1) {
                 </div>
 
 
-                    <div class="col-lg-5 col-12 mb-3 mx-auto">
+                    <!-- <div class="col-lg-5 col-12 mb-3 mx-auto">
                         <div class="profile-analytics-wrap">
+                        <?php if ($role === 'user'): ?>
                             <div class="profile-analytics d-flex align-items-center mb-3">
                                 <i class="custom-icon bi-graph-up"></i>
                                 <p class="mb-0">
@@ -119,24 +131,75 @@ if ($result->num_rows == 1) {
                                     <?php echo $profile['LastActive']; ?>
                                 </p>
                             </div>
-                            <?php if ($role === 'user'): ?>
+                            <?php endif; ?>
                                 <div class="profile-analytics d-flex align-items-center">
                                     <i class="custom-icon bi-person-check"></i>
                                     <p class="mb-0">
-                                        <span class="profile-analytics-small-title">Followers</span>
-                                        <?php echo $profile['Followers']; ?>
+                                        <span class="profile-analytics-small-title">Project Done</span>
+                                        <?php echo $project_count; ?>
                                     </p>
                                 </div>
                                 <div class="profile-analytics d-flex align-items-center">
                                     <i class="custom-icon bi-envelope"></i>
                                     <p class="mb-0">
-                                        <span class="profile-analytics-small-title">Messages Received</span>
-                                        <?php echo $profile['MessagesReceived']; ?>
+                                        <span class="profile-analytics-small-title">Collaboration Request</span>
+                                        <?php echo $collab_count; ?>
                                     </p>
                                 </div>
-                            <?php endif; ?>
                         </div>
-                    </div>
+                    </div> -->
+
+                    <div class="col-lg-5 col-12 mb-3 mx-auto">
+                            <div class="contact-info-wrap">
+                            <?php if ($role === 'user'): ?>
+                                <div class="contact-info d-flex align-items-center mb-3">
+                                    <i class="custom-icon bi-graph-up"></i>
+
+                                    <p class="mb-0">
+                                        <span class="contact-info-small-title"><?php echo $profile['profile_views']; ?></span>
+
+                                        Profile Views
+                                    </p>
+                                </div>
+
+                                <div class="contact-info d-flex align-items-center">
+                                    <i class="custom-icon bi-calendar-event"></i>
+
+                                    <p class="mb-0">
+                                        <span class="contact-info-small-title"><?php echo $profile['LastActive']; ?></span>
+
+                                        <a href="#" class="site-footer-link">
+                                        Last Active
+                                        </a>
+                                    </p>
+                                </div>
+                                <?php endif; ?>
+
+                                <div class="contact-info d-flex align-items-center">
+                                    <i class="custom-icon bi-person-check"></i>
+
+                                    <p class="mb-0">
+                                        <span class="contact-info-small-title"><?php echo $project_count; ?></span>
+
+                                        <a href="tel: 305-240-9671" class="site-footer-link">
+                                            Project Done
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <div class="contact-info d-flex align-items-center">
+                                    <i class="custom-icon bi-envelope"></i>
+
+                                    <p class="mb-0">
+                                        <span class="contact-info-small-title"><?php echo $collab_count; ?></span>
+
+                                        <a href=# class="site-footer-link">
+                                            Collaboration Request
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                 </div>
         </section>
 

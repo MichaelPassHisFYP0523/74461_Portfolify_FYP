@@ -18,17 +18,6 @@
             <h3>User Registration</h3>
         </div>
         <div id="content">
-            <!-- <form id="registrationForm" onsubmit="return validateForm()"> -->
-                <!-- <div class="form-group">
-                    <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" placeholder="First Name">
-                    <div id="firstNameError" class="error-message"></div>
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" placeholder="Last Name">
-                    <div id="lastNameError" class="error-message"></div>
-                </div> -->
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="text" id="email" placeholder="Example@mail.com">
@@ -61,7 +50,7 @@
                     <div id="termsAcceptedError" class="error-message"></div>
                 </div>
                 <button type="submit" onclick="validateForm()">Register Now</button>
-            <!-- </form> -->
+
             <div id="message" class="alert alert-success"></div>
         </div>
     </div>
@@ -118,7 +107,7 @@
 
                             setTimeout(function() {
                                 window.location.href = 'Sign_In.php';
-                            }, 2000);
+                            }, 5000);
 
                         } else {
                             // If the response does not contain the success message, handle as error
