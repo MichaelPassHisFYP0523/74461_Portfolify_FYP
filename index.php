@@ -237,7 +237,7 @@
                         <div class="col-lg-6 col-10">
                             <h2 class="text-white mb-2">Opening jobs</h2>
 
-                            <p class="text-white">If you are looking for a platform to showcase your project, here it ifree HTML templates, you may visit Tooplate website. If you need a collection of free templates, you can visit Too CSS website.</p>
+                            <p class="text-white">If you are looking for a platform to showcase your project, please create an account or login.</p>
                         </div>
 
                         <div class="col-lg-4 col-12 ms-auto">
