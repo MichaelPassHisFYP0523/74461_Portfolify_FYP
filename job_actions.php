@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $action = $_POST['action'];
 
     switch ($action) {
-        case 'delete';
+        case 'delete':
             $job_id = $_POST['job_id'];
 
                 // Validate the job_id and user ownership
@@ -43,33 +43,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $requirement = $_POST['job_requirements'];
             $desc = $_POST['job_description'];
             $user_id = $_POST['user_id'];
-
-            $new_id = uniqid('job_', true);
-
-            $sql = "INSERT INTO `job` (
-                `job_id`,
-                `job_title`,
-                `job_desc`,
-                `job_location`,
-                `salary`,
-                `requirement`,
-                `job_types`,
-                `recruiter_id`
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $stmt = $conn->prepare($sql);
-
-            $stmt->bind_param("ssssssss", $new_id, $title, $desc, $location, $salary, $requirement, $jobType, $user_id);
-
-            if ($stmt->execute()) {
-                echo "New job created successfully";
-            } else {
-                echo "Error creating job: " . $stmt->error;
-            }
-            $stmt->close();
-
-            break;
+            $image = $_FILES['job_image'];
         
+            // Generate a unique ID for the job
+            $new_id = uniqid('job_', true);
+        
+            // File upload handling
+            $target_dir = "./files/images/"; 
+            $imageFileType = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+            $target_file = $target_dir . $new_id . '.' . $imageFileType;
+        
+            // Move the uploaded file to the target directory
+            if (move_uploaded_file($image["tmp_name"], $target_file)) {
+                echo "The file " . htmlspecialchars(basename($image["name"])) . " has been uploaded.";
+        
+                // Insert job details into the database
+                $sql = "INSERT INTO `job` (
+                    `job_id`,
+                    `job_title`,
+                    `job_desc`,
+                    `job_location`,
+                    `salary`,
+                    `requirement`,
+                    `job_types`,
+                    `recruiter_id`,
+                    `job_image`  
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+                $stmt = $conn->prepare($sql);
+        
+                $stmt->bind_param("sssssssss", $new_id, $title, $desc, $location, $salary, $requirement, $jobType, $user_id, $target_file);
+        
+                if ($stmt->execute()) {
+                    echo "New job created successfully";
+                } else {
+                    echo "Error creating job: " . $stmt->error;
+                }
+                $stmt->close();
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+            }
+        
+            break;
+                
         case 'edit':
 
             $job_id = mysqli_real_escape_string($conn, $_POST['job_id']);

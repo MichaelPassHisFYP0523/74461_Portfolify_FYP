@@ -3,6 +3,8 @@
     include 'auth.php';
     include 'con.php';
 
+    checkLogin();
+
     $email = $_SESSION['email'];
 
     // Fetch the User_ID based on the email
@@ -267,6 +269,11 @@
                                     <div class="col-lg-12 col-12">
                                         <label for="location">Location</label>
                                         <input type="text" name="location" id="location" class="form-control" placeholder="e.g., New York, NY" required>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
+                                        <label for="job_image">Job Cover (Optional)</label>
+                                        <input type="file" name="job_image" id="job_image" class="form-control" accept="image/*">
                                     </div>
 
                                     <!-- Hidden input field to store the user_id -->

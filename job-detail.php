@@ -198,8 +198,8 @@ if (isset($_GET['id'])) {
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="job-thumb job-thumb-box">
                                 <div class="job-image-box-wrap">
-                                    <a href="job-details.html">
-                                        <img src="images/jobs/it-professional-works-startup-project.jpg" class="job-image img-fluid" alt="">
+                                    <a href="job-detail.php?id=<?php echo $row['job_id']; ?>">
+                                        <img src="<?php echo $row['job_image']; ?>" class="job-image img-fluid" alt="">
                                     </a>
 
                                     <div class="job-image-box-wrap-info d-flex align-items-center">

@@ -51,9 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $phone = $_POST['phone'];
         $website = $_POST['website'];
 
-        $sql = "UPDATE recruiter_profile SET company_name = ?, contact_email = ?, contact_phone = ?, about = ?, website = ? WHERE User_ID = ?";
+        $sql = "UPDATE recruiter_profile 
+                SET company_name = ?, 
+                    contact_email = ?, 
+                    contact_phone = ?, 
+                    about = ?, 
+                    website = ? 
+                WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssssss', $companyName, $about, $contactEmail, $phone, $website, $userId);
+        $stmt->bind_param('ssssss', $companyName, $contactEmail, $phone, $about, $website, $userId);
         if ($stmt->execute()) {
             
             $_SESSION['success_message'] = "Company information updated successfully.";

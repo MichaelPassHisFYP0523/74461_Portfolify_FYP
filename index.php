@@ -76,9 +76,9 @@
                                 <p class="text-white">An online portfolio web-based system is designed to enable professionals to effectively showcase their portfolio, works, and skills. This platform supports the upload of rich media content, including PDFs, videos, and detailed project descriptions, facilitating a dynamic presentation of their capabilities.</p>
 
                                 <div class="custom-border-btn-wrap d-flex align-items-center mt-5">
-                                    <a href="about.html" class="custom-btn custom-border-btn btn me-4">Get to know us</a>
+                                    <a href="about.php" class="custom-btn custom-border-btn btn me-4">Get to know us</a>
 
-                                    <a href="#job-section" class="custom-link smoothscroll">Explore Jobs</a>
+                                    <a href="job-listings.php" class="custom-link smoothscroll">Explore Jobs</a>
                                 </div>
                             </div>
                         </div>

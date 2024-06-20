@@ -98,7 +98,7 @@
             <div class="container">
                 <div class="row justify-content-center">
                 <div class="col-lg-6 col-12 mb-lg-5 mb-3 text-center">
-                    <img src="<?php echo $role === 'user' ? $profile['ProfilePicture'] : $profile['logo']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 300px; height: 300px;">
+                    <img src="<?php echo $role === 'user' ? $profile['ProfilePicture'] : $profile['logo']; ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 150px; height: 150px;">
                     <h4>
                         <?php 
                         echo $role === 'user' ? $profile['FirstName'] . ' ' . $profile['Lastname'] : $profile['company_name']; 
@@ -113,41 +113,6 @@
                     <?php endif; ?>
                 </div>
 
-
-                    <!-- <div class="col-lg-5 col-12 mb-3 mx-auto">
-                        <div class="profile-analytics-wrap">
-                        <?php if ($role === 'user'): ?>
-                            <div class="profile-analytics d-flex align-items-center mb-3">
-                                <i class="custom-icon bi-graph-up"></i>
-                                <p class="mb-0">
-                                    <span class="profile-analytics-small-title">Profile Views</span>
-                                    <?php echo $profile['profile_views']; ?>
-                                </p>
-                            </div>
-                            <div class="profile-analytics d-flex align-items-center">
-                                <i class="custom-icon bi-calendar-event"></i>
-                                <p class="mb-0">
-                                    <span class="profile-analytics-small-title">Last Active</span>
-                                    <?php echo $profile['LastActive']; ?>
-                                </p>
-                            </div>
-                            <?php endif; ?>
-                                <div class="profile-analytics d-flex align-items-center">
-                                    <i class="custom-icon bi-person-check"></i>
-                                    <p class="mb-0">
-                                        <span class="profile-analytics-small-title">Project Done</span>
-                                        <?php echo $project_count; ?>
-                                    </p>
-                                </div>
-                                <div class="profile-analytics d-flex align-items-center">
-                                    <i class="custom-icon bi-envelope"></i>
-                                    <p class="mb-0">
-                                        <span class="profile-analytics-small-title">Collaboration Request</span>
-                                        <?php echo $collab_count; ?>
-                                    </p>
-                                </div>
-                        </div>
-                    </div> -->
 
                     <div class="col-lg-5 col-12 mb-3 mx-auto">
                             <div class="contact-info-wrap">

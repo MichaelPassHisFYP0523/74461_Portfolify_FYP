@@ -192,8 +192,8 @@
                                         <div class="job-thumb job-thumb-box">
                                             <!-- Job Image and Type -->
                                             <div class="job-image-box-wrap">
-                                                <a href="job-details.html">
-                                                    <img src="images/jobs/pretty-blogger-posing-cozy-apartment.jpg" class="job-image img-fluid" alt="">
+                                                <a href="job-detail.php?id=<?php echo $row['job_id']; ?>">
+                                                    <img src="<?php echo $row['job_image']; ?>" class="job-image img-fluid" alt="">
                                                 </a>
                                                 <div class="job-image-box-wrap-info d-flex align-items-center">
                                                     <p class="mb-0">
