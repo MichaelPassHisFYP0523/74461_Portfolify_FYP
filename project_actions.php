@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $proj_status = $_POST['collaborate'];
             $file = $_FILES['file'];
             $image = $_FILES['image_file']; 
+            $industry = $_POST['industry'];
         
             // Check if the file upload was successful
             if ($file['error'] === UPLOAD_ERR_OK) {
@@ -47,11 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
         
                     // Prepare SQL statement with optional image path
-                    $sql = "INSERT INTO projects (project_id, user_id, title, description, created_at, project_path, proj_status, project_image) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?)";
+                    $sql = "INSERT INTO projects (project_id, user_id, title, description, created_at, project_path, proj_status, project_image, proj_field) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
         
                     // Bind parameters
-                    $stmt->bind_param("sssssss", $unique_id, $user_id, $full_name, $description, $file_destination, $proj_status, $image_path);
+                    $stmt->bind_param("ssssssss", $unique_id, $user_id, $full_name, $description, $file_destination, $proj_status, $image_path, $industry);
         
                     // Execute the statement
                     if ($stmt->execute()) {
@@ -81,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("sss", $title, $description, $project_id);
 
             if ($stmt->execute()) {
-                echo "Project updated successfully.";
+                echo 'success';
             } else {
                 echo "Error updating project: " . $stmt->error;
             }

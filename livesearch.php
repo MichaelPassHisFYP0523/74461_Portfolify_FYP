@@ -2,11 +2,16 @@
 include "con.php";
 
 $q = isset($_GET['q']) ? mysqli_real_escape_string($conn, $_GET['q']) : '';
+$industry = isset($_GET['industry']) ? mysqli_real_escape_string($conn, $_GET['industry']) : '';
 
 $query = "SELECT * FROM `projects` WHERE `proj_status` = 1";
 if ($q) {
     $query .= " AND `title` LIKE '%$q%'";
 }
+if ($industry) {
+    $query .= " AND `proj_field` = '$industry'";
+}
+
 $result = mysqli_query($conn, $query);
 
 if (mysqli_num_rows($result) > 0) {
@@ -22,13 +27,13 @@ if (mysqli_num_rows($result) > 0) {
         echo '</h4>';
         echo '<div class="job-details">';
         echo '<p>'.htmlspecialchars($row['description']).'</p>';
-
+        echo '<span class="badge badge-level"> '.htmlspecialchars($row['proj_field']).'</span>'; // Added proj_field
         echo '</div>';
         echo '<p>';
-        echo  '</p>';
-        echo '<div class="action-flex align-items-center border-top pt-3n-buttons">';
+        echo '</p>';
+        echo '<div class="action-flex align-items-center border-top pt-3 n-buttons">';
         echo '<p>';
-        echo  '</p>';
+        echo '</p>';
         echo '<a href="project-detail.php?id='.htmlspecialchars($row['project_id']).'" class="custom-btn btn ms-auto">View Details</a>';
         echo '</div>';
         echo '</div>';

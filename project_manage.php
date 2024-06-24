@@ -3,6 +3,8 @@
     include 'auth.php';
     include 'con.php';
 
+    checkLogin();
+
     $email = $_SESSION['email'];
 
     $user_id = $_SESSION['user_id'];
@@ -151,6 +153,24 @@
                                     </div>
 
                                     <div class="col-lg-12 col-12">
+                                        <label for="industry">Industries</label>
+                                        <select name="industry" id="industry" class="form-control" required>
+                                            <option value="" disabled selected>Choose One</option>
+                                            <option value="Information Technology (IT)">Information Technology (IT)</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Engineering">Engineering</option>
+                                            <option value="Sales and Marketing">Sales and Marketing</option>
+                                            <option value="Human Resources">Human Resources</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Retail">Retail</option>
+                                            <option value="Hospitality and Tourism">Hospitality and Tourism</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
                                         <label for="image_file">Project image (Optional)</label>
                                         <input type="file" name="image_file" id="image_file" class="form-control" accept="image/*" data-toggle="tooltip" title="Upload an optional image related to your project">
                                     </div>
@@ -164,11 +184,12 @@
                                     <!-- Collaboration preference -->
                                     <div class="col-lg-12 col-12">
                                         <label>Collaborate?</label><br>
-                                        <input type="radio" name="collaborate" value="1" id="collaborate-yes" required data-toggle="tooltip" title="Select 'Yes' if you are open to collaboration">
+                                        <input type="radio" name="collaborate" value="1" id="collaborate-yes" title="Select 'Yes' if you are open to collaboration">
                                         <label for="collaborate-yes">Yes</label>
-                                        <input type="radio" name="collaborate" value="0" id="collaborate-no" data-toggle="tooltip" title="Select 'No' if you do not want to collaborate">
+                                        <input type="radio" name="collaborate" value="0" id="collaborate-no" title="Select 'No' if you do not want to collaborate">
                                         <label for="collaborate-no">No</label>
                                     </div>
+
 
                                     <div class="col-lg-4 col-md-4 col-6 mx-auto">
                                         <button type="button" onclick="uploadProject()" class="form-control" >Upload</button>
@@ -250,7 +271,7 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
         <!-- Popper.js -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script> -->
 
         <!-- Bootstrap JS -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

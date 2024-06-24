@@ -61,8 +61,8 @@ if (mysqli_num_rows($result) > 0) {
                         <img src="<?php echo $row['job_image']; ?>" class="job-image img-fluid" alt="">
                     </a>
                     <div class="job-image-box-wrap-info d-flex align-items-center">
-                        <p class="mb-0">
-                            <a href="job-listings.html" class="badge badge-level"><?php echo $row['job_types']; ?></a>
+                        <p class="mb-0 badge badge-level">
+                            <?php echo $row['job_types']; ?>
                         </p>
                     </div>
                 </div>
