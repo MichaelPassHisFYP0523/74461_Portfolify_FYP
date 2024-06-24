@@ -22,40 +22,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-12 text-center">
-                    <h1 class="text-white">Project Listings</h1>
+                    <h1 class="text-white">User Listings</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Project listings</li>
+                            <li class="breadcrumb-item active" aria-current="page">User listings</li>
                         </ol>
                     </nav>
                 </div>
             </div>
         </div>
     </header>
-
-    <section class="section-padding pb-0 d-flex justify-content-center align-items-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-12">
-                    <form class="custom-form hero-form" action="javascript:void(0);" method="get" role="form">
-                        <h3 class="text-white mb-3">Search user</h3>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-12">
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><i class="bi-person custom-icon"></i></span>
-                                    <input type="text" name="job-title" id="job-title" class="form-control" placeholder=" Title" onkeyup="showResult(this.value)">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-lg-6 col-12">
-                    <img src="images/4557388.png" class="hero-image img-fluid" alt="">
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section class="section-padding pb-0 d-flex justify-content-center align-items-center">
         <div class="container">
@@ -90,7 +67,7 @@
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1"><i class="bi-laptop custom-icon"></i></span>
-                                    <select class="form-select form-control" name="job-remote" id="job-remote" aria-label="Default select example" onchange="showResult()">
+                                    <select class="form-select form-control" name="job-type" id="job-type" aria-label="Default select example" onchange="showResult()">
                                         <option selected>Work Types</option>
                                         <option value="1">Now</option>
                                             <option value="2">2 weeks</option>
@@ -133,26 +110,26 @@
 <script src="js/custom.js"></script>
 <script>
 function showResult() {
-    var jobTitle = document.getElementById('job-title').value;
+    var education = document.getElementById('education').value;
     var jobLocation = document.getElementById('job-location').value;
     var jobSalary = document.getElementById('job-salary').value;
-    var jobRemote = document.getElementById('job-remote').value;
+    var jobType = document.getElementById('job-type').value;
     
-    var params = "jobTitle=" + jobTitle + "&jobLocation=" + jobLocation + "&jobSalary=" + jobSalary + "&jobRemote=" + jobRemote;
+    var params = "education=" + education + "&jobLocation=" + jobLocation + "&jobSalary=" + jobSalary + "&jobType=" + jobType;
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("job-list").innerHTML = this.responseText;
+            document.getElementById("user-list").innerHTML = this.responseText;
         }
     };
-    xmlhttp.open("GET", "live-search.php?" + params, true);
+    xmlhttp.open("GET", "live_search.php?" + params, true);
     xmlhttp.send();
 }
 
 // Load all projects initially
 document.addEventListener("DOMContentLoaded", function() {
-  loadAllProjects();
+    showResult();
 });
 </script>
 </body>

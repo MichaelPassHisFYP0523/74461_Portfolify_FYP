@@ -105,13 +105,14 @@ if ($stmt = $conn->prepare($sql)) {
                                 <h2 class="mb-0"><?php echo $profile_data['company_name']; ?></h2>
                                 <h4 class="mb-2">About Us</h4>
                                 <p><?php echo $profile_data['about']; ?></p>
-                                <p><strong>Contact Email:</strong> <?php echo $profile_data['contact_email']; ?></p>
+                                <p><strong>Contact Email:</strong> <a href="mailto:<?php echo $profile_data['contact_email']; ?>"><?php echo $profile_data['contact_email']; ?></a></p>
                                 <p><strong>Contact Phone:</strong> <?php echo $profile_data['contact_phone']; ?></p>
                                 <p><strong>Website:</strong> <a href="<?php echo $profile_data['website']; ?>" target="_blank"><?php echo $profile_data['website']; ?></a></p>
                                 <p><strong>Company background:</strong> <?php echo $profile_data['background']; ?></p>
                             <?php else: ?>
                                 <h2 class="mb-0"><?php echo $profile_data['FirstName'] . " " . $profile_data['Lastname']; ?></h2>
                                 <h4 class="mb-2">Profile</h4>
+                                <p><strong>Contact Email:</strong> <a href="mailto:<?php echo $profile_data['email']; ?>"><?php echo $profile_data['email']; ?></a></p>
                                 <p><strong>Gender:</strong> <?php echo $profile_data['Gender']; ?></p>
                                 <p><strong>Bio:</strong> <?php echo $profile_data['Bio']; ?></p>
                                 <p><strong>Social Media Links:</strong> <?php echo $profile_data['SocialMediaLinks']; ?></p>
@@ -124,6 +125,52 @@ if ($stmt = $conn->prepare($sql)) {
                     </div>
                 </div>
             </section>
+
+            <!-- Job Section (Visible only to recruiters) -->
+            <?php if ($role === 'recruiter'): ?>
+                <section class="projects-section section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-12 text-center">
+                            <h2>Job Available</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <?php
+                        // Fetch projects associated with the user
+                        $job_query = "SELECT * FROM job WHERE recruiter_id = '$user_id'";
+                        $job_result = $conn->query($job_query);
+
+                        if ($job_result->num_rows > 0) {
+                            while ($job_row = $job_result->fetch_assoc()) {
+                                ?>
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <a href="job-detail.php?id=<?php echo $job_row['job_id']; ?>">
+                                    <div class="card h-100"> 
+                                        
+                                        <div class="card-body d-flex flex-column"> 
+                                            <h5 class="card-title"><?php echo $job_row['job_title']; ?></h5>
+                                            <p class="card-text flex-grow-1"><?php echo $job_row['date_posted']; ?>
+                                            <?php echo $job_row['job_location']; ?>
+                                            <?php echo $job_row['job_types']; ?></p> 
+                                        </div>
+                                    </div>
+                                </a>
+                                </div>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="col-lg-12 col-12 text-center">
+                                <p>No job found.</p>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+            </section>
+            <?php endif; ?>
 
             <!-- Projects Section -->
             <section class="projects-section section-padding">

@@ -38,6 +38,7 @@
                             $role = $user['role'];
                             
                             if ($role === 'user') {
+                                echo '<li><a class="dropdown-item" href="user_recommend.php">Recommendation</a></li>';
                                 echo '<li><a class="dropdown-item" href="job-listings.php">Job Listings</a></li>';
                             } else if ($role === 'recruiter') {
                                 echo '<li><a class="dropdown-item" href="user-listing.php">User Listings</a></li>';
