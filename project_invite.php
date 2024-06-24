@@ -149,6 +149,9 @@
                                     </div>
                                     <div class="ms-auto">
                                         <p class="applicant-count mb-0">
+                                            <strong><?php echo htmlspecialchars($project['project_view']); ?></strong> Views
+                                        </p>
+                                        <p class="applicant-count mb-0">
                                             <strong><?php echo htmlspecialchars($project['applicant_count']); ?></strong> Applicants
                                         </p>
                                         <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $project['project_id']; ?>', 'deactivate');">Deactivate</a>

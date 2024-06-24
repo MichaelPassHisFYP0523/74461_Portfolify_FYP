@@ -5,7 +5,7 @@
 
     $email = $_SESSION['email'];
 
-    $user_id = $_SESSION['user_id'];echo $user_id;
+    $user_id = $_SESSION['user_id'];
 
     $sql = "SELECT users.*, user_profile.* FROM users
             INNER JOIN user_profile ON users.User_ID = user_profile.User_ID
@@ -116,6 +116,9 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="upload-resume-tab" data-bs-toggle="tab" data-bs-target="#upload-resume" type="button" role="tab" aria-controls="upload-resume" aria-selected="false">Upload Resume</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="preference-tab" data-bs-toggle="tab" data-bs-target="#preference" type="button" role="tab" aria-controls="update-preference" aria-selected="false">Update Preference</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="profileTabContent">
@@ -244,6 +247,58 @@
                                     <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
                                     
                                     <button type="submit" class="custom-btn btn">Upload Resume</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Update Preference Section -->
+                        <div class="tab-pane fade" id="preference" role="tabpanel" aria-labelledby="preference-tab">
+                            <form action="update_profile.php" method="post" class="mt-4">
+                                <h4>Preference</h4>
+                                <div class="mb-3">
+                                        <label for="industry">Interested Industries</label>
+                                        <select name="industry" id="industry" class="form-control">
+                                            <option value="<?php echo htmlspecialchars($row['prefer_industry']); ?>" disabled selected><?php echo htmlspecialchars($row['prefer_industry']); ?></option>
+                                            <option value="Information Technology (IT)">Information Technology (IT)</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Engineering">Engineering</option>
+                                            <option value="Sales and Marketing">Sales and Marketing</option>
+                                            <option value="Human Resources">Human Resources</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Retail">Retail</option>
+                                            <option value="Hospitality and Tourism">Hospitality and Tourism</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="salary">Expected Salary</label>
+                                        <select name="salary" id="salary" class="form-control">
+                                            <option value="<?php echo htmlspecialchars($row['expected_salary']); ?>" disabled selected><?php echo htmlspecialchars($row['expected_salary']); ?></option>
+                                            <option value="RM0-RM3000">RM0-RM3000</option>
+                                            <option value="RM3000-RM10k">RM3001-RM10k</option>
+                                            <option value="RM10k-RM100k">>RM10k</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="availability">Availability</label>
+                                        <select name="availability" id="availability" class="form-control">
+                                            <option value="<?php echo htmlspecialchars($row['availability']); ?>" disabled selected><?php echo htmlspecialchars($row['availability']); ?></option>
+                                            <option value="Now">Now</option>
+                                            <option value="2 weeks">2 weeks</option>
+                                            <option value="4 weeks">4 weeks</option>
+                                            <option value="8 weeks">8 weeks</option>
+                                            <option value="12 weeks">12 weeks</option>
+                                        </select>
+                                    </div>
+
+                                <!-- Hidden input field to store the user_id -->
+                                <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
+
+                                <div class="mb-3 text-center">
+                                    <button type="submit" class="custom-btn btn">Save Education</button>
                                 </div>
                             </form>
                         </div>

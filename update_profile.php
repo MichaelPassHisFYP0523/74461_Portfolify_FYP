@@ -121,6 +121,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $_SESSION['error_message'] = "Error in file upload.";
         }
+    }elseif (isset($_POST['industry'])) {
+        // Handle perefernce update
+        $industry = $_POST['industry'];
+        $salary = $_POST['salary'];
+        $availability = $_POST['availability'];
+
+        $sql = "UPDATE user_profile SET prefer_industry = ?, expected_salary = ?, availability = ? WHERE User_ID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ssss', $industry, $salary, $availability, $userId);
+        if ($stmt->execute()) {
+            $_SESSION['success_message'] = "Preference updated successfully.";
+        } else {
+            $_SESSION['error_message'] = "Failed to update Preference.";
+        }
     }
 
     $conn->close();

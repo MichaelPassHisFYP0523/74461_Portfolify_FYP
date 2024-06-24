@@ -63,47 +63,6 @@
                 <h2 class="text-center mb-4">Projects Available</h2> 
             </div>
             <div class="row" id="project-list">
-                
-            <?php
-                        include "con.php";
-
-                        $query = "SELECT * FROM `projects` WHERE `proj_status` = 1";
-                        $result = mysqli_query($conn, $query);
-
-                        if (mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                        ?>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <div class="job-thumb job-thumb-box">
-                                    
-                                    <div class="job-image-box-wrap">
-                                        <img src="<?php echo $row['project_image']; ?>" class="job-image img-fluid" alt="job image">
-                                    </div>
-
-                                    <div class="job-body">
-                                        <h4 class="job-title">
-                                            <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="job-title-link"><?php echo $row['title']; ?></a>
-                                        </h4>
-
-                                        <div class="job-details">
-                                        <p><?php echo $row['description']; ?></p>
-                                    </div>
-
-                                        <p></p>
-                                        <div class="action-flex align-items-center border-top pt-3n-buttons">
-                                            <p></p>
-                                            <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="custom-btn btn ms-auto">View Details</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php
-                            }
-                        } else {
-                            // If no projects found
-                            echo "No projects found";
-                        }
-                        ?>
             </div>
         </div>
     </section>

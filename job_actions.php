@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $desc = $_POST['job_description'];
             $user_id = $_POST['user_id'];
             $image = $_FILES['job_image'];
+            $industry = $_POST['industry'];
         
             // Generate a unique ID for the job
             $new_id = uniqid('job_', true);
@@ -67,12 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     `requirement`,
                     `job_types`,
                     `recruiter_id`,
-                    `job_image`  
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    `job_image`,
+                    `job_industry`  
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
                 $stmt = $conn->prepare($sql);
         
-                $stmt->bind_param("sssssssss", $new_id, $title, $desc, $location, $salary, $requirement, $jobType, $user_id, $target_file);
+                $stmt->bind_param("ssssssssss", $new_id, $title, $desc, $location, $salary, $requirement, $jobType, $user_id, $target_file, $industry);
         
                 if ($stmt->execute()) {
                     echo "New job created successfully";

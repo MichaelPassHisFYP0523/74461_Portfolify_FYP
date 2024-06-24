@@ -115,56 +115,64 @@
 
 
                     <div class="col-lg-5 col-12 mb-3 mx-auto">
-                            <div class="contact-info-wrap">
-                            <?php if ($role === 'user'): ?>
+                        <div class="contact-info-wrap">
+                        <?php if ($role === 'user'): ?>
+                            <div class="contact-info d-flex align-items-center mb-3">
+                                <i class="custom-icon bi-graph-up"></i>
+
+                                <p class="mb-0">
+                                    <span class="contact-info-small-title"><?php echo $profile['profile_views']; ?></span>
+
+                                    Profile Views
+                                </p>
+                            </div>
+
+                            <div class="contact-info d-flex align-items-center">
+                                <i class="custom-icon bi-calendar-event"></i>
+
+                                <p class="mb-0">
+                                    <span class="contact-info-small-title"><?php echo $profile['LastActive']; ?></span>
+
+                                    <a href="#" class="site-footer-link">
+                                    Last Active
+                                    </a>
+                                </p>
+                            </div>
+                            <?php elseif ($role === 'recruiter'): ?>
                                 <div class="contact-info d-flex align-items-center mb-3">
                                     <i class="custom-icon bi-graph-up"></i>
-
                                     <p class="mb-0">
-                                        <span class="contact-info-small-title"><?php echo $profile['profile_views']; ?></span>
-
+                                        <span class="contact-info-small-title"><?php echo $profile['profileView']; ?></span>
                                         Profile Views
                                     </p>
                                 </div>
+                            <?php endif; ?>
 
-                                <div class="contact-info d-flex align-items-center">
-                                    <i class="custom-icon bi-calendar-event"></i>
+                            <div class="contact-info d-flex align-items-center">
+                                <i class="custom-icon bi-person-check"></i>
 
-                                    <p class="mb-0">
-                                        <span class="contact-info-small-title"><?php echo $profile['LastActive']; ?></span>
+                                <p class="mb-0">
+                                    <span class="contact-info-small-title"><?php echo $project_count; ?></span>
 
-                                        <a href="#" class="site-footer-link">
-                                        Last Active
-                                        </a>
-                                    </p>
-                                </div>
-                                <?php endif; ?>
+                                    <a href="tel: 305-240-9671" class="site-footer-link">
+                                        Project Done
+                                    </a>
+                                </p>
+                            </div>
 
-                                <div class="contact-info d-flex align-items-center">
-                                    <i class="custom-icon bi-person-check"></i>
+                            <div class="contact-info d-flex align-items-center">
+                                <i class="custom-icon bi-envelope"></i>
 
-                                    <p class="mb-0">
-                                        <span class="contact-info-small-title"><?php echo $project_count; ?></span>
+                                <p class="mb-0">
+                                    <span class="contact-info-small-title"><?php echo $collab_count; ?></span>
 
-                                        <a href="tel: 305-240-9671" class="site-footer-link">
-                                            Project Done
-                                        </a>
-                                    </p>
-                                </div>
-
-                                <div class="contact-info d-flex align-items-center">
-                                    <i class="custom-icon bi-envelope"></i>
-
-                                    <p class="mb-0">
-                                        <span class="contact-info-small-title"><?php echo $collab_count; ?></span>
-
-                                        <a href=# class="site-footer-link">
-                                            Collaboration Request
-                                        </a>
-                                    </p>
-                                </div>
+                                    <a href=# class="site-footer-link">
+                                        Collaboration Request
+                                    </a>
+                                </p>
                             </div>
                         </div>
+                    </div>
                 </div>
         </section>
 

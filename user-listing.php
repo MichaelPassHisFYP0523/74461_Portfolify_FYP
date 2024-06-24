@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Job Listings</title>
+    <title>Portfolify</title>
     <!-- CSS FILES -->
     <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;300;400;600;700&display=swap" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -22,11 +22,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-12 text-center">
-                    <h1 class="text-white">Job Listings</h1>
+                    <h1 class="text-white">Project Listings</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Job listings</li>
+                            <li class="breadcrumb-item active" aria-current="page">Project listings</li>
                         </ol>
                     </nav>
                 </div>
@@ -39,12 +39,35 @@
             <div class="row">
                 <div class="col-lg-12 col-12">
                     <form class="custom-form hero-form" action="javascript:void(0);" method="get" role="form">
-                        <h3 class="text-white mb-3">Search your dream job</h3>
+                        <h3 class="text-white mb-3">Search user</h3>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1"><i class="bi-person custom-icon"></i></span>
-                                    <input type="text" name="job-title" id="job-title" class="form-control" placeholder="Job Title" onkeyup="showResult(this.value)">
+                                    <input type="text" name="job-title" id="job-title" class="form-control" placeholder=" Title" onkeyup="showResult(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <img src="images/4557388.png" class="hero-image img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding pb-0 d-flex justify-content-center align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-12">
+                    <form class="custom-form hero-form" action="javascript:void(0);" method="get" role="form">
+                        <h3 class="text-white mb-3">Search user</h3>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-12">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1"><i class="bi-person custom-icon"></i></span>
+                                    <input type="text" name="education" id="education" class="form-control" placeholder="Education" onkeyup="showResult(this.value)">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12">
@@ -69,9 +92,11 @@
                                     <span class="input-group-text" id="basic-addon1"><i class="bi-laptop custom-icon"></i></span>
                                     <select class="form-select form-control" name="job-remote" id="job-remote" aria-label="Default select example" onchange="showResult()">
                                         <option selected>Work Types</option>
-                                        <option value="1">Full Time</option>
-                                        <option value="2">Internship</option>
-                                        <option value="3">Part Time</option>
+                                        <option value="1">Now</option>
+                                            <option value="2">2 weeks</option>
+                                            <option value="4">4 weeks</option>
+                                            <option value="8">8 weeks</option>
+                                            <option value="12">12 weeks</option>
                                     </select>
                                 </div>
                             </div>
@@ -89,10 +114,10 @@
     <section class="job-section section-padding">
         <div class="container">
             <div class="col-lg-12 col-12">
-                <h2 class="text-center mb-4">Jobs Available</h2> 
+                <h2 class="text-center mb-4">Result</h2> 
             </div>
-            <div class="row" id="job-list">
-                <!-- Job listings will be loaded here -->
+            <div class="row" id="user-list">
+        
             </div>
         </div>
     </section>
@@ -127,7 +152,7 @@ function showResult() {
 
 // Load all projects initially
 document.addEventListener("DOMContentLoaded", function() {
-    showResult();
+  loadAllProjects();
 });
 </script>
 </body>

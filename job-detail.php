@@ -24,6 +24,11 @@ if ($result && $result->num_rows > 0) {
 if (isset($_GET['id'])) {
     $job_id = $_GET['id'];
 
+    // Update view count
+    $stmt_update_view = $conn->prepare("UPDATE job SET job_views = job_views + 1 WHERE job_id = ?");
+    $stmt_update_view->bind_param("s", $job_id);
+    $stmt_update_view->execute();
+
     // Fetch the job details
     $stmt = $conn->prepare("SELECT * FROM job WHERE job_id = ?");
     $stmt->bind_param("s", $job_id);
@@ -142,32 +147,35 @@ if (isset($_GET['id'])) {
                             </div>
                         </div>
 
+                        <!-- User profile -->
                         <div class="col-lg-4 col-12 mt-5 mt-lg-0">
-                            <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
-                                <div class="d-flex align-items-center">
-                                    <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
-                                        <img src="<?php echo htmlspecialchars($profile['logo']); ?>" class="job-image me-3 img-fluid" alt="">
-                                        <p class="mb-0"><?php echo htmlspecialchars($profile['company_name']); ?></p>
+                            <a href="portfolio.php?id=<?php echo htmlspecialchars ($job['recruiter_id']); ?>">
+                                <div class="job-thumb job-thumb-detail-box bg-white shadow-lg">
+                                    <div class="d-flex align-items-center">
+                                        <div class="job-image-wrap d-flex align-items-center bg-white shadow-lg mb-3">
+                                            <img src="<?php echo htmlspecialchars($profile['logo']); ?>" class="job-image me-3 img-fluid" alt="">
+                                            <p class="mb-0"><?php echo htmlspecialchars($profile['company_name']); ?></p>
+                                        </div>
                                     </div>
+
+                                    <h6 class="mt-3 mb-2">About the Company</h6>
+                                    <p><?php echo htmlspecialchars($profile['about']); ?></p>
+
+                                    <h6 class="mt-4 mb-3">Contact Information</h6>
+                                    <p class="mb-2">
+                                        <i class="custom-icon bi-globe me-1"></i>
+                                        <a href="<?php echo htmlspecialchars($profile['website']); ?>" class="site-footer-link">
+                                            <?php echo htmlspecialchars($profile['website']); ?>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <i class="custom-icon bi-envelope me-1"></i>
+                                        <a href="mailto:<?php echo htmlspecialchars($profile['contact_email']); ?>" class="site-footer-link">
+                                            <?php echo htmlspecialchars($profile['contact_email']); ?>
+                                        </a>
+                                    </p>
                                 </div>
-
-                                <h6 class="mt-3 mb-2">About the Company</h6>
-                                <p><?php echo htmlspecialchars($profile['about']); ?></p>
-
-                                <h6 class="mt-4 mb-3">Contact Information</h6>
-                                <p class="mb-2">
-                                    <i class="custom-icon bi-globe me-1"></i>
-                                    <a href="<?php echo htmlspecialchars($profile['website']); ?>" class="site-footer-link">
-                                        <?php echo htmlspecialchars($profile['website']); ?>
-                                    </a>
-                                </p>
-                                <p>
-                                    <i class="custom-icon bi-envelope me-1"></i>
-                                    <a href="mailto:<?php echo htmlspecialchars($profile['contact_email']); ?>" class="site-footer-link">
-                                        <?php echo htmlspecialchars($profile['contact_email']); ?>
-                                    </a>
-                                </p>
-                            </div>
+                            </a>
                         </div>
 
                     </div>

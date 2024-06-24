@@ -272,6 +272,23 @@
                                     </div>
 
                                     <div class="col-lg-12 col-12">
+                                        <label for="industry">Industries</label>
+                                        <select name="industry" id="industry" class="form-control" required>
+                                            <option value="" disabled selected>Select One</option>
+                                            <option value="Information Technology (IT)">Information Technology (IT)</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Engineering">Engineering</option>
+                                            <option value="Sales and Marketing">Sales and Marketing</option>
+                                            <option value="Human Resources">Human Resources</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Retail">Retail</option>
+                                            <option value="Hospitality and Tourism">Hospitality and Tourism</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12">
                                         <label for="job_image">Job Cover (Optional)</label>
                                         <input type="file" name="job_image" id="job_image" class="form-control" accept="image/*">
                                     </div>

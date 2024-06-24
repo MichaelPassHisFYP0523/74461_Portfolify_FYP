@@ -26,11 +26,9 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Fetch profile data based on user role
 if ($user_role == 'recruiter') {
-    $sql = "SELECT *
-            FROM `recruiter_profile` WHERE `User_ID` = ?";
+    $sql = "SELECT * FROM `recruiter_profile` WHERE `User_ID` = ?";
 } else {
-    $sql = "SELECT * 
-            FROM `user_profile` WHERE `User_ID` = ?";
+    $sql = "SELECT * FROM `user_profile` WHERE `User_ID` = ?";
 }
 
 if ($stmt = $conn->prepare($sql)) {
@@ -39,21 +37,27 @@ if ($stmt = $conn->prepare($sql)) {
     $profile_data = $stmt->get_result()->fetch_assoc();
     $stmt->close();
 
-        // Increment the profile view count
+    // Increment the profile view count
+    if ($user_role == 'recruiter') {
+        $view_count_sql = "UPDATE `recruiter_profile` SET profileView = profileView + 1 WHERE User_ID = ?";
+    } else {
         $view_count_sql = "UPDATE `user_profile` SET profile_views = profile_views + 1 WHERE User_ID = ?";
-        if ($update_stmt = $conn->prepare($view_count_sql)) {
-            $update_stmt->bind_param("s", $sender_id);
-            $update_stmt->execute();
-            $update_stmt->close();
-        } else {
-            echo "Error updating profile views: " . $conn->error;
-            exit();
-        }
+    }
+
+    if ($update_stmt = $conn->prepare($view_count_sql)) {
+        $update_stmt->bind_param("s", $sender_id);
+        $update_stmt->execute();
+        $update_stmt->close();
+    } else {
+        echo "Error updating profile views: " . $conn->error;
+        exit();
+    }
 } else {
     echo "Error fetching profile data: " . $conn->error;
     exit();
 }
 ?>
+
 
 
 <!doctype html>
@@ -138,15 +142,19 @@ if ($stmt = $conn->prepare($sql)) {
                         if ($project_result->num_rows > 0) {
                             while ($project_row = $project_result->fetch_assoc()) {
                                 ?>
+                                
                                 <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <div class="card h-100"> 
-                                        <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
-                                        <div class="card-body d-flex flex-column"> 
-                                            <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
-                                            <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
+                                    <a href="project-detail.php?id=<?php echo $project_row['project_id']; ?>">
+                                        <div class="card h-100"> 
+                                            <img src="<?php echo $project_row['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                            <div class="card-body d-flex flex-column"> 
+                                                <h5 class="card-title"><?php echo $project_row['title']; ?></h5>
+                                                <p class="card-text flex-grow-1"><?php echo $project_row['description']; ?></p> 
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
+                            
                                 <?php
                             }
                         } else {

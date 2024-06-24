@@ -150,6 +150,9 @@
                                     </div>
                                     <div class="ms-auto">
                                         <p class="applicant-count mb-0">
+                                            <strong><?php echo htmlspecialchars($jobs['job_views']); ?></strong> Views
+                                        </p>
+                                        <p class="applicant-count mb-0">
                                             <strong><?php echo htmlspecialchars($jobs['application_count']); ?></strong> Applicants
                                         </p>
                                         <a href="#" class="deactivate-link" onclick="deactivateStatus(event, '<?php echo $jobs['job_id']; ?>', 'deactivate');">Deactivate</a>
