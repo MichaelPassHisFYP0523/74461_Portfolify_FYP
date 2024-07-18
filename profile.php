@@ -70,6 +70,25 @@
                 $collab_projects[] = $row;
             }
         }
+
+        // Fetch profile views data
+        $views_sql = "SELECT * FROM profile_views WHERE profile_id = ? ORDER BY view_date";
+        $stmt = $conn->prepare($views_sql);
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        $views_result = $stmt->get_result();
+        if (!$views_result) {
+            die("Error fetching profile views: " . $conn->error);
+        }
+        
+        $dates = [];
+        $views = [];
+
+        while ($row = $views_result->fetch_assoc()) {
+            $dates[] = $row['view_date'];
+            $views[] = $row['view_count'];
+        }
+
     } else {
         session_destroy();
         header("Location: Sign_In.php");
@@ -150,16 +169,6 @@
 
                     <div class="col-lg-5 col-12 mb-3 mx-auto">
                         <div class="contact-info-wrap">
-                        <?php if ($role === 'user'): ?>
-                            <div class="contact-info d-flex align-items-center mb-3">
-                                <i class="custom-icon bi-graph-up"></i>
-
-                                <p class="mb-0">
-                                    <span class="contact-info-small-title"><?php echo $profile['profile_views']; ?></span>
-
-                                    Profile Views
-                                </p>
-                            </div>
 
                             <div class="contact-info d-flex align-items-center">
                                 <i class="custom-icon bi-calendar-event"></i>
@@ -172,15 +181,6 @@
                                     </a>
                                 </p>
                             </div>
-                            <?php elseif ($role === 'recruiter'): ?>
-                                <div class="contact-info d-flex align-items-center mb-3">
-                                    <i class="custom-icon bi-graph-up"></i>
-                                    <p class="mb-0">
-                                        <span class="contact-info-small-title"><?php echo $profile['profileView']; ?></span>
-                                        Profile Views
-                                    </p>
-                                </div>
-                            <?php endif; ?>
 
                             <div class="contact-info d-flex align-items-center">
                                 <i class="custom-icon bi-person-check"></i>
@@ -208,6 +208,18 @@
                         </div>
                     </div>
                 </div>
+        </section>
+
+        <!-- Graph Section -->
+        <section class="projects-section section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-12 text-center">
+                        <h2>Profile Views Over Time</h2>
+                        <canvas id="viewsChart" style="width: 100%; height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Projects Section -->
@@ -347,6 +359,32 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/counter.js"></script>
     <script src="js/custom.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('viewsChart').getContext('2d');
+            const viewsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: <?php echo json_encode($dates); ?>,
+                    datasets: [{
+                        label: 'Profile Views',
+                        data: <?php echo json_encode($views); ?>,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+    </script>
 
 </body>
 </html>

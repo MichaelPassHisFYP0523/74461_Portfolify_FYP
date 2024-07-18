@@ -5,7 +5,7 @@ include("con.php");
 
 // Get the sender ID from the URL parameter
 if(isset($_GET['id'])) {
-    $sender_id = $_GET['id'];
+    $user_id = $_GET['id'];
 } else {
     echo "Sender ID not provided.";
     exit();
@@ -14,7 +14,7 @@ if(isset($_GET['id'])) {
 // Fetch the user role
 $sql = "SELECT `role` FROM `users` WHERE `User_ID` = ?";
 if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("s", $sender_id);
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $stmt->bind_result($user_role);
     $stmt->fetch();
@@ -32,25 +32,25 @@ if ($user_role == 'recruiter') {
 }
 
 if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("s", $sender_id);
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $profile_data = $stmt->get_result()->fetch_assoc();
     $stmt->close();
 
-    // Increment the profile view count
-    if ($user_role == 'recruiter') {
-        $view_count_sql = "UPDATE `recruiter_profile` SET profileView = profileView + 1 WHERE User_ID = ?";
-    } else {
-        $view_count_sql = "UPDATE `user_profile` SET profile_views = profile_views + 1 WHERE User_ID = ?";
-    }
+    // Insert or update the profile view count
+    $view_count_sql = "
+    INSERT INTO profile_views (profile_id, view_date, view_count)
+    VALUES (?, CURDATE(), 1)
+    ON DUPLICATE KEY UPDATE view_count = view_count + 1;
+    ";
 
     if ($update_stmt = $conn->prepare($view_count_sql)) {
-        $update_stmt->bind_param("s", $sender_id);
-        $update_stmt->execute();
-        $update_stmt->close();
+    $update_stmt->bind_param("s", $user_id);
+    $update_stmt->execute();
+    $update_stmt->close();
     } else {
-        echo "Error updating profile views: " . $conn->error;
-        exit();
+    echo "Error updating profile views: " . $conn->error;
+    exit();
     }
 } else {
     echo "Error fetching profile data: " . $conn->error;
@@ -183,7 +183,7 @@ if ($stmt = $conn->prepare($sql)) {
                     <div class="row">
                         <?php
                         // Fetch projects associated with the user
-                        $project_query = "SELECT * FROM projects WHERE `user_id` = '$sender_id'";
+                        $project_query = "SELECT * FROM projects WHERE `user_id` = '$user_id'";
                         $project_result = $conn->query($project_query);
 
                         if ($project_result->num_rows > 0) {
@@ -230,7 +230,7 @@ if ($stmt = $conn->prepare($sql)) {
                         // Fetch projects associated with the user
                         $project_query = "  SELECT p.* FROM projects p 
                                             JOIN collab_invites ci ON p.project_id = ci.proj_id
-                                            WHERE ci.sender_id = '$sender_id' AND ci.status = 'accepted'";
+                                            WHERE ci.sender_id = '$user_id' AND ci.status = 'accepted'";
                         $project_result = $conn->query($project_query);
 
                         if ($project_result->num_rows > 0) {
