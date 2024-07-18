@@ -89,6 +89,7 @@ if (isset($_GET['id'])) {
             <!-- Job Details -->
             <section class="job-section section-padding pb-0">
                 <div class="container">
+                    <h1>Job Details</h2>
                     <div class="row">
                         <div class="col-lg-8 col-12">
                             <h2 class="job-title mb-0"><?php echo htmlspecialchars($job['job_title']); ?></h2>

@@ -1,0 +1,36 @@
+1. N. Ammour, H. Alhichri, Y. Bazi, B. Benjdira, N. Alajlan and M. Zuair, "Deep learning approach for car detection in UAV imagery", Remote Sensing, 2017,  [online]  Available: https://doi.org/10.3390/rs9040312.
+
+2. L. C. Chen, G. Papandreou, I. Kokkinos, K. Murphy and A. L. Yuille, "Deeplab: Semantic image segmentation with deep convolutional nets atrous convolution and fully connected crfs", 2016.
+
+3. X. Chen, S. Xiang, C. L. Liu and C. H. Pan, "Vehicle detection in satellite images by hybrid deep convolutional neural networks", IEEE Geoscience and Remote Sensing Letters, 2014,  [online]  Available: https://doi.org/10.1109/LGRS.2014.2309695.
+
+4. Z. Deng, H. Sun, S. Zhou, J. Zhao and H. Zou, "Toward Fast and Accurate Vehicle Detection in Aerial Images Using Coupled Region-Based Convolutional Neural Networks", IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing, vol. 10, no. 8, pp. 3652-3664, 2017,  [online]  Available: https://doi.org/10.1109/JSTARS.2017.2694890.
+
+5. K. He, X. Zhang, S. Ren and J. Sun, "Deep residual learning for image recognition", Proceedings of the IEEE conference on computer vision and pattern recognition, pp. 770-778, 2016.
+
+6. S. Ioffe and C. Szegedy, "Batch normalization: Accelerating deep network training by reducing internal covariate shift", International conference on machine learning, pp. 448-456, 2015, June.
+
+7. C. Kyrkou, S. Timotheou, P. Kolios, T. Theocharides and C. G. Panayiotou, "Optimized vision-directed deployment of UAVs for rapid traffic monitoring", 2018 IEEE International Conference on Consumer Electronics ICCE 2018, vol. 2018-Janua, pp. 1-6, 2018,  [online]  Available: https://doi.org/10.1109/ICCE.2018.8326145.
+
+8. A. Krizhevsky, I. Sutskever and G. E. Hinton, "Imagenet classification with deep convolutional neural networks", Advances in neural information processing systems, pp. 1097-1105, 2012.
+
+9. K. Liu and G. Mattyus, DLR 3k Munich Vehicle Aerial Image Dataset,  [online]  Available: http://pba-freesoftware.eoc.dlr.de/3K_VehicleDetection_dataset.zip.
+
+10. X. Liu, T. Yang and J. Li, "Real-time ground vehicle detection in aerial infrared imagery based on convolutional neural network", Electronics (Switzerland), vol. 7, no. 6, 2018,  [online]  Available: https://doi.org/10.3390/electronics7060078.
+
+11. P. Mahto, P. Garg, P. Seth and J. Panda, "Refining Yolov4 for vehicle detection", International Journal of Advanced Research in Engineering and Technology, 2020,  [online]  Available: https://doi.org/10.34218/IJARET.11.5.2020.043.
+
+12. J. Redmon, S. Divvala, R. Girshick and A. Farhadi, "You only look once: Unified real-time object detection", Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition, 2016,  [online]  Available: https://doi.org/10.1109/CVPR.2016.91.
+
+13. S. Ren, K. He, R. Girshick and J. Sun, "Faster R-CNN: Towards Real-Time Object Detection with", IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 39, no. 6, pp. 1137-1149, 2017,  [online]  Available: https://doi.org/10.1109/TPAMI.2016.2577031.
+
+14. K. Simonyan and A. Zisserman, "Very deep convolutional networks for large-scale image recognition", 2014.
+
+15. L. W. Sommer, T. Schuchert and J. Beyerer, "Fast deep vehicle detection in aerial images", Proceedings - 2017 IEEE Winter Conference on Applications of Computer Vision WACV 2017, pp. 311-319, 2017,  [online]  Available: https://doi.org/10.1109/WACV.2017.41.
+
+16. T.-Y. Lin, P. Goyal, R. Girshick, K. He and P. Dollar, "Focal loss for dense object detection", 2017.
+
+17. M. Y. Yang, W. Liao, X. Li, Y. Cao and B. Rosenhahn, "Vehicle detection in aerial images", Photogrammetric Engineering and Remote Sensing, vol. 85, no. 4, pp. 297-304, 2019,  [online]  Available: https://doi.org/10.14358/PERS.85.4.297.
+
+18. J. Zhong, T. Lei and G. Yao, "Robust vehicle detection in aerial images based on cascaded convolutional neural networks", Sensors (Switzerland), 2017,  [online]  Available: https://doi.org/10.3390/s17122720.
+

@@ -298,7 +298,7 @@
                                 <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id; ?>">
 
                                 <div class="mb-3 text-center">
-                                    <button type="submit" class="custom-btn btn">Save Education</button>
+                                    <button type="submit" class="custom-btn btn">Save Peference</button>
                                 </div>
                             </form>
                         </div>

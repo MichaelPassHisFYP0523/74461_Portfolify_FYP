@@ -1,7 +1,0 @@
-.about-image-wrap,
-.video-thumb {
-  position: relative;
-  overflow: hidden;
-  height: 0;
-  padding-bottom: 100%;
-}

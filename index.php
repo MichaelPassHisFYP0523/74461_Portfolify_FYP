@@ -183,7 +183,7 @@
                         </div>
 
                         <div class="clearfix"></div>
-                    <?php
+                        <?php
                         include "con.php";
 
                         $query = "SELECT * FROM `projects` WHERE `proj_status` = 1 ORDER BY `created_at` DESC LIMIT 6";
@@ -194,23 +194,27 @@
                         ?>
                                 <div class="col-lg-4 col-md-6 col-12">
                                     <div class="job-thumb job-thumb-box">
-                                        
                                         <div class="job-image-box-wrap">
-                                            <img src="<?php echo $row['project_image']; ?>" class="job-image img-fluid" alt="job image">
+                                            <a href="project-detail.php?id=<?php echo $row['project_id']; ?>">
+                                                <img src="<?php echo $row['project_image']; ?>" class="job-image img-fluid" alt="">
+                                            </a>
+                                            <div class="job-image-box-wrap-info d-flex align-items-center">
+                                                <p class="mb-0 badge badge-level">
+                                                    <?php echo $row['proj_field']; ?>
+                                                </p>
+                                                <p class="mb-0 badge badge-level">
+                                                    <?php echo $row['collab_type']; ?>
+                                                </p>
+                                            </div>
                                         </div>
-
                                         <div class="job-body">
                                             <h4 class="job-title">
                                                 <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="job-title-link"><?php echo $row['title']; ?></a>
                                             </h4>
-
                                             <div class="job-details">
-                                            <p><?php echo $row['description']; ?></p>
-                                        </div>
-
-                                            <p></p>
-                                            <div class="action-flex align-items-center border-top pt-3n-buttons">
-                                                <p></p>
+                                                <p><?php echo $row['description']; ?></p>
+                                            </div>
+                                            <div class="d-flex align-items-center border-top pt-3">
                                                 <a href="project-detail.php?id=<?php echo $row['project_id']; ?>" class="custom-btn btn ms-auto">View Details</a>
                                             </div>
                                         </div>
@@ -227,6 +231,7 @@
                 </div>
             </section>
             <!-- End latest project -->
+
 
             <section class="cta-section">
                 <div class="section-overlay"></div>

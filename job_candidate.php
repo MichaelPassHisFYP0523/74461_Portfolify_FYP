@@ -136,6 +136,10 @@ $conn->close();
                                     </div>
 
                                     <div class="ms-auto">
+                                        <a href="portfolio.php?id=<?php echo $application['applicant_id']; ?>">Approve</a>
+                                    </div>
+
+                                    <div class="ms-auto">
                                         <a href="portfolio.php?id=<?php echo $application['applicant_id']; ?>">View Profile</a>
                                     </div>
                                 </div>

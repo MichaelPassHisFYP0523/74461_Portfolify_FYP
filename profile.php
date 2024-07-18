@@ -1,7 +1,11 @@
 <?php
-
     include 'auth.php';
     include 'con.php';
+
+    // Check if the database connection is successful
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
     $user_id = $_SESSION['user_id'];
     $email = $_SESSION['email'];
@@ -9,6 +13,10 @@
     // Fetch the user's role
     $sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
     $result = $conn->query($sql);
+    if (!$result) {
+        die("Error fetching user role: " . $conn->error);
+    }
+
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
         $role = $user['role'];
@@ -19,6 +27,10 @@
             $sql = "SELECT * FROM recruiter_profile WHERE User_ID = '$user_id'";
         }
         $profile_result = $conn->query($sql);
+
+        if (!$profile_result) {
+            die("Error fetching profile: " . $conn->error);
+        }
 
         if ($profile_result->num_rows == 1) {
             $profile = $profile_result->fetch_assoc();
@@ -31,19 +43,41 @@
         // Count projects
         $project_count_sql = "SELECT COUNT(*) AS project_count FROM projects WHERE user_id = '$user_id'";
         $project_count_result = $conn->query($project_count_sql);
+        if (!$project_count_result) {
+            die("Error counting projects: " . $conn->error);
+        }
         $project_count = $project_count_result->fetch_assoc()['project_count'];
 
         // Count collaboration invites
         $collab_count_sql = "SELECT COUNT(*) AS collab_count FROM collab_invites WHERE receiver_id = '$user_id'";
         $collab_count_result = $conn->query($collab_count_sql);
+        if (!$collab_count_result) {
+            die("Error counting collaboration invites: " . $conn->error);
+        }
         $collab_count = $collab_count_result->fetch_assoc()['collab_count'];
         
+        // Fetch approved collaborated projects
+        $collab_projects_sql = "SELECT p.* FROM projects p 
+                                JOIN collab_invites ci ON p.project_id = ci.proj_id
+                                WHERE ci.sender_id = '$user_id' AND ci.status = 'accepted'";
+        $collab_projects_result = $conn->query($collab_projects_sql);
+        if (!$collab_projects_result) {
+            die("Error fetching collaborated projects: " . $conn->error);
+        }
+        $collab_projects = [];
+        if ($collab_projects_result->num_rows > 0) {
+            while ($row = $collab_projects_result->fetch_assoc()) {
+                $collab_projects[] = $row;
+            }
+        }
     } else {
         session_destroy();
         header("Location: Sign_In.php");
         exit();
     }
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -221,6 +255,36 @@
                 </div>
             </div>
         </section>
+
+        <!-- Approved Collaborated Projects Section -->
+        <section class="projects-section section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-12 text-center">
+                        <h2>Collaborated Projects</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <?php if (!empty($collab_projects)) {
+                        foreach ($collab_projects as $project) { ?>
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <div class="card h-100"> 
+                                    <img src="<?php echo $project['project_image']; ?>" class="card-img-top" alt="Project Image">
+                                    <div class="card-body d-flex flex-column"> 
+                                        <h5 class="card-title"><?php echo $project['title']; ?></h5>
+                                        <p class="card-text flex-grow-1"><?php echo $project['description']; ?></p> 
+                                    </div>
+                                </div>
+                            </div>
+                    <?php } } else { ?>
+                            <div class="col-lg-12 col-12 text-center">
+                                <p>No approved collaborated projects found.</p>
+                            </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </section>
+
 
         <!-- Job Section (Visible only to recruiters) -->
         <?php if ($role === 'recruiter'): ?>

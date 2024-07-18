@@ -20,6 +20,11 @@ if (mysqli_num_rows($result) > 0) {
         echo '<div class="job-thumb job-thumb-box">';
         echo '<div class="job-image-box-wrap">';
         echo '<img src="'.htmlspecialchars($row['project_image']).'" class="job-image img-fluid" alt="project image">';
+        echo '<div class="job-image-box-wrap-info d-flex align-items-center">';
+        echo '<p class="mb-0 badge badge-level">';
+        echo $row['proj_field']; 
+        echo '</p>';
+        echo '</div>';
         echo '</div>';
         echo '<div class="job-body">';
         echo '<h4 class="job-title">';

@@ -190,6 +190,17 @@
                                         <label for="collaborate-no">No</label>
                                     </div>
 
+                                    <div id="collaboration-details" style="display: none;">
+                                        <div class="col-lg-12 col-12">
+                                            <label for="collaboration-type">Collaboration Type</label>
+                                            <select name="collaboration_type" id="collaboration-type" class="form-control">
+                                                <option value="" disabled selected>Choose One</option>
+                                                <option value="Local">Local</option>
+                                                <option value="International">International</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
 
                                     <div class="col-lg-4 col-md-4 col-6 mx-auto">
                                         <button type="button" onclick="uploadProject()" class="form-control" >Upload</button>
@@ -201,40 +212,6 @@
                 </div>
             </section>
 
-            <!-- Edit Project Modal -->
-            <div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="editProjectForm">
-                                <div class="col-md-12 mb-3">
-                                    <label for="edit-title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="edit-title" name="title" required>
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    <label for="edit-description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="edit-description" name="description" rows="3" required></textarea>
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    <label for="edit-proj-file" class="form-label">Project File</label>
-                                    <input type="file" class="form-control" id="edit-proj-file" name="proj_file">
-                                    <a id="current-project-file" href="#" target="_blank" class="ms-2">View Current File</a>
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    <label for="edit-image-file" class="form-label">Project Image (Optional)</label>
-                                    <input type="file" class="form-control" id="edit-image-file" name="image_file" accept="image/*">
-                                </div>
-                                <input type="hidden" id="edit-project-id" name="project_id">
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             </main>
 
@@ -270,9 +247,6 @@
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
-        <!-- Popper.js -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script> -->
-
         <!-- Bootstrap JS -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -281,8 +255,28 @@
 
 
         <script>
+
             // Display the data in modal
             document.addEventListener('DOMContentLoaded', function() {
+
+                const collaborateYes = document.getElementById('collaborate-yes');
+                const collaborateNo = document.getElementById('collaborate-no');
+                const collaborationDetails = document.getElementById('collaboration-details');
+
+                // Show collaboration details if 'Yes' is selected
+                collaborateYes.addEventListener('change', function() {
+                    if (collaborateYes.checked) {
+                        collaborationDetails.style.display = 'block';
+                    }
+                });
+
+                // Hide collaboration details if 'No' is selected
+                collaborateNo.addEventListener('change', function() {
+                    if (collaborateNo.checked) {
+                        collaborationDetails.style.display = 'none';
+                    }
+                });
+                
                 var editProjectModal = document.getElementById('editProjectModal');
                 
                 editProjectModal.addEventListener('show.bs.modal', function (event) {
@@ -335,9 +329,12 @@
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "project_actions.php", true);
                 xhr.onload = function () {
-                    if (xhr.status == 200) {
-                        alert(xhr.responseText);
-                        location.reload();
+                    if (xhr.responseText.trim() === "Project uploaded successfully.") {
+                        alert("Project uploaded successfully.");
+                        location.reload(); 
+                    } else {
+                        alert("Error: " + xhr.responseText);
+                        console.log(xhr.responseText);
                     }
                 };
                 xhr.send(formData);

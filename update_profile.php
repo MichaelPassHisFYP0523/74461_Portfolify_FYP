@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $skill = $_POST['skills'];
         $sql = "UPDATE user_profile SET Skills = ?, Experience = ? WHERE User_ID = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssi', $skill, $workExperience, $userId);
+        $stmt->bind_param('sss', $skill, $workExperience, $userId);
         if ($stmt->execute()) {
             $_SESSION['success_message'] = "Work experience updated successfully";
         } else {

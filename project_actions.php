@@ -13,6 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $file = $_FILES['file'];
             $image = $_FILES['image_file']; 
             $industry = $_POST['industry'];
+            // $collab_type = $_POST['collaboration_type'];
+            $collab_type = isset($_POST['collaboration_type']) ? $_POST['collaboration_type'] : null; 
         
             // Check if the file upload was successful
             if ($file['error'] === UPLOAD_ERR_OK) {
@@ -48,11 +50,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
         
                     // Prepare SQL statement with optional image path
-                    $sql = "INSERT INTO projects (project_id, user_id, title, description, created_at, project_path, proj_status, project_image, proj_field) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
+                    $sql = "INSERT INTO projects (project_id, user_id, title, description, created_at, project_path, proj_status, project_image, proj_field, collab_type) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
         
                     // Bind parameters
-                    $stmt->bind_param("ssssssss", $unique_id, $user_id, $full_name, $description, $file_destination, $proj_status, $image_path, $industry);
+                    $stmt->bind_param("sssssssss", $unique_id, $user_id, $full_name, $description, $file_destination, $proj_status, $image_path, $industry, $collab_type);
         
                     // Execute the statement
                     if ($stmt->execute()) {

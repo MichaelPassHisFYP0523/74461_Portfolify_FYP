@@ -289,8 +289,8 @@
                                     </div>
 
                                     <div class="col-lg-12 col-12">
-                                        <label for="job_image">Job Cover (Optional)</label>
-                                        <input type="file" name="job_image" id="job_image" class="form-control" accept="image/*">
+                                        <label for="job_image">Job Cover </label>
+                                        <input type="file" name="job_image" id="job_image" class="form-control" accept="image/*" required>
                                     </div>
 
                                     <!-- Hidden input field to store the user_id -->

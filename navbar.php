@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav align-items-center ms-lg-5">
                 <li class="nav-item">
-                    <a class="nav-link active" href="index.php">Homepage</a>
+                    <a class="nav-link" href="index.php">Homepage</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="about.php">About Portfolify</a>
@@ -23,27 +23,27 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
                     <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                        <?php
+                    <?php
 
                         include_once 'auth.php';
                         include 'con.php';
-                    
-                        $user_id = $_SESSION['user_id'];
-                    
-                        // Fetch the user's role
-                        $sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows == 1) {
-                            $user = $result->fetch_assoc();
-                            $role = $user['role'];
-                            
-                            if ($role === 'user') {
-                                echo '<li><a class="dropdown-item" href="user_recommend.php">Recommendation</a></li>';
-                                echo '<li><a class="dropdown-item" href="job-listings.php">Job Listings</a></li>';
-                            } else if ($role === 'recruiter') {
-                                echo '<li><a class="dropdown-item" href="user-listing.php">User Listings</a></li>';
+
+                        if (isset($_SESSION['user_id'])) {
+                            $user_id = $_SESSION['user_id'];
+                            // Fetch the user's role
+                            $sql = "SELECT role FROM users WHERE User_ID = '$user_id'";
+                            $result = $conn->query($sql);
+                            if ($result->num_rows == 1) {
+                                $user = $result->fetch_assoc();
+                                $role = $user['role'];
+                                
+                                if ($role === 'user') {
+                                    echo '<li><a class="dropdown-item" href="user_recommend.php">Recommendation</a></li>';
+                                    echo '<li><a class="dropdown-item" href="job-listings.php">Job Listings</a></li>';
+                                } else if ($role === 'recruiter') {
+                                    echo '<li><a class="dropdown-item" href="user-listing.php">User Listings</a></li>';
+                                }
                             }
-                            
                         }
                         ?>
 

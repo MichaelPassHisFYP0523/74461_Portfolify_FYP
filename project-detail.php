@@ -49,9 +49,9 @@ if (isset($_GET['id'])) {
 
             // Fetch user or recruiter profile based on role
             if ($user_role === 'user') {
-                $stmt_profile = $conn->prepare("SELECT * FROM user_profile WHERE user_id = ?");
+                $stmt_profile = $conn->prepare("SELECT * FROM user_profile WHERE User_ID = ?");
             } elseif ($user_role === 'recruiter') {
-                $stmt_profile = $conn->prepare("SELECT * FROM recruiter_profile WHERE user_id = ?");
+                $stmt_profile = $conn->prepare("SELECT * FROM recruiter_profile WHERE User_ID = ?");
             }
 
             $stmt_profile->bind_param("s", $project_user_id);
@@ -68,6 +68,44 @@ if (isset($_GET['id'])) {
             echo "User role not found";
             exit();
         }
+
+        // Fetch collaborator details
+        $collab_projects_sql = "SELECT u.*, ci.* FROM users u 
+                                JOIN collab_invites ci ON u.User_ID = ci.sender_id
+                                WHERE ci.proj_id = ? AND ci.status = 'accepted'";
+        $stmt_collab_projects = $conn->prepare($collab_projects_sql);
+        $stmt_collab_projects->bind_param("s", $project_id);
+        $stmt_collab_projects->execute();
+        $collab_projects_result = $stmt_collab_projects->get_result();
+
+        $collaborators = [];
+        if ($collab_projects_result && $collab_projects_result->num_rows > 0) {
+            while ($collaborator = $collab_projects_result->fetch_assoc()) {
+                $collab_role = $collaborator['role'];
+                $project_user_id = $collaborator['User_ID'];
+
+                // Fetch user or recruiter profile based on role
+                if ($collab_role === 'user') {
+                    $stmt_profile = $conn->prepare("SELECT * FROM user_profile WHERE User_ID = ?");
+                } elseif ($collab_role === 'recruiter') {
+                    $stmt_profile = $conn->prepare("SELECT * FROM recruiter_profile WHERE User_ID = ?");
+                }
+
+                $stmt_profile->bind_param("s", $project_user_id);
+                $stmt_profile->execute();
+                $result_profile = $stmt_profile->get_result();
+
+                if ($result_profile && $result_profile->num_rows > 0) {
+                    $collaborators[] = $result_profile->fetch_assoc();
+                } else {
+                    echo "Profile not found for User ID: $project_user_id";
+                }
+            }
+        } else {
+            $collaborators = null; // No collaborators found
+        }
+
+
     } else {
         echo "Project not found";
         exit();
@@ -120,6 +158,7 @@ if (isset($_GET['id'])) {
             <!-- Project Description -->
             <section class="job-section section-padding pb-0">
                 <div class="container">
+                <h1>Project Details</h2>
                     <div class="row">
 
                         <div class="col-lg-8 col-12">
@@ -132,6 +171,19 @@ if (isset($_GET['id'])) {
                                 <h4 class="mt-4 mb-2">Project Description</h4>
 
                                 <p><?php echo htmlspecialchars($project['description']); ?></p>
+
+                                <h5 class="mt-4 mb-3">Existing Collaborator</h5>
+                                <?php if ($collaborators) : ?>
+                                    <?php foreach ($collaborators as $collaborator) : ?>
+                                        <?php if ($collab_role === 'user') : ?>
+                                            <p><a href="portfolio.php?id=<?php echo htmlspecialchars($collaborator['User_ID']); ?>"><?php echo htmlspecialchars($collaborator['FirstName']); ?></a></p>
+                                        <?php elseif ($collab_role === 'recruiter') : ?>
+                                            <p><a href="portfolio.php?id=<?php echo htmlspecialchars($collaborator['User_ID']); ?>"><?php echo htmlspecialchars($collaborator['company_name']); ?></a></p>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <p>No collaborators found for this project.</p>
+                                <?php endif; ?>
 
                                 <h5 class="mt-4 mb-3">More Information</h5>
 
@@ -304,7 +356,7 @@ if (isset($_GET['id'])) {
             
             $.ajax({
                 type: "POST", 
-                url: "apply_project.php", 
+                url: "project_process.php", 
                 data: formData, 
                 dataType: "json", 
                 processData: false, 
